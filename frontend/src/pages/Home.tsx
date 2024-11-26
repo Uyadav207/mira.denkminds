@@ -20,8 +20,8 @@ export function Home() {
 						AI based security Assessment
 					</h1>
 					<p className="text-lg text-muted-foreground mb-6 text-center">
-						This is a standard home page for our Project setup using Vite React
-						TypeScript project with shadcn/ui.
+						This is a standard home page for our Project setup using
+						Vite React TypeScript project with shadcn/ui.
 					</p>
 					<Button className="w-1/4 mx-auto" asChild>
 						<a
