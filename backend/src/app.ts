@@ -1,15 +1,17 @@
 import { Hono } from "hono";
+import { authRoutes } from "./routes/authRoutes";
+import { errorHandler } from "./middlewares/errorHandler";
 import { logger } from "hono/logger";
-
-//Import Routes here
-import { testRoute } from "./routes/test";
 
 const app = new Hono();
 
+//logger.info
 app.use("*", logger());
 
-//Use Routes here
+// Middlewares
+app.use("*", errorHandler);
 
-app.route("/test", testRoute);
+// Routes
+app.route("/auth", authRoutes);
 
 export default app;
