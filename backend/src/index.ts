@@ -1,8 +1,6 @@
 import app from "./app";
 
 const server = Bun.serve({
-	port: 8080,
+	port: process.env.PORT || 8001,
 	fetch: app.fetch,
 });
-
-console.log(`Listening on localhost:${server.port}`);
