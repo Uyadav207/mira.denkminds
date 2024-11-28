@@ -8,10 +8,16 @@ const authService = new AuthService(prisma);
 const jwtService = new JwtService();
 
 export const register = async (c: Context) => {
-	const { email, password } = await c.req.json();
+	const { firstName, lastName, username, email, password } = await c.req.json();
 
 	try {
-		const user = await authService.register(email, password);
+		const user = await authService.register(
+			firstName,
+			lastName,
+			username,
+			email,
+			password,
+		);
 		const token = jwtService.generateToken(user.id);
 
 		return c.json({ user, token }, 201);
@@ -26,7 +32,6 @@ export const login = async (c: Context) => {
 	try {
 		const user = await authService.login(email, password);
 		const token = jwtService.generateToken(user.id);
-
 		return c.json({ user, token });
 	} catch (error) {
 		return c.json({ error: (error as Error).message }, 401);

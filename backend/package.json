@@ -4,7 +4,8 @@
 		"start": "bun run src/index.ts",
 		"dev": "bun run --watch src/index.ts",
 		"prepare": "husky",
-		"check": "biome check ./src "
+		"check": "biome check ./src ",
+		"check:fix": "biome check --write ./src"
 	},
 	"dependencies": {
 		"@prisma/client": "^5.22.0",
