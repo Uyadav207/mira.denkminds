@@ -4,14 +4,15 @@ export const errorHandler = async (c: Context, next: Next) => {
 	try {
 		await next();
 	} catch (err) {
-		console.error("Error:", err);
-
 		if (err instanceof Error) {
 			return c.json(
 				{
 					error: {
 						message: err.message,
-						stack: process.env.NODE_ENV === "production" ? "🥞" : err.stack,
+						stack:
+							process.env.NODE_ENV === "production"
+								? "🥞"
+								: err.stack,
 					},
 				},
 				500,
@@ -22,7 +23,10 @@ export const errorHandler = async (c: Context, next: Next) => {
 			{
 				error: {
 					message: "An unexpected error occurred",
-					stack: process.env.NODE_ENV === "production" ? "🥞" : "Unknown stack",
+					stack:
+						process.env.NODE_ENV === "production"
+							? "🥞"
+							: "Unknown stack",
 				},
 			},
 			500,
