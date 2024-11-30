@@ -15,6 +15,6 @@ export const authMiddleware = async (c: Context, next: Next) => {
 		c.set("user", decoded);
 		await next();
 	} catch (error) {
-		return c.json({ error: "Invalid token" }, 401);
+		return c.json({ error }, 401);
 	}
 };
