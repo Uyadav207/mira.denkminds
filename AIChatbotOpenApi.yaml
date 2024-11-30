@@ -1,0 +1,94 @@
+openapi: 3.0.3
+info:
+  title: AI Based Security Assessment
+  description: |-
+    This is a API documentation for our application based on the OpenAPI 3.0 specification.
+  version: 0.1.0
+servers:
+  - url: http://localhost:8000
+tags:
+  - name: user
+    description: Operations about user
+paths:
+  /auth/login:
+    post:
+      tags:
+        - user
+      summary: Logs user into the system with email and password
+      description: Logs a user into the system using their email and password credentials.
+      operationId: loginUser
+      requestBody:
+        description: Email and password for login
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                  description: The user's email address.
+                password:
+                  type: string
+                  format: password
+                  example: strongPassword123
+                  description: The user's password.
+      responses:
+        '200':
+          description: Successful login
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: Date in UTC when the token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5..."
+                    description: A JWT token for authenticated access.
+                  userId:
+                    type: integer
+                    example: 123
+                    description: The ID of the logged-in user.
+        '400':
+          description: Invalid email/password supplied
+        '401':
+          description: Unauthorized - Invalid credentials
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: theUser
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+      xml:
+        name: user
