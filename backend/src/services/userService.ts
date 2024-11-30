@@ -34,4 +34,13 @@ export class UserService {
 		}
 		return this.prisma.user.delete({ where: { id } });
 	}
+
+	// TODO: Reset Password
+	async updatePassword(id: number, password: string) {
+		const user = await this.prisma.user.findUnique({ where: { id } });
+		if (!user) {
+			throw new Error("User not found");
+		}
+		return this.prisma.user.update({ where: { id }, data: { password } });
+	}
 }
