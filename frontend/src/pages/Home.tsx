@@ -1,45 +1,58 @@
-import { ModeToggle } from "../components/theme/mode-toggle";
-import { Link } from "react-router-dom";
-import { Button } from "../components/ui/button";
-import toast from "react-hot-toast";
-import { DisplayToaster, showSuccessToast, showErrorToast, showInfoToast, showWarningToast, showLoadingToast } from "../components/toaster";
-import {
-	Card,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-	CardContent,
-	CardFooter,
-} from "../components/ui/card";
+'use client'
+
+import { ModeToggle } from "../components/theme/mode-toggle"
+import { Button } from "../components/ui/button"
+import { DisplayToaster } from "../components/toaster"
+import { Card, CardContent } from "../components/ui/card"
+import { Link } from "react-router-dom"
 
 export function Home() {
 	return (
-
 		<div className="flex flex-col min-h-screen">
-			<ModeToggle />
+			<header className="p-4 flex justify-between items-center">
+				<h1 className="text-2xl font-bold">AI Security Assessment</h1>
+				<ModeToggle />
+			</header>
 			<DisplayToaster />
-			<main className="w-full h-full flex items-center justify-center">
-				<div className="w-1/2 flex flex-col">
-					<h1 className="text-4xl text-center font-bold mb-4">
-						AI based security Assessment
-					</h1>
-					<p className="text-lg text-muted-foreground mb-6 text-center">
-						This is a standard home page for our Project setup using
-						Vite React TypeScript project with shadcn/ui.
-					</p>
+			<main className="flex-grow flex items-center justify-center p-4">
+				<div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+					<Card className="w-64">
+						<CardContent className="p-4">
+							<p className="text-center mb-4">Already a member?</p>
+							<Button asChild className="w-full mb-2">
+								<a href="/login">
+									Login
+								</a>
+							</Button>
+							<Button asChild className="w-full" >
+								<a href="/register">
+									Register
+								</a>
+							</Button>
+						</CardContent>
+					</Card>
 
-					<Button className="w-1/4 mx-auto" asChild>
-						<a
-							href="https://denkminds.vercel.app/"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center"
-						>
-							Visit denkMinds
-						</a>
-					</Button>
+					<div className="text-center">
+						<div className="w-32 h-32 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto mb-4">
+							<span className="text-4xl">🤖</span>
+						</div>
+						<p className="text-xl font-semibold">Hi there!</p>
+					</div>
+
+					<Card className="w-64">
+						<CardContent className="p-4">
+							<p className="text-center mb-4">Want to change the chatbot?</p>
+							<Button className="w-full">
+								Change Chatbot
+							</Button>
+						</CardContent>
+					</Card>
 				</div>
 			</main>
+			<footer className="p-4 text-center text-sm text-muted-foreground">
+				Optional footer section
+			</footer>
 		</div>
-	);
+	)
 }
+
