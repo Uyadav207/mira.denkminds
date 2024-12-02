@@ -7,14 +7,14 @@ const useStore = create<UserState>()(
 	persist(
 		(set) => ({
 			user: null,
+			token: null,
 			setUser: (user) => set({ user }),
-			logout: () => set({ user: null }),
-
-			// Add more functions as needed to manage the user state
+			setToken: (token) => set({ token }),
+			logout: () => set({ user: null, token: null }),
 		}),
 		{
 			name: "userData",
-			storage: createJSONStorage(() => sessionStorage),
+			storage: createJSONStorage(() => sessionStorage), 
 		},
 	),
 );
