@@ -3,20 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
+import { login } from "../services/auth";
+
+import { type LoginValues, loginSchema } from "../lib/validations/auth";
+import useStore from "../store/store";
 
 import { Button } from "../components/ui/button";
-import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormMessage,
-} from "../components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage, } from "../components/ui/form";
 import { Input } from "../components/ui/input";
 import { Separator } from "../components/ui/separator";
-import { type LoginValues, loginSchema } from "../lib/validations/auth";
-import { login } from "../services/auth";
-import useStore from "../store/store";
 
 export function Login() {
 	const navigate = useNavigate();

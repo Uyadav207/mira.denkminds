@@ -1,9 +1,8 @@
 import axios from "axios";
-
-const API_BASE_URL = "http://localhost:8000";
+import config from "../../config.json";
 
 const apiClient = axios.create({
-	baseURL: API_BASE_URL,
+	baseURL: config.baseURL,
 	headers: {
 		"Content-Type": "application/json",
 	},
@@ -48,7 +47,7 @@ export async function login(
 	password: string,
 ): Promise<AuthResponse> {
 	const response = await handleResponse<AuthResponse>(
-		apiClient.post("/auth/login", { email, password }),
+		apiClient.post(config.apis.postLoginUser, { email, password }),
 	);
 	if (!response) {
 		throw new Error("Failed to login, no response received.");
@@ -65,7 +64,7 @@ export async function signup(
 	password: string,
 ): Promise<AuthResponse> {
 	  const response = await handleResponse<AuthResponse>(
-				apiClient.post("/auth/register", {
+				apiClient.post(config.apis.postRegisterUser, {
 					firstName,
 					lastName,
 					username,
