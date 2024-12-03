@@ -9,9 +9,14 @@
 		}
 	],
 	"compilerOptions": {
-		"baseUrl": ".",
+		"baseUrl": "./src",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["*"],
+			"@components/*": ["components/*"],
+			"@api/*": ["api/*"],
+			"@store/*": ["store/*"],
+			"@lib/*": ["lib/*"],
+			"@pages/*": ["pages/*"]
 		}
 	}
 }

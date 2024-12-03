@@ -1,31 +1,18 @@
-import { ModeToggle } from "../components/theme/mode-toggle";
-import { Link } from "react-router-dom";
-import { Button } from "../components/ui/button";
-import toast from "react-hot-toast";
-import { DisplayToaster, showSuccessToast, showErrorToast, showInfoToast, showWarningToast, showLoadingToast } from "../components/toaster";
-import {
-	Card,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-	CardContent,
-	CardFooter,
-} from "../components/ui/card";
+import { ModeToggle } from "@components/theme/mode-toggle";
+import { Button } from "@components/ui/button";
 
-export function Home() {
+const Home = () => {
 	return (
-
 		<div className="flex flex-col min-h-screen">
 			<ModeToggle />
-			<DisplayToaster />
 			<main className="w-full h-full flex items-center justify-center">
 				<div className="w-1/2 flex flex-col">
 					<h1 className="text-4xl text-center font-bold mb-4">
 						AI based security Assessment
 					</h1>
 					<p className="text-lg text-muted-foreground mb-6 text-center">
-						This is a standard home page for our Project setup using Vite React
-						TypeScript project with shadcn/ui.
+						This is a standard home page for our Project setup using
+						Vite React TypeScript project with shadcn/ui.
 					</p>
 
 					<Button className="w-1/4 mx-auto" asChild>
@@ -60,4 +47,6 @@ export function Home() {
 			</main>
 		</div>
 	);
-}
+};
+
+export default Home;
