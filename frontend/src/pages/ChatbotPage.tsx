@@ -9,9 +9,8 @@ import { ModeToggle } from "../components/theme/mode-toggle"
 export default function ChatbotPage() {
     const [messages, setMessages] = useState<any[]>([])
     const [inputValue, setInputValue] = useState('')
-    const [isLoggedIn, setIsLoggedIn] = useState(false) // Simulating login state
-    const [uploadedFile, setUploadedFile] = useState<File | null>(null)
-
+  
+  
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (inputValue.trim()) {
@@ -38,24 +37,7 @@ export default function ChatbotPage() {
         }
     };
     
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("File input change triggered"); // Debugging line to check if file input is triggered
-        if (e.target.files && e.target.files[0]) {
-            setUploadedFile(e.target.files[0])
-            console.log(`Uploaded file: ${e.target.files[0].name}`); // Debugging line to check uploaded file name
-            const newMessage = {
-                id: Date.now().toString(),
-                text: `Uploaded file: ${e.target.files[0].name}`,
-                sender: 'user',
-                timestamp: new Date(),
-            }
-            setMessages((prevMessages) => [...prevMessages, newMessage])
-            setInputValue('');
-        }
-    }
-    const handleButtonClick = () => {
-        console.log("Upload file button clicked"); // Debugging button click event
-    }
+   
     return (
         <div className="flex h-screen bg-background">
             {/* Sidebar */}
@@ -110,7 +92,7 @@ export default function ChatbotPage() {
                     <div className="max-w-3xl mx-auto space-y-4">
                         <div className="flex gap-2">
                         <label htmlFor="file-upload">
-        <Button variant="outline" onClick={handleButtonClick} className="w-full">
+        <Button variant="outline"  className="w-full">
             📂 Upload File
         </Button>
     </label>
@@ -120,7 +102,7 @@ export default function ChatbotPage() {
         id="file-upload" 
         type="file" 
         style={{ display: "none" }} 
-        onChange={handleFileUpload} 
+        
     />
                             <Button variant="outline" className="flex-1">
                                 🎤 Audio chat
