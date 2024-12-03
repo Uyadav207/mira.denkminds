@@ -7,6 +7,8 @@ import ChatbotPage from "./pages/ChatbotPage";
 
 // import { DisplayToaster } from "./components/toaster";
 
+import { SignUp } from "./pages/Signup";
+import { Login } from "./pages/Login";
 const App = () => {
 	return (
 		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
@@ -14,6 +16,8 @@ const App = () => {
 				<Routes>
 					{/* <DisplayToaster /> */}
 					<Route path="/" element={<Home />} />
+					<Route path="/login" element={<Login />} />
+					<Route path="/signup" element={<SignUp />} />
 					{/* Add more routes here as needed */}
 					<Route path="/chatbot" element={<ChatbotPage />} />
 

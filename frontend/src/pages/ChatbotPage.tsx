@@ -1,40 +1,61 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from "../components/ui/button"
-import { Card } from "../components/ui/card"
 import { Input } from "../components/ui/input"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/tabs"
 import { ScrollArea } from "../components/ui/scroll-area"
 import { ModeToggle } from "../components/theme/mode-toggle"
 
 export default function ChatbotPage() {
-    const [messages, setMessages] = useState<Array<{ text: string; sender: 'user' | 'bot' }>>([])
+    const [messages, setMessages] = useState<any[]>([])
     const [inputValue, setInputValue] = useState('')
+    const [isLoggedIn, setIsLoggedIn] = useState(false) // Simulating login state
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null)
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (inputValue.trim()) {
-            // Add user's message
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                { text: inputValue, sender: 'user' as const },
-            ]);
+            const newMessage = {
+                id: Date.now().toString(),
+                text: inputValue,
+                sender: 'user',
+                timestamp: new Date(), // Add timestamp here
+            };
+    
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
             setInputValue('');
-
-            // Add bot's response after a delay
+    
+            // Simulate bot response
             setTimeout(() => {
-                const botResponse: { text: string; sender: 'bot' } = {
+                const botResponse = {
+                    id: (Date.now() + 1).toString(),
                     text: "Hello! How can I help?",
                     sender: 'bot',
+                    timestamp: new Date(), // Add timestamp here
                 };
                 setMessages((prevMessages) => [...prevMessages, botResponse]);
             }, 1000);
         }
     };
-
-
-
+    
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("File input change triggered"); // Debugging line to check if file input is triggered
+        if (e.target.files && e.target.files[0]) {
+            setUploadedFile(e.target.files[0])
+            console.log(`Uploaded file: ${e.target.files[0].name}`); // Debugging line to check uploaded file name
+            const newMessage = {
+                id: Date.now().toString(),
+                text: `Uploaded file: ${e.target.files[0].name}`,
+                sender: 'user',
+                timestamp: new Date(),
+            }
+            setMessages((prevMessages) => [...prevMessages, newMessage])
+            setInputValue('');
+        }
+    }
+    const handleButtonClick = () => {
+        console.log("Upload file button clicked"); // Debugging button click event
+    }
     return (
         <div className="flex h-screen bg-background">
             {/* Sidebar */}
@@ -46,32 +67,11 @@ export default function ChatbotPage() {
                     </Button>
                 </div>
 
-                <Tabs defaultValue="chat" className="flex-1">
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="chat">Chat</TabsTrigger>
-                        <TabsTrigger value="report">Report</TabsTrigger>
-                    </TabsList>
-                    <ScrollArea className="flex-1">
-                        <div className="p-4 space-y-4">
-                            <div className="space-y-2">
-                                <h2 className="text-sm font-medium">Yesterday</h2>
-                                <Card className="p-3 cursor-pointer hover:bg-accent">Chat session 1</Card>
-                                <Card className="p-3 cursor-pointer hover:bg-accent">Chat session 2</Card>
-                            </div>
-                            <div className="space-y-2">
-                                <h2 className="text-sm font-medium">2 days back</h2>
-                                <Card className="p-3 cursor-pointer hover:bg-accent">Chat session 3</Card>
-                                <Card className="p-3 cursor-pointer hover:bg-accent">Chat session 4</Card>
-                            </div>
-                        </div>
-                    </ScrollArea>
-                </Tabs>
-
                 <div className="p-4 space-y-2">
                     <Button variant="outline" className="w-full justify-start">
                         📖 Tutorial
                     </Button>
-                    <Button className="w-full">+ New Chat</Button>
+                    <Button className="w-full"> + New Chat</Button>
                 </div>
             </div>
 
@@ -79,7 +79,7 @@ export default function ChatbotPage() {
             <div className="flex-1 flex flex-col">
                 <header className="flex items-center justify-between p-4 border-b">
                     <div className="flex items-center gap-4">
-                        <Button variant="ghost">← New Chat</Button>
+                        <Button variant="ghost" >← New Chat</Button>
                         <span className="text-sm text-muted-foreground">Version</span>
                     </div>
                     <ModeToggle />
@@ -87,16 +87,17 @@ export default function ChatbotPage() {
 
                 <ScrollArea className="flex-1 p-4">
                     <div className="space-y-4 max-w-3xl mx-auto">
-                        {messages.map((message, index) => (
+                        {messages.map((message) => (
                             <div
-                                key={index}
+                                key={message.id}
                                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                             >
                                 <div
-                                    className={`rounded-lg px-4 py-2 max-w-[80%] ${message.sender === 'user'
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-muted'
-                                        }`}
+                                    className={`rounded-lg px-4 py-2 max-w-[80%] ${
+                                        message.sender === 'user'
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-muted'
+                                    }`}
                                 >
                                     {message.text}
                                 </div>
@@ -108,9 +109,19 @@ export default function ChatbotPage() {
                 <div className="p-4 border-t">
                     <div className="max-w-3xl mx-auto space-y-4">
                         <div className="flex gap-2">
-                            <Button variant="outline" className="flex-1">
-                                📎 Upload file
-                            </Button>
+                        <label htmlFor="file-upload">
+        <Button variant="outline" onClick={handleButtonClick} className="w-full">
+            📂 Upload File
+        </Button>
+    </label>
+
+    {/* Hidden file input */}
+    <input 
+        id="file-upload" 
+        type="file" 
+        style={{ display: "none" }} 
+        onChange={handleFileUpload} 
+    />
                             <Button variant="outline" className="flex-1">
                                 🎤 Audio chat
                             </Button>
@@ -139,4 +150,3 @@ export default function ChatbotPage() {
         </div>
     )
 }
-
