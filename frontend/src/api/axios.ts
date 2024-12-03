@@ -1,4 +1,4 @@
-import { getUserTokenFromSessionStorage } from "@utils/storage";
+import { getUserTokenFromSessionStorage } from "../utils/storage";
 
 import { showErrorToast } from "@components/toaster";
 //types
@@ -56,7 +56,10 @@ axiosInstance.interceptors.response.use(
 					if (message === "Invalid token.") {
 						showErrorToast("Token Expired. Please login again");
 						localStorage.clear();
-						setTimeout(() => window.location.replace("/login"), 1000);
+						setTimeout(
+							() => window.location.replace("/login"),
+							1000,
+						);
 					} else {
 						showErrorToast(errorMessage);
 					}

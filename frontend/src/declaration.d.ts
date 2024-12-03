@@ -22,6 +22,3 @@ declare module "@store/store";
 
 //lib
 declare module "@lib/utils";
-
-//utils
-declare module "@utils/storage";
