@@ -1,4 +1,3 @@
-import path from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -6,10 +5,19 @@ export default defineConfig({
 	plugins: [react()],
 	resolve: {
 		alias: {
-			"@": path.resolve(__dirname, "./src"),
+			"@": "/src",
+			"@components": "/src/components",
+			"@api": "/src/api",
+			"@lib": "/src/lib",
+			"@store": "/src/store",
+			"@pages": "/src/pages",
+			"@types": "/src/types",
 		},
 	},
 	server: {
 		port: 3000,
+	},
+	define: {
+		"process.env": process.env,
 	},
 });
