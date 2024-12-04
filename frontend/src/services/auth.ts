@@ -27,7 +27,9 @@ interface ApiError {
 	message: string;
 }
 
-async function handleResponse<T>(promise: Promise<{ data: T }>): Promise<T | undefined> {
+async function handleResponse<T>(
+	promise: Promise<{ data: T }>,
+): Promise<T | undefined> {
 	try {
 		const { data } = await promise;
 		return data;
@@ -35,8 +37,8 @@ async function handleResponse<T>(promise: Promise<{ data: T }>): Promise<T | und
 		if (axios.isAxiosError(error) && error.response) {
 			const apiError: ApiError = error.response.data;
 			throw new Error(apiError.message || "An error occurred");
-		} 
-        // else {
+		}
+		// else {
 		// 	throw new Error(error.message || "An unexpected error occurred");
 		// }
 	}
@@ -63,19 +65,19 @@ export async function signup(
 	email: string,
 	password: string,
 ): Promise<AuthResponse> {
-	  const response = await handleResponse<AuthResponse>(
-				apiClient.post(config.apis.postRegisterUser, {
-					firstName,
-					lastName,
-					username,
-					email,
-					password,
-				}),
-			);
+	const response = await handleResponse<AuthResponse>(
+		apiClient.post(config.apis.postRegisterUser, {
+			firstName,
+			lastName,
+			username,
+			email,
+			password,
+		}),
+	);
 
-			if (!response) {
-				throw new Error("Failed to register, no response received.");
-			}
+	if (!response) {
+		throw new Error("Failed to register, no response received.");
+	}
 
-			return response;
+	return response;
 }

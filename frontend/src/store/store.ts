@@ -14,7 +14,7 @@ const useStore = create<UserState>()(
 		}),
 		{
 			name: "userData",
-			storage: createJSONStorage(() => sessionStorage), 
+			storage: createJSONStorage(() => sessionStorage),
 		},
 	),
 );
