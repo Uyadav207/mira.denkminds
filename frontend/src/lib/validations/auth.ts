@@ -8,7 +8,9 @@ export const signUpSchema = z.object({
 		.min(1, { message: "First name is required." }) // First-time "required" check
 		.min(4, { message: "First name must be at least 4 characters." })
 		.max(50, { message: "First name must not exceed 50 characters." })
-		.regex(/^[A-Za-z]+$/, { message: "First name must only contain letters." }),
+		.regex(/^[A-Za-z]+$/, {
+			message: "First name must only contain letters.",
+		}),
 
 	lastName: z
 		.string()
@@ -16,7 +18,9 @@ export const signUpSchema = z.object({
 		.min(1, { message: "Last name is required." }) // First-time "required" check
 		.min(4, { message: "Last name must be at least 4 characters." })
 		.max(50, { message: "Last name must not exceed 50 characters." })
-		.regex(/^[A-Za-z]+$/, { message: "Last name must only contain letters." }),
+		.regex(/^[A-Za-z]+$/, {
+			message: "Last name must only contain letters.",
+		}),
 
 	username: z
 		.string()
@@ -48,7 +52,9 @@ export const signUpSchema = z.object({
 		.regex(/[a-z]/, {
 			message: "Password must contain at least one lowercase letter.",
 		})
-		.regex(/[0-9]/, { message: "Password must contain at least one number." })
+		.regex(/[0-9]/, {
+			message: "Password must contain at least one number.",
+		})
 		.regex(/[@$!%*?&]()/, {
 			message: "Password must contain at least one special character.",
 		}),

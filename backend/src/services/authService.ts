@@ -15,20 +15,30 @@ export class AuthService {
 		email: string,
 		password: string,
 	) {
-		const existingUser = await this.prisma.user.findUnique({
-			where: { email, username },
+		// Check if email or username already exists
+		const existingUser = await this.prisma.user.findFirst({
+			where: {
+				OR: [{ email }, { username }],
+			},
 		});
+
+		// Respond with an appropriate error message
 		if (existingUser) {
-			throw new Error("User already exists");
+			if (existingUser.email === email) {
+				throw new Error("Email already exists");
+			}
+			if (existingUser.username === username) {
+				throw new Error("Username already exists");
+			}
 		}
 
 		const hashedPassword = await hashPassword(password);
 		return this.prisma.user.create({
 			data: {
-				firstName: firstName,
-				lastName: lastName,
-				username: username,
-				email: email,
+				firstName,
+				lastName,
+				username,
+				email,
 				password: hashedPassword,
 			},
 		});

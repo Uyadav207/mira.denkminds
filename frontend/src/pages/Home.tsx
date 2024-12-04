@@ -1,19 +1,16 @@
-'use client'
 
-import { ModeToggle } from "../components/theme/mode-toggle"
-import { Button } from "../components/ui/button"
-import { DisplayToaster } from "../components/toaster"
-import { Card, CardContent } from "../components/ui/card"
-import { Link } from "react-router-dom"
+import { Card, CardContent } from "@components/ui/card"
+import { ModeToggle } from "@components/theme/mode-toggle";
+import { Button } from "@components/ui/button";
 
-export function Home() {
+const Home = () => {
 	return (
 		<div className="flex flex-col min-h-screen">
 			<header className="p-4 flex justify-between items-center">
 				<h1 className="text-2xl font-bold">AI Security Assessment</h1>
 				<ModeToggle />
 			</header>
-			<DisplayToaster />
+			
 			<main className="flex-grow flex items-center justify-center p-4">
 				<div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
 					<Card className="w-64">
@@ -53,6 +50,7 @@ export function Home() {
 				Optional footer section
 			</footer>
 		</div>
-	)
-}
+	);
+};
 
+export default Home;

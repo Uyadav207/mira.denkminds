@@ -1,10 +1,13 @@
 import Redis from "ioredis";
 
-const redis = new Redis({
-	host: process.env.HOST,
-	port: 6379,
-});
+const isProduction = process.env.NODE_ENV !== "production";
 
+const redis = isProduction
+	? new Redis(process.env.REDIS_URL || "")
+	: new Redis({
+			host: process.env.REDIS_HOST_LOCAL || "",
+			port: Number.parseInt(process.env.REDIS_PORT_LOCAL || "6379", 10),
+		});
 redis.on("error", (err) => {
 	console.error("Redis connection error:", err);
 });
