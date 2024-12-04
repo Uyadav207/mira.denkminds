@@ -7,6 +7,7 @@ declare module "@components/theme/mode-toggle";
 declare module "@components/theme/theme-provider";
 declare module "@components/ui/label";
 declare module "@components/toaster";
+declare module "@components/ui/card";
 
 //pages
 declare module "@pages/Home";
