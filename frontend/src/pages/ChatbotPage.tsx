@@ -43,7 +43,7 @@ export default function ChatbotPage() {
 				</header>
 
 				<ScrollArea className="flex-1 p-4">
-					<div className="space-y-4 max-w-3xl mx-auto"/>
+					<div className="space-y-4 max-w-3xl mx-auto" />
 				</ScrollArea>
 
 				<div className="p-4 border-t">

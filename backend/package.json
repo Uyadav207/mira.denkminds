@@ -10,6 +10,7 @@
 		"start:prod": "npm run setup:prisma && bun run src/index.ts"
 	},
 	"dependencies": {
+		"@huggingface/inference": "^2.8.1",
 		"@prisma/client": "^5.22.0",
 		"bcrypt": "^5.1.1",
 		"bcryptjs": "^2.4.3",
@@ -17,6 +18,7 @@
 		"hono": "^4.6.12",
 		"ioredis": "^5.4.1",
 		"jsonwebtoken": "^9.0.2",
+		"node-fetch": "^3.3.2",
 		"nodemailer": "^6.9.16",
 		"prisma": "^5.22.0",
 		"zod": "^3.23.8"
