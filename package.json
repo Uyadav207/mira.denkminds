@@ -3,8 +3,5 @@
 		"check:fix:frontend": "cd frontend && biome check --write ./src && tsc -b && vite build",
 		"check:fix:backend": "cd backend && bun check",
 		"prepare": "husky"
-	},
-	"dependencies": {
-		"@radix-ui/react-tabs": "^1.1.1"
 	}
 }
