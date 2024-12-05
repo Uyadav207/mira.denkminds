@@ -4,8 +4,10 @@
 		"start": "bun run src/index.ts",
 		"dev": "bun run --watch src/index.ts",
 		"prepare": "husky",
-		"check": "biome check ./src ",
-		"check:fix": "biome check --write ./src"
+		"check": "biome check ./src",
+		"check:fix": "biome check --write ./src",
+		"setup:prisma": "cd src && npx prisma generate && npx prisma migrate deploy",
+		"start:prod": "npm run setup:prisma && bun run src/index.ts"
 	},
 	"dependencies": {
 		"@huggingface/inference": "^2.8.1",
