@@ -18,10 +18,27 @@ export interface AuthResponse {
 	token: string;
 }
 
-export interface SignUpApiPayloadType {
+export interface RegisterApiPayloadType {
 	firstName: string;
 	lastName: string;
 	username: string;
 	email: string;
 	password: string;
 }
+
+export interface SendOTPApiPayloadType {
+	email: string;
+}
+
+export interface VerifyOTPApiPayloadType {
+	email: string;
+	otp: string;
+}
+
+export interface ResetPasswordApiPayloadType {
+		email: string;
+		newPassword: string;
+		comfirmPassword: string;
+	}
+
+

@@ -8,12 +8,14 @@ declare module "@components/theme/theme-provider";
 declare module "@components/ui/label";
 declare module "@components/toaster";
 declare module "@components/ui/card";
+declare module "@components/inputs/dynamic-form";
+declare module "@components/ui/input-otp";
+
 
 //pages
 declare module "@pages/Home";
-declare module "@pages/Login";
-declare module "@pages/Register";
-declare module "@pages/Signup";
+declare module "@pages/Auth";
+
 
 //api
 declare module "@api/auth";
@@ -23,3 +25,4 @@ declare module "@store/store";
 
 //lib
 declare module "@lib/utils";
+
