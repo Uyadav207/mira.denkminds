@@ -10,7 +10,10 @@ const useStore = create<UserState>()(
 			token: null,
 			setUser: (user) => set({ user }),
 			setToken: (token) => set({ token }),
-			logout: () => set({ user: null, token: null }),
+			logout: () => {
+				sessionStorage.clear();
+				set({ user: null, token: null });
+			},
 		}),
 		{
 			name: "userData",
