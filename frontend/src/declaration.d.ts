@@ -8,6 +8,7 @@ declare module "@components/theme/theme-provider";
 declare module "@components/ui/label";
 declare module "@components/toaster";
 declare module "@components/ui/card";
+declare module "@components/ui/textarea";
 
 //pages
 declare module "@pages/Home";
