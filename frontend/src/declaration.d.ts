@@ -8,8 +8,13 @@ declare module "@components/theme/theme-provider";
 declare module "@components/ui/label";
 declare module "@components/toaster";
 declare module "@components/ui/card";
-declare module "@components/inputs/dynamic-form";
 declare module "@components/ui/input-otp";
+
+// Custom components
+declare module "@components/inputs/dynamic-form";
+declare module "@components/inputs/auth-providers";
+
+
 
 
 //pages
@@ -25,4 +30,5 @@ declare module "@store/store";
 
 //lib
 declare module "@lib/utils";
+declare module "@lib/supabase";
 

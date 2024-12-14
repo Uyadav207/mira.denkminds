@@ -1,30 +1,25 @@
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
-
-import useStore from "@/store/store";
-
+import { supabase } from "@lib/supabase";
 import GoogleIcon from "@/assets/GoogleIcon.svg";
+import { Button } from "@components/ui/button";
 
-import { Button } from "@/components/ui/button";
-
-const AuthByProviders: React.FC = () => {
+const AuthByProviders: React.FC<{ type: string }> = ({ type }) => {
 	const [isLoading, setIsLoading] = useState(false);
-	const { setUser } = useStore();
 
-	const signInWithGoogle = async () => {
-		setIsLoading(true);
+	const handleGoogleLogin = async () => {
 		try {
-			const { data, error } = await supabase.auth.signInWithOAuth({
+			setIsLoading(true);
+			const { error } = await supabase.auth.signInWithOAuth({
 				provider: "google",
+				options: {
+					redirectTo: `${window.location.origin}/auth/callback?type=${type}`,
+				},
 			});
-			if (error) {
-				throw error;
-			}
-			if (data.user) {
-				setUser(data.user);
-			}
+			if (error) throw error;
+
+			// The user will be redirected to Google for authentication
 		} catch (error) {
-			console.error("Error signing in with Google", error);
+			
 		} finally {
 			setIsLoading(false);
 		}
@@ -35,11 +30,11 @@ const AuthByProviders: React.FC = () => {
 			<Button
 				variant="outline"
 				disabled={isLoading}
-				onClick={signInWithGoogle}
+				onClick={handleGoogleLogin}
 				className="w-full"
 			>
 				<img src={GoogleIcon} alt="Google Icon" className="mr-2 h-4 w-4" />
-				Google
+				{type === "login" ? "Sign in" : "Sign up"} with Google
 			</Button>
 		</div>
 	);

@@ -1,10 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-
 import useStore from "../store/store";
-
 import { authApis } from "../api/auth";
-
 import DynamicForm from "@components/inputs/dynamic-form";
 import {
 	Card,
@@ -13,9 +10,14 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@components/ui/card";
+import { Separator } from "@components/ui/separator";
+import AuthByProviders from "@components/inputs/auth-providers";
 
 import { loginFields, registerFields } from "../constants/authFields";
-import type { LoginApiPayloadType, RegisterApiPayloadType } from "../types/auth";
+import type {
+	LoginApiPayloadType,
+	RegisterApiPayloadType,
+} from "../types/auth";
 
 const Auth: React.FC = () => {
 	const navigate = useNavigate();
@@ -33,20 +35,20 @@ const Auth: React.FC = () => {
 
 			// Type narrowing based on the form type
 			if (formType === "login") {
-				const loginData = data as LoginApiPayloadType; // Narrowing type to LoginApiPayloadType
+				const loginData = data as LoginApiPayloadType;
 				const response = await authApis.login(loginData);
 				const result = response.data;
 				setToken(result.token);
 				setUser(result.user);
 			} else {
-				const registerData = data as RegisterApiPayloadType; // Narrowing type to RegisterApiPayloadType
+				const registerData = data as RegisterApiPayloadType;
 				const response = await authApis.register(registerData);
 				const result = response.data;
 				setToken(result.token);
 				setUser(result.user);
 			}
 
-			navigate("/");
+			navigate("/chatbot");
 		} finally {
 			setIsLoading(false);
 		}
@@ -61,9 +63,9 @@ const Auth: React.FC = () => {
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-6">
-					{/* <AuthByProviders /> */}
+					<AuthByProviders type={formType} />
 
-					{/* <div className="relative">
+					<div className="relative">
 						<div className="absolute inset-0 flex items-center">
 							<Separator />
 						</div>
@@ -72,7 +74,7 @@ const Auth: React.FC = () => {
 								Or continue with
 							</span>
 						</div>
-					</div> */}
+					</div>
 
 					<DynamicForm
 						fields={formType === "login" ? loginFields : registerFields}
@@ -130,3 +132,4 @@ const Auth: React.FC = () => {
 };
 
 export default Auth;
+

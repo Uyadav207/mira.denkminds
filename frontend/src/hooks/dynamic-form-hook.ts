@@ -2,8 +2,8 @@ import { useEffect, useMemo } from "react";
 import { type FieldValues, type DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import type { FieldType } from "../types/input";
 
-import type { FieldType } from "../../types/input";
 
 export function useDynamicForm<T extends FieldValues>(fields: FieldType[]) {
 	const schema = useMemo(() => {

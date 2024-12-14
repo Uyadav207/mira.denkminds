@@ -4,8 +4,8 @@ import type { FieldValues } from "react-hook-form";
 import { Button } from "@components/ui/button";
 import { Form, FormField } from "@components/ui/form";
 import type { DynamicFormProps, FieldType } from "../../types/input";
-import { useDynamicForm } from "./dynamic-form-hook";
 import { DynamicInput } from "./dynamic-inputs";
+import { useDynamicForm } from "../../hooks/dynamic-form-hook";
 
 export default function DynamicForm<T extends FieldValues>({
 	fields,
