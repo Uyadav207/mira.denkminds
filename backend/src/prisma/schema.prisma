@@ -19,13 +19,15 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  username      String   @unique
-  firstName     String
-  lastName      String
-  avatar        String?
-  email         String   @unique
-  password      String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+    id            Int      @id @default(autoincrement())
+    username      String   @unique
+    firstName     String
+    lastName      String
+    avatar        String?
+    email         String   @unique
+    password      String?  
+    authProvider  String   @default("email")
+    supabaseId    String?  @unique 
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
 }
