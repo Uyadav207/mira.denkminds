@@ -17,16 +17,16 @@ import {
 	SidebarSeparator,
 	SidebarContent,
 	SidebarGroupContent,
-} from "../../components/ui/sidebar";
-import { Button } from "../../components/ui/button";
+} from "@components/ui/sidebar";
+import { Button } from "@components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu";
-import { SidebarMenuBadge } from "../ui/sidebar";
+} from "@components/ui/dropdown-menu";
+import { SidebarMenuBadge } from "@components/ui/sidebar";
 import { useNavigate } from "react-router-dom";
 
 interface Chat {

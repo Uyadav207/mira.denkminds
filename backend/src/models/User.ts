@@ -1,9 +1,13 @@
 export default interface User {
 	id: number;
+	email: string;
+	username: string;
 	firstName: string;
 	lastName: string;
-	username: string;
-	email: string;
-	password: string;
-	avatar: string;
+	avatar: string | null;
+	password: string | null;
+	authProvider: string;
+	supabaseId: string | null;
+	createdAt: Date;
+	updatedAt: Date;
 }
