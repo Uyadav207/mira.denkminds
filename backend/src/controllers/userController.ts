@@ -50,6 +50,9 @@ export const changePassword = async (c: Context) => {
 		if (!user) {
 			return c.json({ error: "User not found" }, 404);
 		}
+		if (!user.password) {
+			return c.json({ error: "User password not found" }, 400);
+		}
 		const isOldPasswordCorrect = await comparePasswords(
 			oldPassword,
 			user.password,
