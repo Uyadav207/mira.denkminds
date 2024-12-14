@@ -6,8 +6,8 @@ import {
 	DialogTitle,
 	DialogFooter,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Button } from "@components/ui/button";
+import { Input } from "@components/ui/input";
 
 interface CreateFolderDialogProps {
 	open: boolean;
@@ -42,7 +42,9 @@ export function CreateFolderDialog({
 							<Input
 								id="name"
 								value={folderName}
-								onChange={(e) => setFolderName(e.target.value)}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+									setFolderName(e.target.value)
+								}
 								placeholder="Enter folder name"
 							/>
 						</div>

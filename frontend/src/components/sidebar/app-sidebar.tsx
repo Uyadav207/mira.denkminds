@@ -10,7 +10,6 @@ import {
 	SquareTerminal,
 } from "lucide-react";
 
-import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import { TeamSwitcher } from "./new-chat";
 import {
@@ -18,9 +17,8 @@ import {
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
-	SidebarRail,
 	SidebarSeparator,
-} from "../ui/sidebar";
+} from "@components/ui/sidebar";
 import NavContent from "./nav-content";
 
 const data = {

@@ -1,6 +1,6 @@
 import { FolderIcon, Search } from "lucide-react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "@components/ui/input";
+import { Button } from "@components/ui/button";
 import type { Folder } from "../../types/reports";
 
 interface FolderGridProps {
