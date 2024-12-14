@@ -10,6 +10,7 @@ import { Settings } from "./pages/Settings";
 import { Layout } from "./components/dashboard/Layout";
 import { Dashboard } from "./pages/Dashboard";
 import { Reports } from "./pages/Reports";
+import ProfileSettings from "./pages/ProfileSettings";
 
 const App = () => {
 	return (
@@ -26,6 +27,7 @@ const App = () => {
 							<Route path="/settings" element={<Settings />} />
 							<Route path="/dashboard" element={<Dashboard />} />
 							<Route path="/reports" element={<Reports />} />
+							<Route path="/accounts" element={<ProfileSettings />} />
 						</Route>
 					</Routes>
 				</Router>

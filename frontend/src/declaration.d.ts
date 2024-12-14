@@ -14,9 +14,12 @@ declare module "@pages/Home";
 declare module "@pages/Login";
 declare module "@pages/Register";
 declare module "@pages/Signup";
+declare module "@pages/ProfileSettings";
+declare module "@pages/profile/form";
 
 //api
 declare module "@api/auth";
+declare module "@api/profile-settings";
 
 //store
 declare module "@store/store";
