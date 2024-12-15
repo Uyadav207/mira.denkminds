@@ -1,5 +1,5 @@
 import type React from "react";
-import type { FieldValues } from "react-hook-form";
+import type { FieldValues, ControllerRenderProps } from "react-hook-form";
 
 import { Button } from "@components/ui/button";
 import { Form, FormField } from "@components/ui/form";
@@ -33,7 +33,9 @@ export default function DynamicForm<T extends FieldValues>({
 						key={field.name}
 						control={form.control}
 						name={field.name as keyof T}
-						render={({ field: formField }) => (
+						render={({
+							field: formField,
+						}: { field: ControllerRenderProps<T> }) => (
 							<DynamicInput
 								field={{
 									...field,

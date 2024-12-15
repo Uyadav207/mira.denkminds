@@ -55,17 +55,22 @@ export const DynamicInput = React.memo(
 								maxLength={field.maxLength || 6}
 								pattern={REGEXP_ONLY_DIGITS}
 								value={field.value as string}
-								onChange={(value) => field.onChange(value)}
+								onChange={(value: string) =>
+									field.onChange(value)
+								}
 							>
 								<InputOTPGroup>
 									{Array.from(
 										{ length: field.maxLength || 6 },
-										(_, index) => (
-											<InputOTPSlot
-												key={index}
-												index={index}
-											/>
-										),
+										(_, index) => {
+											const uniqueKey = `${field.name}-${index}`;
+											return (
+												<InputOTPSlot
+													key={uniqueKey}
+													index={index}
+												/>
+											);
+										},
 									)}
 								</InputOTPGroup>
 							</InputOTP>

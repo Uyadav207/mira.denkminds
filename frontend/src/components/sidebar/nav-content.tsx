@@ -92,10 +92,18 @@ export default function NavContent() {
 						<SidebarMenu>
 							{recentChats.map((chat) => (
 								<SidebarMenuItem key={chat.id}>
-									<SidebarMenuButton asChild className="w-full justify-between">
-										<a href={chat.url} className="flex items-center">
+									<SidebarMenuButton
+										asChild
+										className="w-full justify-between"
+									>
+										<a
+											href={chat.url}
+											className="flex items-center"
+										>
 											<MessageCircle className="mr-2 h-4 w-4 shrink-0" />
-											<span className="flex-grow truncate">{chat.title}</span>
+											<span className="flex-grow truncate">
+												{chat.title}
+											</span>
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>
 													<Button
@@ -104,10 +112,15 @@ export default function NavContent() {
 														className="ml-auto h-8 w-8 p-0"
 													>
 														<MoreHorizontal className="h-4 w-4 ml-auto" />
-														<span className="sr-only">Open menu</span>
+														<span className="sr-only">
+															Open menu
+														</span>
 													</Button>
 												</DropdownMenuTrigger>
-												<DropdownMenuContent align="end" className="w-[160px]">
+												<DropdownMenuContent
+													align="end"
+													className="w-[160px]"
+												>
 													<DropdownMenuItem
 													// onClick={() =>
 													// 	handleCopy(chat.id)

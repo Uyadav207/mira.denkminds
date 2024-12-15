@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { EmptyState } from "./EmptyState";
 import { CreateFolderDialog } from "./CreateFolderDialog";
 import { FolderGrid } from "./FolderGrid";
-import { FolderView } from "./FolderView";
-import type { Folder, File } from "../../types/reports";
+import type { Folder } from "../../types/reports";
 
 export function Reports() {
 	const [folders, setFolders] = useState<Folder[]>([]);
@@ -20,16 +19,16 @@ export function Reports() {
 		setFolders([...folders, newFolder]);
 	};
 
-	const handleUploadFile = (folderId: string, file: File) => {
-		setFolders(
-			folders.map((folder) => {
-				if (folder.id === folderId) {
-					return { ...folder, files: [...folder.files, file] };
-				}
-				return folder;
-			}),
-		);
-	};
+	// const handleUploadFile = (folderId: string, file: File) => {
+	// 	setFolders(
+	// 		folders.map((folder) => {
+	// 			if (folder.id === folderId) {
+	// 				return { ...folder, files: [...folder.files, file] };
+	// 			}
+	// 			return folder;
+	// 		}),
+	// 	);
+	// };
 
 	return (
 		<Router>
@@ -40,27 +39,17 @@ export function Reports() {
 						element={
 							folders.length === 0 ? (
 								<EmptyState
-									onCreateFolder={() =>
-										setIsCreateDialogOpen(true)
-									}
+									onCreateFolder={() => setIsCreateDialogOpen(true)}
 								/>
 							) : (
 								<FolderGrid
 									folders={folders}
-									onCreateFolder={() =>
-										setIsCreateDialogOpen(true)
-									}
+									onCreateFolder={() => setIsCreateDialogOpen(true)}
+									onFolderClick={() => {
+										// handle folder click
+									}}
 								/>
 							)
-						}
-					/>
-					<Route
-						path="/folder/:folderId"
-						element={
-							<FolderView
-								folders={folders}
-								onUploadFile={handleUploadFile}
-							/>
 						}
 					/>
 				</Routes>

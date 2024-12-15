@@ -19,6 +19,7 @@ const AuthByProviders: React.FC<{ type: string }> = ({ type }) => {
 
 			// The user will be redirected to Google for authentication
 		} catch (error) {
+			return error;
 		} finally {
 			setIsLoading(false);
 		}

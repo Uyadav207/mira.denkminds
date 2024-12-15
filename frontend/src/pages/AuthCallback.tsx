@@ -19,7 +19,7 @@ const AuthCallback = () => {
 	const { setUser, setToken } = useStore();
 	const location = useLocation();
 	const hasRun = useRef(false);
-	const [type, setType] = useState(null);
+	const [type, setType] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (hasRun.current) return; // Prevent subsequent executions
@@ -69,6 +69,7 @@ const AuthCallback = () => {
 				setError(
 					"An error occurred during authentication. Please try again.",
 				);
+				return error;
 			}
 		};
 

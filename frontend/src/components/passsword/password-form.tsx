@@ -34,7 +34,7 @@ const PassowrdForm = () => {
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit((data) =>
-							handleSubmit(data, form, setPasswordVisibility),
+							handleSubmit(data, form),
 						)}
 						className="w-full max-w-4xl"
 					>
@@ -68,7 +68,6 @@ const PassowrdForm = () => {
 													onClick={() =>
 														handleVisibilityToggle(
 															"currentPassword",
-															passwordVisibility,
 															setPasswordVisibility,
 														)
 													}
@@ -115,7 +114,7 @@ const PassowrdForm = () => {
 													onClick={() =>
 														handleVisibilityToggle(
 															"newPassword",
-															passwordVisibility,
+															// passwordVisibility,
 															setPasswordVisibility,
 														)
 													}
@@ -162,7 +161,6 @@ const PassowrdForm = () => {
 													onClick={() =>
 														handleVisibilityToggle(
 															"confirmPassword",
-															passwordVisibility,
 															setPasswordVisibility,
 														)
 													}
