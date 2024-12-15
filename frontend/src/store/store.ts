@@ -8,7 +8,7 @@ const useStore = create<UserState>()(
 		(set) => ({
 			user: null,
 			token: null,
-			setUser: (user) => set({ user }),
+			setUser: (user) => set((state) => ({ ...state, user })),
 			setToken: (token) => set({ token }),
 			logout: () => {
 				sessionStorage.clear();

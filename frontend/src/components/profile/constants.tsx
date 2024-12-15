@@ -1,7 +1,6 @@
-import * as z from "zod";
+import { z } from "zod";
 
-// Enhanced SignUp Schema
-export const signUpSchema = z.object({
+export const profileSchema = z.object({
 	firstName: z
 		.string()
 		.trim() // Removes spaces from both ends.
@@ -40,43 +39,28 @@ export const signUpSchema = z.object({
 		.regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
 			message: "Email address should not contain invalid characters.",
 		}),
-
-	password: z
-		.string()
-		.trim() // Removes spaces from both ends.
-		.min(1, { message: "Password is required." }) // First-time "required" check
-		.min(8, { message: "Password must be at least 8 characters." })
-		.regex(/[A-Z]/, {
-			message: "Password must contain at least one uppercase letter.",
-		})
-		.regex(/[a-z]/, {
-			message: "Password must contain at least one lowercase letter.",
-		})
-		.regex(/[0-9]/, {
-			message: "Password must contain at least one number.",
-		})
-		.regex(/[@$!%*?&]()/, {
-			message: "Password must contain at least one special character.",
-		}),
+	avatar: z
+		.instanceof(File, { message: "Avatar must be a valid file." })
+		.optional()
+		.nullable()
+		.refine(
+			(file) => {
+				if (!file) return true; // Skip validation if file is not present (null or undefined)
+				const validTypes = ["image/png", "image/jpeg", "image/jpg"];
+				return validTypes.includes(file.type);
+			},
+			{
+				message: "Avatar must be a PNG, JPEG, or JPG file.",
+			},
+		),
 });
 
-// Enhanced Login Schema
-export const loginSchema = z.object({
-	email: z
-		.string()
-		.trim() // Removes spaces from both ends.
-		.min(1, { message: "Email is required." }) // First-time "required" check
-		.email({ message: "Please enter a valid email address." })
-		.regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
-			message: "Email address should not contain invalid characters.",
-		}),
+export type ProfileValues = z.infer<typeof profileSchema>;
 
-	password: z
-		.string()
-		.trim() // Removes spaces from both ends.
-		.min(1, { message: "Password is required." }) // First-time "required" check
-		.min(8, { message: "Password must be at least 8 characters." }),
-});
-
-export type SignUpValues = z.infer<typeof signUpSchema>;
-export type LoginValues = z.infer<typeof loginSchema>;
+export const USER_INITIAL_VALUES = {
+	firstName: "",
+	lastName: "",
+	username: "",
+	email: "",
+	avatar: null,
+};

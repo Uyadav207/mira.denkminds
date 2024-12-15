@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { type VariantProps, cva } from "class-variance-authority";
@@ -10,12 +11,32 @@ import { Input } from "@components/ui/input";
 import { Separator } from "@components/ui/separator";
 import { Sheet, SheetContent } from "@components/ui/sheet";
 import { Skeleton } from "@components/ui/skeleton";
+=======
+"use client";
+
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { type VariantProps, cva } from "class-variance-authority";
+import { PanelLeft } from "lucide-react";
+
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+>>>>>>> db8a3f6deee6e472be51f090b2682f0d58bcff64
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
+<<<<<<< HEAD
 } from "@components/ui/tooltip";
+=======
+} from "@/components/ui/tooltip";
+>>>>>>> db8a3f6deee6e472be51f090b2682f0d58bcff64
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -125,7 +146,19 @@ const SidebarProvider = React.forwardRef<
 				setOpenMobile,
 				toggleSidebar,
 			}),
+<<<<<<< HEAD
 			[state, open, setOpen, isMobile, openMobile, toggleSidebar],
+=======
+			[
+				state,
+				open,
+				setOpen,
+				isMobile,
+				openMobile,
+				setOpenMobile,
+				toggleSidebar,
+			],
+>>>>>>> db8a3f6deee6e472be51f090b2682f0d58bcff64
 		);
 
 		return (
@@ -277,7 +310,11 @@ const SidebarTrigger = React.forwardRef<
 			variant="ghost"
 			size="icon"
 			className={cn("h-7 w-7", className)}
+<<<<<<< HEAD
 			onClick={(event: Event) => {
+=======
+			onClick={(event) => {
+>>>>>>> db8a3f6deee6e472be51f090b2682f0d58bcff64
 				onClick?.(event);
 				toggleSidebar();
 			}}
