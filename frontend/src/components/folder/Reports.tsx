@@ -39,12 +39,16 @@ export function Reports() {
 						element={
 							folders.length === 0 ? (
 								<EmptyState
-									onCreateFolder={() => setIsCreateDialogOpen(true)}
+									onCreateFolder={() =>
+										setIsCreateDialogOpen(true)
+									}
 								/>
 							) : (
 								<FolderGrid
 									folders={folders}
-									onCreateFolder={() => setIsCreateDialogOpen(true)}
+									onCreateFolder={() =>
+										setIsCreateDialogOpen(true)
+									}
 									onFolderClick={() => {
 										// handle folder click
 									}}
