@@ -12,6 +12,7 @@ import { Reports } from "./pages/Reports";
 import ForgotPassword from "./pages/ForgotPassword";
 import Auth from "./pages/Auth";
 import AuthCallback from "./pages/Authcallback";
+import ProfileSettings from "./pages/ProfileSettings";
 
 const App = () => {
 	return (
@@ -30,6 +31,7 @@ const App = () => {
 							<Route path="/settings" element={<Settings />} />
 							<Route path="/dashboard" element={<Dashboard />} />
 							<Route path="/reports" element={<Reports />} />
+							<Route path="/accounts" element={<ProfileSettings />} />
 						</Route>
 					</Routes>
 				</Router>

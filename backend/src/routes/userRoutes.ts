@@ -6,6 +6,7 @@ import {
 	resetPassword,
 	updateUserById,
 	verifyOtp,
+	changePassword,
 } from "../controllers/userController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 
@@ -18,5 +19,6 @@ userRoutes.post("/user/reset/:id", authMiddleware, resetPassword);
 userRoutes.post("/user/reset_req", requestReset);
 userRoutes.post("/user/verify", verifyOtp);
 userRoutes.post("/user/resetpass", resetPassword);
+userRoutes.put("/user/change_password/:id", authMiddleware, changePassword);
 
 export { userRoutes };
