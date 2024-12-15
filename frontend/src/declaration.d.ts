@@ -44,7 +44,6 @@ declare module "@pages/Reports";
 declare module "@pages/Settings";
 declare module "@pages/Auth";
 
-
 //api
 declare module "@api/auth";
 declare module "@api/profile-settings";
@@ -55,4 +54,3 @@ declare module "@store/store";
 //lib
 declare module "@lib/utils";
 declare module "@lib/supabase";
-

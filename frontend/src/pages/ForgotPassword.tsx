@@ -8,7 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { showErrorToast, showSuccessToast } from "@components/toaster";
 
 import { authApis } from "@api/auth";
-import { forgotPasswordFields, otpVerificationFields, resetPasswordFields } from "../constants/authFields";
+import {
+	forgotPasswordFields,
+	otpVerificationFields,
+	resetPasswordFields,
+} from "../constants/authFields";
 
 enum AuthFlowState {
 	ForgotPassword = 0,
@@ -38,7 +42,6 @@ const AuthFlow: React.FC = () => {
 
 	const handleVerifyOTP = async (data: { otp: string }) => {
 		try {
-
 			setIsLoading(true);
 			const { data: responseData } = await authApis.verifyOTP({
 				email,
@@ -65,7 +68,7 @@ const AuthFlow: React.FC = () => {
 			const { data: responseData } = await authApis.resetPassword({
 				email,
 				newPassword: data.password,
-				confirmPassword: data.confirmPassword
+				confirmPassword: data.confirmPassword,
 			});
 			showSuccessToast(responseData.message);
 			navigate("/login");
@@ -92,7 +95,10 @@ const AuthFlow: React.FC = () => {
 					<DynamicForm
 						fields={otpVerificationFields}
 						onSubmit={handleVerifyOTP}
-						submitButton={{ displayName: "Verify OTP", disabled: isLoading }}
+						submitButton={{
+							displayName: "Verify OTP",
+							disabled: isLoading,
+						}}
 					/>
 				);
 			case AuthFlowState.ResetPassword:
@@ -140,11 +146,12 @@ const AuthFlow: React.FC = () => {
 					</CardTitle>
 					{getDescription()}
 				</CardHeader>
-				<CardContent className="space-y-6 text-center">{renderForm()}</CardContent>
+				<CardContent className="space-y-6 text-center">
+					{renderForm()}
+				</CardContent>
 			</Card>
 		</div>
 	);
 };
 
 export default AuthFlow;
-

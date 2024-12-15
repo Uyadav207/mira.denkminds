@@ -45,7 +45,9 @@ const PassowrdForm = () => {
 								name="currentPassword"
 								render={({ field }: { field: FieldValues }) => (
 									<FormItem className="relative">
-										<Label htmlFor="currentPassword">Current Password</Label>
+										<Label htmlFor="currentPassword">
+											Current Password
+										</Label>
 										<FormControl>
 											<div className="relative">
 												<Input
@@ -90,12 +92,16 @@ const PassowrdForm = () => {
 								name="newPassword"
 								render={({ field }: { field: FieldValues }) => (
 									<FormItem className="relative">
-										<Label htmlFor="newPassword">New Password</Label>
+										<Label htmlFor="newPassword">
+											New Password
+										</Label>
 										<FormControl>
 											<div className="relative">
 												<Input
 													type={
-														passwordVisibility.newPassword ? "text" : "password"
+														passwordVisibility.newPassword
+															? "text"
+															: "password"
 													}
 													id="newPassword"
 													{...field}
@@ -133,7 +139,9 @@ const PassowrdForm = () => {
 								name="confirmPassword"
 								render={({ field }: { field: FieldValues }) => (
 									<FormItem className="relative">
-										<Label htmlFor="confirmPassword">Confirm Password</Label>
+										<Label htmlFor="confirmPassword">
+											Confirm Password
+										</Label>
 										<FormControl>
 											<div className="relative">
 												<Input

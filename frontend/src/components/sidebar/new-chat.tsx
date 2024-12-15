@@ -23,7 +23,11 @@ export function TeamSwitcher() {
 							New Chat
 						</Button>
 					) : (
-						<Button size="icon" variant="default" className="h-9 w-9">
+						<Button
+							size="icon"
+							variant="default"
+							className="h-9 w-9"
+						>
 							<Plus className="h-4 w-4" />
 							<span className="sr-only">New Chat</span>
 						</Button>

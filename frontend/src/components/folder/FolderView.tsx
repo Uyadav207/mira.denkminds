@@ -68,9 +68,14 @@ export function FolderView({ folder, onUploadFile, onBack }: FolderViewProps) {
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
 				{folder.files.map((file) => (
-					<div key={file.id} className="flex flex-col border rounded-lg p-4">
+					<div
+						key={file.id}
+						className="flex flex-col border rounded-lg p-4"
+					>
 						<FileIcon className="h-16 w-16 text-blue-500 mx-auto" />
-						<h3 className="mt-2 font-semibold text-center">{file.name}</h3>
+						<h3 className="mt-2 font-semibold text-center">
+							{file.name}
+						</h3>
 						<p className="text-sm text-muted-foreground text-center">
 							{(file.size / 1024 / 1024).toFixed(2)} MB
 						</p>
@@ -95,7 +100,10 @@ export function FolderView({ folder, onUploadFile, onBack }: FolderViewProps) {
 					</div>
 				))}
 			</div>
-			<Dialog open={!!selectedFile} onOpenChange={() => setSelectedFile(null)}>
+			<Dialog
+				open={!!selectedFile}
+				onOpenChange={() => setSelectedFile(null)}
+			>
 				<DialogContent className="max-w-4xl">
 					<DialogHeader>
 						<DialogTitle>{selectedFile?.name}</DialogTitle>

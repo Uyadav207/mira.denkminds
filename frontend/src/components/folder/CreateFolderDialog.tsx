@@ -42,9 +42,9 @@ export function CreateFolderDialog({
 							<Input
 								id="name"
 								value={folderName}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-									setFolderName(e.target.value)
-								}
+								onChange={(
+									e: React.ChangeEvent<HTMLInputElement>,
+								) => setFolderName(e.target.value)}
 								placeholder="Enter folder name"
 							/>
 						</div>

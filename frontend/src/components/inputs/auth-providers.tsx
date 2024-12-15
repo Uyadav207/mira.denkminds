@@ -19,7 +19,6 @@ const AuthByProviders: React.FC<{ type: string }> = ({ type }) => {
 
 			// The user will be redirected to Google for authentication
 		} catch (error) {
-			
 		} finally {
 			setIsLoading(false);
 		}
@@ -33,7 +32,11 @@ const AuthByProviders: React.FC<{ type: string }> = ({ type }) => {
 				onClick={handleGoogleLogin}
 				className="w-full"
 			>
-				<img src={GoogleIcon} alt="Google Icon" className="mr-2 h-4 w-4" />
+				<img
+					src={GoogleIcon}
+					alt="Google Icon"
+					className="mr-2 h-4 w-4"
+				/>
 				{type === "login" ? "Sign in" : "Sign up"} with Google
 			</Button>
 		</div>
@@ -41,4 +44,3 @@ const AuthByProviders: React.FC<{ type: string }> = ({ type }) => {
 };
 
 export default AuthByProviders;
-

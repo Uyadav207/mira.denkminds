@@ -1,5 +1,8 @@
-import type { RegisterApiPayloadType } from "../types/auth";
-
+import type {
+	GoogleLoginApiPayloadType,
+	LoginApiPayloadType,
+	RegisterApiPayloadType,
+} from "../types/auth";
 
 export function splitName(fullName: string): {
 	firstName: string;
@@ -24,7 +27,31 @@ export function createRegisterResponseBody(data) {
 		authProvider: "google",
 		supabaseId: data.provider_id,
 		avatar: data.avatar_url,
-        password: null
+		password: null,
+	};
+	return requestBody;
+}
+
+export function createGoogleLoginResponseBody(data) {
+	const { firstName, lastName } = splitName(data.full_name);
+	const requestBody: GoogleLoginApiPayloadType = {
+		firstName: firstName,
+		lastName: lastName,
+		username: data.name,
+		email: data.email,
+		authProvider: "google",
+		supabaseId: data.provider_id,
+		avatar: data.avatar_url,
+		password: null,
+	};
+	return requestBody;
+}
+
+export function createLoginResponseBody(data) {
+	const requestBody: LoginApiPayloadType = {
+		email: data.email,
+		password: data.password,
+		authProvider: null,
 	};
 	return requestBody;
 }

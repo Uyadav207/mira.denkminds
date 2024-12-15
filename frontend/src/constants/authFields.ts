@@ -75,7 +75,8 @@ export const registerFields = [
 				message: "Password must contain at least one number.",
 			})
 			.regex(/[@$!%*?&{}+_]/, {
-				message: "Password must contain at least one special character.",
+				message:
+					"Password must contain at least one special character.",
 			}),
 	},
 	{
@@ -164,7 +165,8 @@ export const resetPasswordFields = [
 				message: "Password must contain at least one number.",
 			})
 			.regex(/[@$!%*?&{}+_]/, {
-				message: "Password must contain at least one special character.",
+				message:
+					"Password must contain at least one special character.",
 			}),
 	},
 	{

@@ -78,7 +78,10 @@ const ProfileForm = () => {
 										<FormControl>
 											<div className="relative cursor-pointer">
 												<img
-													src={imageSrc || "/profile.svg"}
+													src={
+														imageSrc ||
+														"/profile.svg"
+													}
 													alt="Profile"
 													className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-background shadow-md"
 												/>
@@ -121,7 +124,9 @@ const ProfileForm = () => {
 								<FormField
 									control={form.control}
 									name="firstName"
-									render={({ field }: { field: FieldValues }) => (
+									render={({
+										field,
+									}: { field: FieldValues }) => (
 										<FormItem>
 											<Label
 												htmlFor="firstName"
@@ -130,7 +135,10 @@ const ProfileForm = () => {
 												First Name
 											</Label>
 											<FormControl>
-												<Input placeholder="First Name" {...field} />
+												<Input
+													placeholder="First Name"
+													{...field}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -139,13 +147,21 @@ const ProfileForm = () => {
 								<FormField
 									control={form.control}
 									name="username"
-									render={({ field }: { field: FieldValues }) => (
+									render={({
+										field,
+									}: { field: FieldValues }) => (
 										<FormItem>
-											<Label htmlFor="username" className="text-sm font-medium">
+											<Label
+												htmlFor="username"
+												className="text-sm font-medium"
+											>
 												Username
 											</Label>
 											<FormControl>
-												<Input placeholder="Username" {...field} />
+												<Input
+													placeholder="Username"
+													{...field}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -157,13 +173,21 @@ const ProfileForm = () => {
 								<FormField
 									control={form.control}
 									name="lastName"
-									render={({ field }: { field: FieldValues }) => (
+									render={({
+										field,
+									}: { field: FieldValues }) => (
 										<FormItem>
-											<Label htmlFor="lastName" className="text-sm font-medium">
+											<Label
+												htmlFor="lastName"
+												className="text-sm font-medium"
+											>
 												Last Name
 											</Label>
 											<FormControl>
-												<Input placeholder="Last Name" {...field} />
+												<Input
+													placeholder="Last Name"
+													{...field}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -172,13 +196,22 @@ const ProfileForm = () => {
 								<FormField
 									control={form.control}
 									name="email"
-									render={({ field }: { field: FieldValues }) => (
+									render={({
+										field,
+									}: { field: FieldValues }) => (
 										<FormItem>
-											<Label htmlFor="email" className="text-sm font-medium">
+											<Label
+												htmlFor="email"
+												className="text-sm font-medium"
+											>
 												Email
 											</Label>
 											<FormControl>
-												<Input placeholder="Email" type="email" {...field} />
+												<Input
+													placeholder="Email"
+													type="email"
+													{...field}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -195,7 +228,8 @@ const ProfileForm = () => {
 								variant="default"
 								disabled={
 									isLoading ||
-									Object.keys(form.formState.errors).length > 0 ||
+									Object.keys(form.formState.errors).length >
+										0 ||
 									(!form.formState.isDirty && !imageSrc)
 								}
 							>

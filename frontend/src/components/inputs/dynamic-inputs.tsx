@@ -28,9 +28,9 @@ export const DynamicInput = React.memo(
 								placeholder={field.placeholder}
 								type={showPassword ? "text" : "password"}
 								value={field.value as string}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-									field.onChange(e.target.value)
-								}
+								onChange={(
+									e: React.ChangeEvent<HTMLInputElement>,
+								) => field.onChange(e.target.value)}
 								autoComplete={field.name}
 							/>
 							<Button
@@ -58,9 +58,15 @@ export const DynamicInput = React.memo(
 								onChange={(value) => field.onChange(value)}
 							>
 								<InputOTPGroup>
-									{Array.from({ length: field.maxLength || 6 }, (_, index) => (
-										<InputOTPSlot key={index} index={index} />
-									))}
+									{Array.from(
+										{ length: field.maxLength || 6 },
+										(_, index) => (
+											<InputOTPSlot
+												key={index}
+												index={index}
+											/>
+										),
+									)}
 								</InputOTPGroup>
 							</InputOTP>
 						</div>
@@ -71,9 +77,9 @@ export const DynamicInput = React.memo(
 							placeholder={field.placeholder}
 							type={field.type}
 							value={field.value as string}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-								field.onChange(e.target.value)
-							}
+							onChange={(
+								e: React.ChangeEvent<HTMLInputElement>,
+							) => field.onChange(e.target.value)}
 						/>
 					);
 			}

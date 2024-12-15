@@ -18,6 +18,7 @@ import type {
 	LoginApiPayloadType,
 	RegisterApiPayloadType,
 } from "../types/auth";
+import { createLoginResponseBody } from "../utils/auth-helper";
 
 const Auth: React.FC = () => {
 	const navigate = useNavigate();
@@ -35,7 +36,9 @@ const Auth: React.FC = () => {
 
 			// Type narrowing based on the form type
 			if (formType === "login") {
-				const loginData = data as LoginApiPayloadType;
+				const loginData = createLoginResponseBody(
+					data,
+				) as LoginApiPayloadType;
 				const response = await authApis.login(loginData);
 				const result = response.data;
 				setToken(result.token);
@@ -59,7 +62,9 @@ const Auth: React.FC = () => {
 			<Card className="w-full max-w-[400px]">
 				<CardHeader>
 					<CardTitle className="text-2xl font-semibold text-center">
-						{formType === "login" ? "Welcome back" : "Create an account"}
+						{formType === "login"
+							? "Welcome back"
+							: "Create an account"}
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-6">
@@ -77,10 +82,15 @@ const Auth: React.FC = () => {
 					</div>
 
 					<DynamicForm
-						fields={formType === "login" ? loginFields : registerFields}
+						fields={
+							formType === "login" ? loginFields : registerFields
+						}
 						onSubmit={handleSubmit}
 						submitButton={{
-							displayName: formType === "login" ? "Login" : "Create account",
+							displayName:
+								formType === "login"
+									? "Login"
+									: "Create account",
 							disabled: isLoading,
 						}}
 					/>
@@ -132,4 +142,3 @@ const Auth: React.FC = () => {
 };
 
 export default Auth;
-
