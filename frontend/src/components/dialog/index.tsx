@@ -35,10 +35,14 @@ export function Dialog({
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>{title}</AlertDialogTitle>
-					<AlertDialogDescription>{description}</AlertDialogDescription>
+					<AlertDialogDescription>
+						{description}
+					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel onClick={onCancel}>{cancelText}</AlertDialogCancel>
+					<AlertDialogCancel onClick={onCancel}>
+						{cancelText}
+					</AlertDialogCancel>
 					<AlertDialogAction onClick={onConfirm}>
 						{confirmText}
 					</AlertDialogAction>

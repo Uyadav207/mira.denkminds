@@ -93,7 +93,11 @@ const Login: React.FC = () => {
 						onClick={signInWithGoogle}
 						className="w-full"
 					>
-						<img src={GoogleIcon} alt="Google Icon" className="h-4 w-4" />
+						<img
+							src={GoogleIcon}
+							alt="Google Icon"
+							className="h-4 w-4"
+						/>
 						Google
 					</Button>
 					<Button
@@ -102,7 +106,11 @@ const Login: React.FC = () => {
 						onClick={signInWithApple}
 						className="w-full"
 					>
-						<img src={AppleIcon} alt="Apple Icon" className="h-4 w-4" />
+						<img
+							src={AppleIcon}
+							alt="Apple Icon"
+							className="h-4 w-4"
+						/>
 						Apple
 					</Button>
 				</div>
@@ -119,18 +127,28 @@ const Login: React.FC = () => {
 				</div>
 
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+					<form
+						onSubmit={form.handleSubmit(onSubmit)}
+						className="space-y-4"
+					>
 						<FormField
 							control={form.control}
 							name="email"
 							render={({
 								field,
 							}: {
-								field: ControllerRenderProps<FieldValues, string>;
+								field: ControllerRenderProps<
+									FieldValues,
+									string
+								>;
 							}) => (
 								<FormItem>
 									<FormControl>
-										<Input placeholder="Email" type="email" {...field} />
+										<Input
+											placeholder="Email"
+											type="email"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -142,14 +160,21 @@ const Login: React.FC = () => {
 							render={({
 								field,
 							}: {
-								field: ControllerRenderProps<FieldValues, string>;
+								field: ControllerRenderProps<
+									FieldValues,
+									string
+								>;
 							}) => (
 								<FormItem>
 									<FormControl>
 										<div className="relative">
 											<Input
 												placeholder="Password"
-												type={showPassword ? "text" : "password"}
+												type={
+													showPassword
+														? "text"
+														: "password"
+												}
 												{...field}
 											/>
 											<Button
@@ -157,7 +182,11 @@ const Login: React.FC = () => {
 												variant="ghost"
 												size="sm"
 												className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-												onClick={() => setShowPassword(!showPassword)}
+												onClick={() =>
+													setShowPassword(
+														!showPassword,
+													)
+												}
 											>
 												{showPassword ? (
 													<EyeOff className="h-4 w-4" />
@@ -171,7 +200,11 @@ const Login: React.FC = () => {
 								</FormItem>
 							)}
 						/>
-						<Button type="submit" className="w-full" disabled={isLoading}>
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={isLoading}
+						>
 							Login
 						</Button>
 					</form>

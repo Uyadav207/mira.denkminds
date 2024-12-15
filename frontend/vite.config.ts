@@ -12,6 +12,7 @@ export default defineConfig({
 			"@store": "/src/store",
 			"@pages": "/src/pages",
 			"@types": "/src/types",
+			"@hooks": "/src/hooks",
 		},
 	},
 	server: {

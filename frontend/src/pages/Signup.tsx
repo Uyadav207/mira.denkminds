@@ -95,7 +95,11 @@ const SignUp = () => {
 						onClick={signInWithGoogle}
 						className="w-full"
 					>
-						<img src={GoogleIcon} alt="Google Icon" className="h-4 w-4" />
+						<img
+							src={GoogleIcon}
+							alt="Google Icon"
+							className="h-4 w-4"
+						/>
 						Google
 					</Button>
 					<Button
@@ -104,7 +108,11 @@ const SignUp = () => {
 						onClick={signInWithApple}
 						className="w-full"
 					>
-						<img src={AppleIcon} alt="Apple Icon" className="h-4 w-4" />
+						<img
+							src={AppleIcon}
+							alt="Apple Icon"
+							className="h-4 w-4"
+						/>
 						Apple
 					</Button>
 				</div>
@@ -119,7 +127,10 @@ const SignUp = () => {
 					</div>
 				</div>
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+					<form
+						onSubmit={form.handleSubmit(onSubmit)}
+						className="space-y-4"
+					>
 						<div className="grid gap-4 sm:grid-cols-2">
 							<FormField
 								control={form.control}
@@ -127,7 +138,10 @@ const SignUp = () => {
 								render={({ field }) => (
 									<FormItem>
 										<FormControl>
-											<Input placeholder="First name" {...field} />
+											<Input
+												placeholder="First name"
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -139,7 +153,10 @@ const SignUp = () => {
 								render={({ field }) => (
 									<FormItem>
 										<FormControl>
-											<Input placeholder="Last name" {...field} />
+											<Input
+												placeholder="Last name"
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -152,7 +169,10 @@ const SignUp = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input placeholder="Username" {...field} />
+										<Input
+											placeholder="Username"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -164,7 +184,11 @@ const SignUp = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input placeholder="Email" type="email" {...field} />
+										<Input
+											placeholder="Email"
+											type="email"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -179,7 +203,11 @@ const SignUp = () => {
 										<div className="relative">
 											<Input
 												placeholder="Password"
-												type={showPassword ? "text" : "password"}
+												type={
+													showPassword
+														? "text"
+														: "password"
+												}
 												{...field}
 											/>
 											<Button
@@ -187,7 +215,11 @@ const SignUp = () => {
 												variant="ghost"
 												size="sm"
 												className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-												onClick={() => setShowPassword(!showPassword)}
+												onClick={() =>
+													setShowPassword(
+														!showPassword,
+													)
+												}
 											>
 												{showPassword ? (
 													<EyeOff className="h-4 w-4" />
@@ -201,7 +233,11 @@ const SignUp = () => {
 								</FormItem>
 							)}
 						/>
-						<Button type="submit" className="w-full" disabled={isLoading}>
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={isLoading}
+						>
 							Create account
 						</Button>
 					</form>
