@@ -26,6 +26,11 @@ declare module "@components/ui/tooltip";
 declare module "@components/ui/avatar";
 declare module "@components/ui/sidebar-menu-item";
 declare module "@components/ui/collapsible";
+declare module "@components/ui/input-otp";
+
+// Custom components
+declare module "@components/inputs/dynamic-form";
+declare module "@components/inputs/auth-providers";
 
 //pages
 declare module "@pages/Home";
@@ -37,6 +42,7 @@ declare module "@pages/profile/form";
 declare module "@pages/Dashboard";
 declare module "@pages/Reports";
 declare module "@pages/Settings";
+declare module "@pages/Auth";
 
 //api
 declare module "@api/auth";
@@ -47,3 +53,4 @@ declare module "@store/store";
 
 //lib
 declare module "@lib/utils";
+declare module "@lib/supabase";

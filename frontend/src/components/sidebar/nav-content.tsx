@@ -107,10 +107,18 @@ export default function NavContent() {
 						<SidebarMenu>
 							{recentChats.map((chat) => (
 								<SidebarMenuItem key={chat.id}>
-									<SidebarMenuButton asChild className="w-full justify-between">
-										<a href={chat.url} className="flex items-center">
+									<SidebarMenuButton
+										asChild
+										className="w-full justify-between"
+									>
+										<a
+											href={chat.url}
+											className="flex items-center"
+										>
 											<MessageCircle className="mr-2 h-4 w-4 shrink-0" />
-											<span className="flex-grow truncate">{chat.title}</span>
+											<span className="flex-grow truncate">
+												{chat.title}
+											</span>
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>
 													<Button
@@ -119,23 +127,38 @@ export default function NavContent() {
 														className="ml-auto h-8 w-8 p-0"
 													>
 														<MoreHorizontal className="h-4 w-4 ml-auto" />
-														<span className="sr-only">Open menu</span>
+														<span className="sr-only">
+															Open menu
+														</span>
 													</Button>
 												</DropdownMenuTrigger>
-												<DropdownMenuContent align="end" className="w-[160px]">
-													<DropdownMenuItem onClick={() => handleCopy(chat.id)}>
+												<DropdownMenuContent
+													align="end"
+													className="w-[160px]"
+												>
+													<DropdownMenuItem
+														onClick={() =>
+															handleCopy(chat.id)
+														}
+													>
 														<Copy className="mr-2 h-4 w-4" />
 														<span>Copy</span>
 													</DropdownMenuItem>
 													<DropdownMenuItem
-														onClick={() => handleShare(chat.id)}
+														onClick={() =>
+															handleShare(chat.id)
+														}
 													>
 														<Share2 className="mr-2 h-4 w-4" />
 														<span>Share</span>
 													</DropdownMenuItem>
 													<DropdownMenuSeparator />
 													<DropdownMenuItem
-														onClick={() => handleDelete(chat.id)}
+														onClick={() =>
+															handleDelete(
+																chat.id,
+															)
+														}
 														className="text-red-600"
 													>
 														<Trash2 className="mr-2 h-4 w-4" />

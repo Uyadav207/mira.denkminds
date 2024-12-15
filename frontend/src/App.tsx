@@ -2,14 +2,16 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 import { ThemeProvider } from "./components/theme/theme-provider";
-import SignUp from "@pages/Signup";
-import Login from "@pages/Login";
+
 import Home from "@pages/Home";
 import Chatbot from "./pages/Chatbot";
 import { Settings } from "./pages/Settings";
 import { Layout } from "./components/dashboard/Layout";
 import { Dashboard } from "./pages/Dashboard";
 import { Reports } from "./pages/Reports";
+import ForgotPassword from "./pages/ForgotPassword";
+import Auth from "./pages/Auth";
+import AuthCallback from "./pages/AuthCallback";
 import ProfileSettings from "./pages/ProfileSettings";
 
 const App = () => {
@@ -20,14 +22,25 @@ const App = () => {
 				<Router>
 					<Routes>
 						<Route path="/" element={<Home />} />
-						<Route path="/login" element={<Login />} />
-						<Route path="/signup" element={<SignUp />} />
+						<Route path="/login" element={<Auth />} />
+						<Route path="/register" element={<Auth />} />
+						<Route
+							path="/forgot-password"
+							element={<ForgotPassword />}
+						/>
+						<Route
+							path="/auth/callback"
+							element={<AuthCallback />}
+						/>
 						<Route element={<Layout />}>
 							<Route path="/chatbot" element={<Chatbot />} />
 							<Route path="/settings" element={<Settings />} />
 							<Route path="/dashboard" element={<Dashboard />} />
 							<Route path="/reports" element={<Reports />} />
-							<Route path="/accounts" element={<ProfileSettings />} />
+							<Route
+								path="/accounts"
+								element={<ProfileSettings />}
+							/>
 						</Route>
 					</Routes>
 				</Router>

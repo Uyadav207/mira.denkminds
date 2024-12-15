@@ -40,12 +40,16 @@ export function Reports() {
 						element={
 							folders.length === 0 ? (
 								<EmptyState
-									onCreateFolder={() => setIsCreateDialogOpen(true)}
+									onCreateFolder={() =>
+										setIsCreateDialogOpen(true)
+									}
 								/>
 							) : (
 								<FolderGrid
 									folders={folders}
-									onCreateFolder={() => setIsCreateDialogOpen(true)}
+									onCreateFolder={() =>
+										setIsCreateDialogOpen(true)
+									}
 								/>
 							)
 						}
@@ -53,7 +57,10 @@ export function Reports() {
 					<Route
 						path="/folder/:folderId"
 						element={
-							<FolderView folders={folders} onUploadFile={handleUploadFile} />
+							<FolderView
+								folders={folders}
+								onUploadFile={handleUploadFile}
+							/>
 						}
 					/>
 				</Routes>

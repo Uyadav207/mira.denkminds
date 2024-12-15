@@ -58,7 +58,7 @@ export async function login(
 	return response;
 }
 
-export async function signup(
+export async function register(
 	firstName: string,
 	lastName: string,
 	username: string,
