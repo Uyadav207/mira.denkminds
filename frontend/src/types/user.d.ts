@@ -1,11 +1,16 @@
-interface User {
+export interface User {
+	id: string;
 	firstName: string;
 	lastName: string;
 	email: string;
-	avatar: string;
+	avatar: string | null;
 	username: string;
-	// Add other user properties as needed
 }
+
+export type Password = {
+	oldPassword: string;
+	newPassword: string;
+};
 
 export type UserState = {
 	user: User | null; // User could initially be null
@@ -14,3 +19,12 @@ export type UserState = {
 	setToken: (token: string) => void;
 	logout: () => void;
 };
+
+export interface UpdateUserResponse {
+	id: string;
+	username: string;
+	firstName: string;
+	lastName: string;
+	avatar: string | null;
+	email: string;
+}
