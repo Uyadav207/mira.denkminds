@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { type VariantProps, cva } from "class-variance-authority";
@@ -11,32 +10,12 @@ import { Input } from "@components/ui/input";
 import { Separator } from "@components/ui/separator";
 import { Sheet, SheetContent } from "@components/ui/sheet";
 import { Skeleton } from "@components/ui/skeleton";
-=======
-"use client";
-
-import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
-import { type VariantProps, cva } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
-
-import { useIsMobile } from "@/hooks/use-mobile";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Skeleton } from "@/components/ui/skeleton";
->>>>>>> db8a3f6deee6e472be51f090b2682f0d58bcff64
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-<<<<<<< HEAD
 } from "@components/ui/tooltip";
-=======
-} from "@/components/ui/tooltip";
->>>>>>> db8a3f6deee6e472be51f090b2682f0d58bcff64
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -95,8 +74,7 @@ const SidebarProvider = React.forwardRef<
 		const open = openProp ?? _open;
 		const setOpen = React.useCallback(
 			(value: boolean | ((value: boolean) => boolean)) => {
-				const openState =
-					typeof value === "function" ? value(open) : value;
+				const openState = typeof value === "function" ? value(open) : value;
 				if (setOpenProp) {
 					setOpenProp(openState);
 				} else {
@@ -146,19 +124,7 @@ const SidebarProvider = React.forwardRef<
 				setOpenMobile,
 				toggleSidebar,
 			}),
-<<<<<<< HEAD
 			[state, open, setOpen, isMobile, openMobile, toggleSidebar],
-=======
-			[
-				state,
-				open,
-				setOpen,
-				isMobile,
-				openMobile,
-				setOpenMobile,
-				toggleSidebar,
-			],
->>>>>>> db8a3f6deee6e472be51f090b2682f0d58bcff64
 		);
 
 		return (
@@ -226,11 +192,7 @@ const Sidebar = React.forwardRef<
 
 		if (isMobile) {
 			return (
-				<Sheet
-					open={openMobile}
-					onOpenChange={setOpenMobile}
-					{...props}
-				>
+				<Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
 					<SheetContent
 						data-sidebar="sidebar"
 						data-mobile="true"
@@ -242,9 +204,7 @@ const Sidebar = React.forwardRef<
 						}
 						side={side}
 					>
-						<div className="flex h-full w-full flex-col">
-							{children}
-						</div>
+						<div className="flex h-full w-full flex-col">{children}</div>
 					</SheetContent>
 				</Sheet>
 			);
@@ -310,11 +270,7 @@ const SidebarTrigger = React.forwardRef<
 			variant="ghost"
 			size="icon"
 			className={cn("h-7 w-7", className)}
-<<<<<<< HEAD
 			onClick={(event: Event) => {
-=======
-			onClick={(event) => {
->>>>>>> db8a3f6deee6e472be51f090b2682f0d58bcff64
 				onClick?.(event);
 				toggleSidebar();
 			}}
@@ -463,10 +419,7 @@ const SidebarGroup = React.forwardRef<
 		<div
 			ref={ref}
 			data-sidebar="group"
-			className={cn(
-				"relative flex w-full min-w-0 flex-col p-2",
-				className,
-			)}
+			className={cn("relative flex w-full min-w-0 flex-col p-2", className)}
 			{...props}
 		/>
 	);
@@ -561,8 +514,7 @@ const sidebarMenuButtonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default:
-					"hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+				default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
 				outline:
 					"bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
 			},
@@ -608,10 +560,7 @@ const SidebarMenuButton = React.forwardRef<
 				data-sidebar="menu-button"
 				data-size={size}
 				data-active={isActive}
-				className={cn(
-					sidebarMenuButtonVariants({ variant, size }),
-					className,
-				)}
+				className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
 				{...props}
 			/>
 		);
@@ -708,10 +657,7 @@ const SidebarMenuSkeleton = React.forwardRef<
 		<div
 			ref={ref}
 			data-sidebar="menu-skeleton"
-			className={cn(
-				"rounded-md h-8 flex gap-2 px-2 items-center",
-				className,
-			)}
+			className={cn("rounded-md h-8 flex gap-2 px-2 items-center", className)}
 			{...props}
 		>
 			{showIcon && (
