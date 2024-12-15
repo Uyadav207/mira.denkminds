@@ -1,4 +1,6 @@
 //components
+declare module "@components/chat/mira-chat-bot";
+declare module "@components/chat/chat-actions";
 declare module "@components/ui/input";
 declare module "@components/ui/button";
 declare module "@components/ui/separator";
@@ -8,6 +10,15 @@ declare module "@components/theme/theme-provider";
 declare module "@components/ui/label";
 declare module "@components/toaster";
 declare module "@components/ui/card";
+declare module "@components/ui/textarea";
+declare module "@components/ui/scroll-area";
+declare module "@components/loader/spinner";
+declare module "@components/ui/sheet";
+declare module "@components/ui/skeleton";
+declare module "@components/ui/tooltip";
+declare module "@components/ui/breadcrumb";
+declare module "@components/app-sidebar";
+declare module "@components/ui/sidebar";
 declare module "@components/ui/breadcrumb";
 declare module "@components/ui/toast";
 declare module "@components/ui/dialog";
@@ -46,6 +57,7 @@ declare module "@pages/Auth";
 
 //api
 declare module "@api/auth";
+declare module "@api/chat";
 declare module "@api/profile-settings";
 
 //store
@@ -53,4 +65,7 @@ declare module "@store/store";
 
 //lib
 declare module "@lib/utils";
+
+// hooks
+declare module "@hooks/use-mobile";
 declare module "@lib/supabase";

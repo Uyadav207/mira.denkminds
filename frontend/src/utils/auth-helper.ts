@@ -17,7 +17,17 @@ export function splitName(fullName: string): {
 	return { firstName, lastName };
 }
 
-export function createRegisterResponseBody(data) {
+interface RegisterResponseBodyData {
+	full_name: string;
+	name: string;
+	email: string;
+	provider_id: string;
+	avatar_url: string;
+}
+
+export function createRegisterResponseBody(
+	data: RegisterResponseBodyData,
+): RegisterApiPayloadType {
 	const { firstName, lastName } = splitName(data.full_name);
 	const requestBody: RegisterApiPayloadType = {
 		firstName: firstName,
@@ -32,7 +42,17 @@ export function createRegisterResponseBody(data) {
 	return requestBody;
 }
 
-export function createGoogleLoginResponseBody(data) {
+interface GoogleLoginResponseBodyData {
+	full_name: string;
+	name: string;
+	email: string;
+	provider_id: string;
+	avatar_url: string;
+}
+
+export function createGoogleLoginResponseBody(
+	data: GoogleLoginResponseBodyData,
+): GoogleLoginApiPayloadType {
 	const { firstName, lastName } = splitName(data.full_name);
 	const requestBody: GoogleLoginApiPayloadType = {
 		firstName: firstName,
@@ -47,7 +67,14 @@ export function createGoogleLoginResponseBody(data) {
 	return requestBody;
 }
 
-export function createLoginResponseBody(data) {
+interface LoginResponseBodyData {
+	email: string;
+	password: string;
+}
+
+export function createLoginResponseBody(
+	data: LoginResponseBodyData,
+): LoginApiPayloadType {
 	const requestBody: LoginApiPayloadType = {
 		email: data.email,
 		password: data.password,

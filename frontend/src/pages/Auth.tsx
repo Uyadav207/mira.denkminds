@@ -37,8 +37,8 @@ const Auth: React.FC = () => {
 			// Type narrowing based on the form type
 			if (formType === "login") {
 				const loginData = createLoginResponseBody(
-					data,
-				) as LoginApiPayloadType;
+					data as LoginApiPayloadType,
+				);
 				const response = await authApis.login(loginData);
 				const result = response.data;
 				setToken(result.token);

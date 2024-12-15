@@ -84,7 +84,7 @@ export const handleDelete = async (params: { userId: string }) => {
 		const token = useStore.getState().token;
 
 		// Make API call to delete user
-		const response = await userApis.deleteUserByID(userId, token);
+		await userApis.deleteUserByID(userId, token);
 		showSuccessToast("User Account Deleted Successfully!");
 		setTimeout(() => {
 			useStore.getState().logout();

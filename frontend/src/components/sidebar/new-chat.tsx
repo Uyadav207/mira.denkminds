@@ -6,6 +6,7 @@ import {
 	useSidebar,
 } from "../ui/sidebar";
 import { Button } from "../ui/button";
+import { Link } from "react-router-dom";
 
 export function TeamSwitcher() {
 	const { state } = useSidebar();
@@ -18,10 +19,12 @@ export function TeamSwitcher() {
 					className="w-full data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 				>
 					{state === "expanded" ? (
-						<Button size="lg" className="w-full justify-start">
-							<Plus className="mr-2 h-4 w-4" />
-							New Chat
-						</Button>
+						<Link to="/chatbot">
+							<Button size="lg" className="w-full justify-start">
+								<Plus className="mr-2 h-4 w-4" />
+								New Chat
+							</Button>
+						</Link>
 					) : (
 						<Button
 							size="icon"

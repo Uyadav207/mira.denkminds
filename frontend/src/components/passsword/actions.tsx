@@ -20,7 +20,7 @@ type PasswordVisibility = {
 
 export const handleVisibilityToggle = (
 	field: keyof PasswordVisibility,
-	passwordVisibility: PasswordVisibility,
+	// passwordVisibility: PasswordVisibility,
 	setPasswordVisibility: React.Dispatch<
 		React.SetStateAction<PasswordVisibility>
 	>,
@@ -41,9 +41,9 @@ export const comparePasswords = async (
 export const handleSubmit = async (
 	data: PasswordValues,
 	form: UseFormReturn<PasswordValues>,
-	setPasswordVisibility: React.Dispatch<
-		React.SetStateAction<PasswordVisibility>
-	>,
+	// setPasswordVisibility: React.Dispatch<
+	// 	React.SetStateAction<PasswordVisibility>
+	// >
 ) => {
 	if (user && token) {
 		try {

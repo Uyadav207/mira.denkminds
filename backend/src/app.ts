@@ -6,6 +6,8 @@ import { userRoutes } from "./routes/userRoutes";
 import { cors } from "hono/cors";
 import { chatRoute } from "./routes/chatRoute";
 
+import ollama from "ollama";
+
 const app = new Hono();
 
 app.use("*", cors());
@@ -20,5 +22,30 @@ app.use("*", errorHandler);
 app.route("/auth", authRoutes);
 app.route("/users", userRoutes);
 app.route("/chat", chatRoute);
+
+app.post("/api/chat", async (c) => {
+	const { prompt } = await c.req.json();
+	const OLLAMA_HOST =
+		process.env.OLLAMA_HOST || "https://549f-34-68-57-129.ngrok-free.app";
+
+	try {
+		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				prompt: prompt,
+				model: "mistral",
+				stream: false,
+			}),
+		});
+
+		const output = await response.json();
+		return c.json({ message: output.response });
+	} catch (e) {
+		return c.json({ message: e });
+	}
+});
 
 export default app;
