@@ -1,5 +1,9 @@
 import type React from "react";
-import type { FieldValues, ControllerRenderProps, DefaultValues } from "react-hook-form";
+import type {
+	FieldValues,
+	ControllerRenderProps,
+	DefaultValues,
+} from "react-hook-form";
 
 import { Button } from "@components/ui/button";
 import { Form, FormField } from "@components/ui/form";
@@ -15,15 +19,15 @@ export default function DynamicForm<T extends FieldValues>({
 }: DynamicFormProps<T>): React.ReactElement {
 	const form = useDynamicForm<T>(fields);
 
-		// Reset form state whenever the fields change
+	// Reset form state whenever the fields change
 	useEffect(() => {
 		const defaultValues = fields.reduce(
-				(acc, field) => {
-					acc[field.name] = ""; // Reset all fields to empty values
-					return acc;
-				},
-				{} as DefaultValues<T>,
-			);
+			(acc, field) => {
+				acc[field.name] = ""; // Reset all fields to empty values
+				return acc;
+			},
+			{} as DefaultValues<T>,
+		);
 		form.reset(defaultValues);
 	}, [fields, form]);
 
