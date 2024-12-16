@@ -15,14 +15,19 @@ export class AuthService {
 		lastName: string,
 		username: string,
 		email: string,
-		password?: string, // Optional for OAuth
-		authProvider: "email" | "google" = "email", // Default to email registration
-		supabaseId?: string, // Optional for Google users
+		password?: string,
+		authProvider: "email" | "google" = "email",
+		supabaseId?: string,
+		avatar?: string,
 	) {
-		// Check if email or username already exists
+		// Check if email, username, or supabaseId already exists
 		const existingUser = await this.prisma.user.findFirst({
 			where: {
-				OR: [{ email }, { username }],
+				OR: [
+					{ email },
+					{ username },
+					...(supabaseId ? [{ supabaseId }] : []), // Only check supabaseId for Google users
+				],
 			},
 		});
 
@@ -32,6 +37,9 @@ export class AuthService {
 			}
 			if (existingUser.username === username) {
 				throw new Error("Username already exists");
+			}
+			if (supabaseId && existingUser.supabaseId === supabaseId) {
+				throw new Error("Supabase ID already exists");
 			}
 		}
 
@@ -45,7 +53,6 @@ export class AuthService {
 			hashedPassword = await hashPassword(password);
 		}
 
-		// Create user
 		return this.prisma.user.create({
 			data: {
 				firstName,
@@ -55,68 +62,48 @@ export class AuthService {
 				password: hashedPassword,
 				authProvider,
 				supabaseId,
+				avatar,
 			},
 		});
 	}
 
-	// Logs in a user with email/password
-
-	async login(email: string, password: string) {
+	async login(
+		email: string,
+		password?: string,
+		supabaseId?: string,
+		authProvider: "email" | "google" = "email",
+	) {
 		const user = await this.prisma.user.findUnique({
 			where: { email },
 		});
+
 		if (!user) {
 			throw new Error("Invalid credentials");
 		}
 
-		// Check if the user is an email/password user
-		if (user.authProvider === "google") {
-			throw new Error("Please log in using Google");
+		if (authProvider === "email") {
+			// Email user login
+			if (user.authProvider !== "email") {
+				throw new Error("Please log in using Google");
+			}
+
+			if (!password) {
+				throw new Error("Password is required for login");
+			}
+
+			const isPasswordValid = await comparePasswords(
+				password,
+				user.password || "",
+			);
+			if (!isPasswordValid) {
+				throw new Error("Invalid credentials");
+			}
+		} else if (authProvider === "google") {
+			// Google user login
+			if (user.authProvider !== "google" || user.supabaseId !== supabaseId) {
+				throw new Error("Invalid credentials for Google login");
+			}
 		}
-
-		if (!user.password) {
-			throw new Error("Password is required for login with email");
-		}
-
-		// Validate password
-		const isPasswordValid = await comparePasswords(password, user.password);
-		if (!isPasswordValid) {
-			throw new Error("Invalid credentials");
-		}
-
-		return user;
-	}
-
-	// Synchronizes Google OAuth users with the database
-
-	async syncGoogleUser(
-		supabaseId: string,
-		email: string,
-		firstName: string,
-		lastName: string,
-		username: string,
-		avatar?: string,
-	) {
-		// Upsert the Google user
-		const user = await this.prisma.user.upsert({
-			where: { supabaseId },
-			update: {
-				email,
-				firstName,
-				lastName,
-				username,
-				avatar,
-			},
-			create: {
-				supabaseId,
-				email,
-				firstName,
-				lastName,
-				username,
-				avatar,
-				authProvider: "google",
-			},
-		});
 
 		return user;
 	}

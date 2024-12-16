@@ -17,7 +17,8 @@ export function splitName(fullName: string): {
 	return { firstName, lastName };
 }
 
-export function createRegisterResponseBody(data) {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function createRegisterResponseBody(data: any) {
 	const { firstName, lastName } = splitName(data.full_name);
 	const requestBody: RegisterApiPayloadType = {
 		firstName: firstName,
@@ -32,26 +33,22 @@ export function createRegisterResponseBody(data) {
 	return requestBody;
 }
 
-export function createGoogleLoginResponseBody(data) {
-	const { firstName, lastName } = splitName(data.full_name);
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function createGoogleLoginResponseBody(data: any) {
 	const requestBody: GoogleLoginApiPayloadType = {
-		firstName: firstName,
-		lastName: lastName,
-		username: data.name,
 		email: data.email,
 		authProvider: "google",
 		supabaseId: data.provider_id,
-		avatar: data.avatar_url,
 		password: null,
 	};
 	return requestBody;
 }
 
-export function createLoginResponseBody(data) {
+export function createLoginResponseBody(data: LoginApiPayloadType) {
 	const requestBody: LoginApiPayloadType = {
 		email: data.email,
 		password: data.password,
-		authProvider: null,
+		authProvider: "email",
 	};
 	return requestBody;
 }

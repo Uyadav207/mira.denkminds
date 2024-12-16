@@ -9,11 +9,14 @@ export class JwtService {
 	}
 
 	generateToken(user: User): string {
-		return jwt.sign(
-			{ id: user.id, email: user.email, authProvider: user.authProvider },
-			this.secret,
-			{ expiresIn: "1d" },
-		);
+		const payload = {
+			id: user.id,
+			email: user.email,
+			authProvider: user.authProvider,
+		};
+
+		// Sign the JWT with payload and secret
+		return jwt.sign(payload, this.secret, { expiresIn: "1d" });
 	}
 
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>

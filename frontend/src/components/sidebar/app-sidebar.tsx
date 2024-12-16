@@ -20,6 +20,7 @@ import {
 	SidebarSeparator,
 } from "@components/ui/sidebar";
 import NavContent from "./nav-content";
+import { SidebarRail } from "../ui/sidebar";
 
 const data = {
 	user: {
@@ -163,6 +164,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			<SidebarFooter>
 				<TeamSwitcher />
 			</SidebarFooter>
+			<SidebarRail />
 		</Sidebar>
 	);
 }
