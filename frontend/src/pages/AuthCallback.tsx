@@ -39,11 +39,8 @@ const AuthCallback = () => {
 					if (type === "register") {
 						// Save user to your personal DB
 						const registerRequestBody: RegisterApiPayloadType =
-							createRegisterResponseBody(
-								authData.session.user.user_metadata,
-							);
-						const response =
-							await authApis.register(registerRequestBody);
+							createRegisterResponseBody(authData.session.user.user_metadata);
+						const response = await authApis.register(registerRequestBody);
 						const result = response.data;
 						// Set user in your app's state
 						setUser(result.user);
@@ -54,8 +51,7 @@ const AuthCallback = () => {
 							createGoogleLoginResponseBody(
 								authData.session.user.user_metadata,
 							);
-						const response =
-							await authApis.googleLogin(loginRequestBody);
+						const response = await authApis.googleLogin(loginRequestBody);
 						const result = response.data;
 						setUser(result.user);
 					}
@@ -66,9 +62,7 @@ const AuthCallback = () => {
 					throw new Error("No session data found");
 				}
 			} catch (error) {
-				setError(
-					"An error occurred during authentication. Please try again.",
-				);
+				setError("An error occurred during authentication. Please try again.");
 				return error;
 			}
 		};

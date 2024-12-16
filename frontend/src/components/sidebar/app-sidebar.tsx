@@ -6,6 +6,7 @@ import {
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
+	SidebarRail,
 	SidebarSeparator,
 } from "../ui/sidebar";
 
@@ -22,6 +23,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			<SidebarFooter>
 				<TeamSwitcher />
 			</SidebarFooter>
+			<SidebarRail />
 		</Sidebar>
 	);
 }

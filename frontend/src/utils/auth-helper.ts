@@ -17,17 +17,8 @@ export function splitName(fullName: string): {
 	return { firstName, lastName };
 }
 
-interface RegisterResponseBodyData {
-	full_name: string;
-	name: string;
-	email: string;
-	provider_id: string;
-	avatar_url: string;
-}
-
-export function createRegisterResponseBody(
-	data: RegisterResponseBodyData,
-): RegisterApiPayloadType {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function createRegisterResponseBody(data: any) {
 	const { firstName, lastName } = splitName(data.full_name);
 	const requestBody: RegisterApiPayloadType = {
 		firstName: firstName,
@@ -42,43 +33,22 @@ export function createRegisterResponseBody(
 	return requestBody;
 }
 
-interface GoogleLoginResponseBodyData {
-	full_name: string;
-	name: string;
-	email: string;
-	provider_id: string;
-	avatar_url: string;
-}
-
-export function createGoogleLoginResponseBody(
-	data: GoogleLoginResponseBodyData,
-): GoogleLoginApiPayloadType {
-	const { firstName, lastName } = splitName(data.full_name);
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export function createGoogleLoginResponseBody(data: any) {
 	const requestBody: GoogleLoginApiPayloadType = {
-		firstName: firstName,
-		lastName: lastName,
-		username: data.name,
 		email: data.email,
 		authProvider: "google",
 		supabaseId: data.provider_id,
-		avatar: data.avatar_url,
 		password: null,
 	};
 	return requestBody;
 }
 
-interface LoginResponseBodyData {
-	email: string;
-	password: string;
-}
-
-export function createLoginResponseBody(
-	data: LoginResponseBodyData,
-): LoginApiPayloadType {
+export function createLoginResponseBody(data: LoginApiPayloadType) {
 	const requestBody: LoginApiPayloadType = {
 		email: data.email,
 		password: data.password,
-		authProvider: null,
+		authProvider: "email",
 	};
 	return requestBody;
 }

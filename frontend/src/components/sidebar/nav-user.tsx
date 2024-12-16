@@ -27,9 +27,11 @@ import type { User } from "../../types/user";
 import useStore from "../../store/store";
 import { Dialog } from "../dialog";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function NavUser() {
 	const { isMobile } = useSidebar();
+	const navigate = useNavigate();
 	const userData = useStore();
 	const logout = useStore((state) => state.logout);
 	const user: User = userData.user as User;
@@ -91,7 +93,7 @@ export function NavUser() {
 							<DropdownMenuSeparator />
 							<DropdownMenuSeparator />
 							<DropdownMenuGroup>
-								<DropdownMenuItem>
+								<DropdownMenuItem onClick={() => navigate("/accounts")}>
 									<BadgeCheck />
 									Account
 								</DropdownMenuItem>
