@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import DynamicForm from "@components/inputs/dynamic-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { showErrorToast, showSuccessToast } from "@components/toaster";
+import { Button } from "@components/ui/button";
 
 import { authApis } from "@api/auth";
 import {
@@ -20,7 +21,7 @@ enum AuthFlowState {
 	ResetPassword = 2,
 }
 
-const AuthFlow: React.FC = () => {
+const ForgotPassword: React.FC = () => {
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
 	const [flowState, setFlowState] = useState<AuthFlowState>(
@@ -137,6 +138,16 @@ const AuthFlow: React.FC = () => {
 		}
 	};
 
+	const handleBack = () => {
+		if (flowState === AuthFlowState.VerifyOTP) {
+			setFlowState(AuthFlowState.ForgotPassword);
+		} else if (flowState === AuthFlowState.ResetPassword) {
+			setFlowState(AuthFlowState.VerifyOTP);
+		} else {
+			navigate("/login");
+		}
+	};
+
 	return (
 		<div className="flex min-h-screen items-center justify-center p-4 sm:p-6 lg:p-8">
 			<Card className="w-full max-w-[400px]">
@@ -148,10 +159,19 @@ const AuthFlow: React.FC = () => {
 				</CardHeader>
 				<CardContent className="space-y-6 text-center">
 					{renderForm()}
+
+					<Button
+						variant="outline"
+						className="w-full"
+						onClick={handleBack}
+						disabled={isLoading}
+					>
+						Back
+					</Button>
 				</CardContent>
 			</Card>
 		</div>
 	);
 };
 
-export default AuthFlow;
+export default ForgotPassword;

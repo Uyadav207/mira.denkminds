@@ -9,10 +9,10 @@ import { Settings } from "./pages/Settings";
 import { Layout } from "./components/dashboard/Layout";
 import { Dashboard } from "./pages/Dashboard";
 import { Reports } from "./pages/Reports";
-import ForgotPassword from "./pages/ForgotPassword";
 import Auth from "./pages/Auth";
 import AuthCallback from "./pages/AuthCallback";
 import ProfileSettings from "./pages/ProfileSettings";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const App = () => {
 	return (
