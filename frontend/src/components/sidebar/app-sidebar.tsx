@@ -6,6 +6,7 @@ import {
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
+	SidebarRail,
 	SidebarSeparator,
 } from "../ui/sidebar";
 
