@@ -39,7 +39,6 @@ export function NavUser() {
 
 	const handleLogout = () => {
 		logout();
-		console.log("User logged out");
 		window.location.href = "/login";
 	};
 
@@ -58,7 +57,7 @@ export function NavUser() {
 								<Avatar className="h-8 w-8 rounded-lg">
 									<AvatarImage src={user?.avatar ?? undefined} alt={fullName} />
 									<AvatarFallback className="rounded-lg">
-										{fullName.substring(0, 1)}
+										{/* {fullName.substring(0, 1)} */}
 									</AvatarFallback>
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
@@ -82,7 +81,7 @@ export function NavUser() {
 											alt={fullName}
 										/>
 										<AvatarFallback className="rounded-lg">
-											{fullName.substring(0, 1)}
+											{/* {fullName.substring(0, 1)} */}
 										</AvatarFallback>
 									</Avatar>
 									<div className="grid flex-1 text-left text-sm leading-tight">

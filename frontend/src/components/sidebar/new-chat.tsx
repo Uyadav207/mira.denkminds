@@ -1,10 +1,5 @@
 import { Plus } from "lucide-react";
-import {
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-	useSidebar,
-} from "../ui/sidebar";
+import { SidebarMenu, SidebarMenuItem, useSidebar } from "../ui/sidebar";
 import { Button } from "../ui/button";
 
 export function TeamSwitcher() {

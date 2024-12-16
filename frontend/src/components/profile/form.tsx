@@ -30,16 +30,17 @@ const ProfileForm = () => {
 	const [imageSrc, setImageSrc] = useState<string | null>(null);
 	const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 	const [isDialog, setIsDialogOpen] = useState(false); // State for dialog visibility
-	const [userIdToDelete, setUserIdToDelete] = useState<string | null>(null);
+	const [, setUserIdToDelete] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
 	const form = useForm<ProfileValues>({
 		resolver: zodResolver(profileSchema),
-		defaultValues:
-			{
-				...user,
-				avatar: user?.avatar ? null : undefined,
-			} || USER_INITIAL_VALUES,
+		defaultValues: user
+			? {
+					...user,
+					avatar: user?.avatar ? null : undefined,
+				}
+			: USER_INITIAL_VALUES,
 	});
 
 	useEffect(() => {

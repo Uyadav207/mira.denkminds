@@ -46,18 +46,6 @@ const recentChats: Chat[] = [
 ];
 
 export default function NavContent() {
-	const handleDelete = (chatId: string) => {
-		// Implement delete functionality here
-	};
-
-	const handleShare = (chatId: string) => {
-		// Implement share functionality here
-	};
-
-	const handleCopy = (chatId: string) => {
-		// Implement copy functionality here
-	};
-
 	const navigate = useNavigate();
 
 	return (
@@ -120,19 +108,25 @@ export default function NavContent() {
 													</Button>
 												</DropdownMenuTrigger>
 												<DropdownMenuContent align="end" className="w-[160px]">
-													<DropdownMenuItem onClick={() => handleCopy(chat.id)}>
+													<DropdownMenuItem
+													// onClick={() =>
+													// 	handleCopy(chat.id)
+													// }
+													>
 														<Copy className="mr-2 h-4 w-4" />
 														<span>Copy</span>
 													</DropdownMenuItem>
 													<DropdownMenuItem
-														onClick={() => handleShare(chat.id)}
+													// onClick={() =>
+													// 	handleShare(chat.id)
+													// }
 													>
 														<Share2 className="mr-2 h-4 w-4" />
 														<span>Share</span>
 													</DropdownMenuItem>
 													<DropdownMenuSeparator />
 													<DropdownMenuItem
-														onClick={() => handleDelete(chat.id)}
+														// onClick={() => handleDelete(chat.id)}
 														className="text-red-600"
 													>
 														<Trash2 className="mr-2 h-4 w-4" />

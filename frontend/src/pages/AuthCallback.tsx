@@ -63,6 +63,7 @@ const AuthCallback = () => {
 				}
 			} catch (error) {
 				setError("An error occurred during authentication. Please try again.");
+				return error;
 			}
 		};
 
