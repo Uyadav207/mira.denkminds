@@ -24,14 +24,23 @@ const App = () => {
 						<Route path="/" element={<Home />} />
 						<Route path="/login" element={<Auth />} />
 						<Route path="/register" element={<Auth />} />
-						<Route path="/forgot-password" element={<ForgotPassword />} />
-						<Route path="/auth/callback" element={<AuthCallback />} />
+						<Route
+							path="/forgot-password"
+							element={<ForgotPassword />}
+						/>
+						<Route
+							path="/auth/callback"
+							element={<AuthCallback />}
+						/>
 						<Route element={<Layout />}>
 							<Route path="/chatbot" element={<Chatbot />} />
 							<Route path="/settings" element={<Settings />} />
 							<Route path="/dashboard" element={<Dashboard />} />
 							<Route path="/reports" element={<Reports />} />
-							<Route path="/accounts" element={<ProfileSettings />} />
+							<Route
+								path="/accounts"
+								element={<ProfileSettings />}
+							/>
 						</Route>
 					</Routes>
 				</Router>
