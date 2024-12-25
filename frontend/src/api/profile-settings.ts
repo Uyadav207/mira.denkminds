@@ -20,7 +20,7 @@ const changeUserPassword = async (
 	payload: Password,
 	token: string,
 ) => {
-	axiosInstance.put(`/users/user/change_password/${id}`, payload, {
+	return axiosInstance.put(`/users/user/change_password/${id}`, payload, {
 		headers: {
 			Authorization: `Bearer ${token}`,
 		},
