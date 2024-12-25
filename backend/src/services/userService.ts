@@ -65,6 +65,7 @@ export class UserService {
 				throw new Error("User not found");
 			}
 			const hashedPassword = await hashPassword(password);
+			console.log(hashedPassword, "services returned");
 			return await this.prisma.user.update({
 				where: { id },
 				data: { password: hashedPassword },
@@ -87,14 +88,12 @@ export class UserService {
 			}
 
 			const otp = generateOtp();
-			await redis
-				.set(`reset:${email}`, otp, "EX", 10 * 60)
-				.catch((err) => {
-					throw new Error(
-						"Unable to process the OTP request. Please try again.",
-						err,
-					);
-				});
+			await redis.set(`reset:${email}`, otp, "EX", 10 * 60).catch((err) => {
+				throw new Error(
+					"Unable to process the OTP request. Please try again.",
+					err,
+				);
+			});
 
 			await transporter.sendMail({
 				from: process.env.EMAIL_USER,
@@ -115,20 +114,14 @@ export class UserService {
 	async verifyOtp(email: string, otp: string) {
 		try {
 			const storedOtp = await redis.get(`reset:${email}`).catch((err) => {
-				throw new Error(
-					"Unable to verify the OTP. Please try again.",
-					err,
-				);
+				throw new Error("Unable to verify the OTP. Please try again.", err);
 			});
 			if (!storedOtp || storedOtp !== otp) {
 				throw new Error("Invalid or expired OTP");
 			}
 
 			await redis.del(`reset:${email}`).catch((err) => {
-				throw new Error(
-					"Unable to verify the OTP. Please try again.",
-					err,
-				);
+				throw new Error("Unable to verify the OTP. Please try again.", err);
 			});
 
 			return { message: "OTP verified successfully" };

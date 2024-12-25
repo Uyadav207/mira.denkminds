@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Label } from "@components/ui/label";
 import { passwordSchema } from "./constants";
 import type { FieldValues } from "react-hook-form";
+import { Loader2 } from "lucide-react";
+
 import {
 	Form,
 	FormItem,
@@ -20,7 +22,13 @@ import type { PasswordValues } from "./constants";
 const PassowrdForm = () => {
 	const form = useForm<PasswordValues>({
 		resolver: zodResolver(passwordSchema),
+		defaultValues: {
+			currentPassword: "",
+			newPassword: "",
+			confirmPassword: "",
+		},
 	});
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [passwordVisibility, setPasswordVisibility] = useState({
 		currentPassword: false,
@@ -34,7 +42,7 @@ const PassowrdForm = () => {
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit((data) =>
-							handleSubmit(data, form),
+							handleSubmit(data, form, setIsLoading),
 						)}
 						className="w-full max-w-4xl"
 					>
@@ -57,6 +65,7 @@ const PassowrdForm = () => {
 															: "password"
 													}
 													id="currentPassword"
+													value={field.value ?? ""}
 													{...field}
 												/>
 												<Button
@@ -184,7 +193,11 @@ const PassowrdForm = () => {
 								type="submit"
 								variant="default"
 								className="flex items-center justify-center gap-2 px-6 py-2"
+								disabled={isLoading}
 							>
+								{isLoading && (
+									<Loader2 className="animate-spin text-blue-500" />
+								)}
 								Change Password
 							</Button>
 						</div>

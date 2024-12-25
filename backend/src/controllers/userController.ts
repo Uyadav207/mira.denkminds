@@ -60,11 +60,10 @@ export const changePassword = async (c: Context) => {
 		if (!isOldPasswordCorrect) {
 			return c.json({ error: "Incorrect old password" }, 400);
 		}
-		const hashedNewPassword = await hashPassword(newPassword);
 
 		const updatedUser = await userService.updatePassword(
 			Number(id),
-			hashedNewPassword,
+			newPassword,
 		);
 
 		return c.json({ updatedUser }, 200);

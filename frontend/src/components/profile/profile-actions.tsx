@@ -85,11 +85,11 @@ export const handleDelete = async (params: { userId: string }) => {
 
 		// Make API call to delete user
 		await userApis.deleteUserByID(userId, token);
-		showSuccessToast("User Account Deleted Successfully!");
 		setTimeout(() => {
 			useStore.getState().logout();
 			window.location.href = "/login";
 		}, 2000);
+		showSuccessToast("User Account Deleted Successfully!");
 	} catch (error: unknown) {
 		if (error instanceof Error) {
 			showErrorToast(`An error occurred: ${error.message}`);
