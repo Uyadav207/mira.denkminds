@@ -6,7 +6,9 @@ CREATE TABLE "User" (
     "lastName" TEXT NOT NULL,
     "avatar" TEXT,
     "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "password" TEXT,
+    "authProvider" TEXT NOT NULL DEFAULT 'email',
+    "supabaseId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -18,3 +20,6 @@ CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_supabaseId_key" ON "User"("supabaseId");
