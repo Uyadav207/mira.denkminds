@@ -1,10 +1,10 @@
 import { Hono } from "hono";
-import { authRoutes } from "./routes/authRoutes";
-import { errorHandler } from "./middlewares/errorHandler";
-import { logger } from "hono/logger";
-import { userRoutes } from "./routes/userRoutes";
 import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { errorHandler } from "./middlewares/errorHandler";
+import { authRoutes } from "./routes/authRoutes";
 import { chatRoute } from "./routes/chatRoute";
+import { userRoutes } from "./routes/userRoutes";
 
 import ollama from "ollama";
 

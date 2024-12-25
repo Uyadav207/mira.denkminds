@@ -12,9 +12,11 @@
 	"dependencies": {
 		"@huggingface/inference": "^2.8.1",
 		"@prisma/client": "^5.22.0",
+		"@supabase/supabase-js": "^2.47.10",
 		"bcrypt": "^5.1.1",
 		"bcryptjs": "^2.4.3",
 		"bunyan": "^1.8.15",
+		"convex": "^1.17.4",
 		"hono": "^4.6.12",
 		"ioredis": "^5.4.1",
 		"jsonwebtoken": "^9.0.2",

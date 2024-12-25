@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import { hashPassword, comparePasswords } from "../utils/passwordUtils";
+import { comparePasswords, hashPassword } from "../utils/passwordUtils";
 
 export class AuthService {
 	private prisma: PrismaClient;
@@ -100,7 +100,10 @@ export class AuthService {
 			}
 		} else if (authProvider === "google") {
 			// Google user login
-			if (user.authProvider !== "google" || user.supabaseId !== supabaseId) {
+			if (
+				user.authProvider !== "google" ||
+				user.supabaseId !== supabaseId
+			) {
 				throw new Error("Invalid credentials for Google login");
 			}
 		}

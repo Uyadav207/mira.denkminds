@@ -15,7 +15,7 @@
 		"indentWidth": 4
 	},
 	"organizeImports": {
-		"enabled": false
+		"enabled": true
 	},
 	"linter": {
 		"enabled": true,
@@ -27,15 +27,7 @@
 					"fix": "none"
 				}
 			},
-			"suspicious": {
-				"noConsole": {
-					"level": "error",
-					"fix": "none",
-					"options": {
-						"allow": []
-					}
-				}
-			}
+			"suspicious": {}
 		}
 	},
 	"javascript": {

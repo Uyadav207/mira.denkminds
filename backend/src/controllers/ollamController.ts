@@ -27,10 +27,12 @@ export class ChatController {
 				message: response,
 			});
 		} catch (error) {
-			console.error("Chat completion error:", error);
 			return c.json(
 				{
-					error: error instanceof Error ? error.message : "Unknown error",
+					error:
+						error instanceof Error
+							? error.message
+							: "Unknown error",
 				},
 				500,
 			);
