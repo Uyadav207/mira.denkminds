@@ -1,12 +1,12 @@
 import { Hono } from "hono";
 import {
+	changePassword,
 	deleteUserById,
 	getUserById,
 	requestReset,
 	resetPassword,
 	updateUserById,
 	verifyOtp,
-	changePassword,
 } from "../controllers/userController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 

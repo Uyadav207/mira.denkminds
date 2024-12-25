@@ -1,7 +1,7 @@
 import supabase from "../config/supabase";
 
 export const uploadFileToSupabase = async (file: string, fileName: string) => {
-	const { data, error } = await supabase.storage
+	const { error } = await supabase.storage
 		.from("reports")
 		.upload(fileName, file, {
 			upsert: true,

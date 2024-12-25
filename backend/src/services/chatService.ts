@@ -1,10 +1,5 @@
 import { HfInference } from "@huggingface/inference";
-
-// Define the ChatMessage type if not already defined
-type ChatMessage = {
-	role: "user" | "assistant";
-	content: string;
-};
+import type { ChatMessage } from "../types/message";
 
 export class ChatService {
 	private inference: HfInference;
@@ -13,7 +8,10 @@ export class ChatService {
 		this.inference = new HfInference(process.env.HUGGINGFACE_API_KEY);
 	}
 
-	async generateChat(messages: ChatMessage[], model: string): Promise<string> {
+	async generateChat(
+		messages: ChatMessage[],
+		model: string,
+	): Promise<string> {
 		try {
 			const out = await this.inference.chatCompletion({
 				model: model,
@@ -25,9 +23,9 @@ export class ChatService {
 			const assistantMessage = out.choices?.[0]?.message?.content;
 			return assistantMessage || "No response from the model";
 		} catch (error) {
-			// Handle and log errors
-			console.error("Error in generateChat:", error);
-			throw new Error("Failed to generate a chat completion");
+			throw new Error(
+				`Failed to generate a chat completion: ${(error as unknown as Error).message}`,
+			);
 		}
 	}
 }

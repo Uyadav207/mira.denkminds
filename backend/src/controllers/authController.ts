@@ -1,8 +1,8 @@
-import type { Context } from "hono";
 import { PrismaClient } from "@prisma/client";
+import type { Context } from "hono";
+import type User from "../models/User";
 import { AuthService } from "../services/authService";
 import { JwtService } from "../services/jwtService";
-import type User from "../models/User";
 
 const prisma = new PrismaClient();
 const authService = new AuthService(prisma);

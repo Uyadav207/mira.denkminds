@@ -1,4 +1,4 @@
-type ChatMessage = {
+export type ChatMessage = {
 	role: "user" | "assistant";
 	content: string;
 };

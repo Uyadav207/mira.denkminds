@@ -1,7 +1,6 @@
-import { convexClient, api } from "../config/convex"; // Import the convex client and API functions
+import { api, convexClient } from "../config/convex"; // Import the convex client and API functions
 
 // Save a summary for a user
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const saveSummaryService = async (
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	userId: any,
@@ -18,8 +17,7 @@ export const saveSummaryService = async (
 		});
 		return result; // Return the result (summary)
 	} catch (error) {
-		console.error("Error saving summary:", error);
-		throw error; // Re-throw error for handling in the controller
+		throw error as Error; // Re-throw error for handling in the controller
 	}
 };
 
@@ -35,8 +33,7 @@ export const getSummariesByUserService = async (userId: any) => {
 		);
 		return summaries; // Return the summaries for the user
 	} catch (error) {
-		console.error("Error getting summaries:", error);
-		throw error;
+		throw error as Error;
 	}
 };
 
@@ -44,12 +41,14 @@ export const getSummariesByUserService = async (userId: any) => {
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const deleteSummaryService = async (summaryId: any) => {
 	try {
-		const result = await convexClient.mutation(api.summaries.deleteSummary, {
-			summaryId,
-		});
+		const result = await convexClient.mutation(
+			api.summaries.deleteSummary,
+			{
+				summaryId,
+			},
+		);
 		return result; // Return success response
 	} catch (error) {
-		console.error("Error deleting summary:", error);
-		throw error;
+		throw error as Error;
 	}
 };
