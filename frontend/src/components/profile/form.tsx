@@ -211,6 +211,10 @@ const ProfileForm = () => {
 												<Input
 													placeholder="Email"
 													type="email"
+													disabled={
+														user?.authProvider ===
+														"google"
+													}
 													{...field}
 												/>
 											</FormControl>
