@@ -29,6 +29,29 @@ export const updateUserById = async (c: Context) => {
 	}
 };
 
+// TODO: Update user avatar
+export const updateAvatarById = async (c: Context) => {
+	const id = c.req.param("id");
+	const { file } = await c.req.parseBody();
+	if (!(file instanceof File)) {
+		return c.json({ error: "Invalid file provided" }, 400);
+	}
+
+	if (!file) {
+		return c.json({ error: "No file provided" }, 400);
+	}
+
+	try {
+		const updatedUser = await userService.updateAvatar(Number(id), file);
+		return c.json({
+			message: "Avatar updated successfully",
+			user: updatedUser,
+		});
+	} catch (error) {
+		return c.json({ error: (error as Error).message }, 500);
+	}
+};
+
 // TODO: delete user by ID
 export const deleteUserById = async (c: Context) => {
 	const id = c.req.param("id");
