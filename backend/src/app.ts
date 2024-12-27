@@ -5,6 +5,7 @@ import { errorHandler } from "./middlewares/errorHandler";
 import { authRoutes } from "./routes/authRoutes";
 import { chatRoute } from "./routes/chatRoute";
 import { userRoutes } from "./routes/userRoutes";
+import { reportRoutes } from "./routes/reportRoutes";
 
 import ollama from "ollama";
 
@@ -22,6 +23,7 @@ app.use("*", errorHandler);
 app.route("/auth", authRoutes);
 app.route("/users", userRoutes);
 app.route("/chat", chatRoute);
+app.route("/reports", reportRoutes);
 
 app.post("/api/chat", async (c) => {
 	const { prompt } = await c.req.json();
