@@ -4,6 +4,7 @@ import redis from "../config/redis";
 import type User from "../models/User";
 import { generateOtp } from "../utils/otpUtils";
 import { hashPassword } from "../utils/passwordUtils";
+import { uploadImageAndGetUrl } from "../utils/supabaseUtils/avatars";
 
 export class UserService {
 	private prisma: PrismaClient;
@@ -38,6 +39,40 @@ export class UserService {
 		} catch (error) {
 			throw new Error(
 				`An error occurred while updating the user ${(error as unknown as Error).message}`,
+			);
+		}
+	}
+
+	async updateAvatar(id: number, file: File) {
+		if (!id || Number.isNaN(id)) {
+			throw new Error("Invalid user ID");
+		}
+
+		if (!(file instanceof File)) {
+			throw new Error("Invalid file provided");
+		}
+
+		try {
+			// Check if the user exists
+			const user = await this.prisma.user.findUnique({ where: { id } });
+			if (!user) {
+				throw new Error("User not found");
+			}
+
+			// Upload the image and get the URL
+			const avatarUrl = await uploadImageAndGetUrl(file);
+
+			// Update the user's avatar in the database
+			const updatedUser = await this.prisma.user.update({
+				where: { id },
+				data: { avatar: avatarUrl },
+			});
+
+			return updatedUser; // Return the updated user object
+		} catch (error) {
+			console.error("Error in updateAvatar service:", error);
+			throw new Error(
+				`An error occurred while updating the avatar: ${(error as Error).message || "Unknown error"}`,
 			);
 		}
 	}
