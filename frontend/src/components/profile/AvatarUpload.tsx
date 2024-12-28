@@ -34,7 +34,11 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ userId, token }) => {
 					showErrorToast("phhhh... cannot update avatar");
 				}
 			} catch (error) {
-				throw new Error("Failed to update avatar. Please try again.");
+				if (error instanceof Error) {
+					throw new Error(
+						`Failed to update avatar. Please try again. ${error.message}`,
+					);
+				}
 			}
 		},
 		[userId, token, setUser],
@@ -76,7 +80,11 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ userId, token }) => {
 				<img
 					src={previewUrl || user?.avatar || "/logo.jpg"}
 					alt="User Avatar"
-					style={{ width: "100%", height: "100%", objectFit: "cover" }}
+					style={{
+						width: "100%",
+						height: "100%",
+						objectFit: "cover",
+					}}
 				/>
 			</button>
 		</div>

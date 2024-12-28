@@ -47,7 +47,11 @@ const ProfileForm = () => {
 					<form
 						onSubmit={form.handleSubmit((data) => {
 							if (user) {
-								handleSubmit(data, { userId: user.id }, setIsLoading);
+								handleSubmit(
+									data,
+									{ userId: user.id },
+									setIsLoading,
+								);
 							} else {
 								showErrorToast("User not found");
 							}
@@ -60,7 +64,9 @@ const ProfileForm = () => {
 								<FormField
 									control={form.control}
 									name="firstName"
-									render={({ field }: { field: FieldValues }) => (
+									render={({
+										field,
+									}: { field: FieldValues }) => (
 										<FormItem>
 											<Label
 												htmlFor="firstName"
@@ -69,7 +75,10 @@ const ProfileForm = () => {
 												First Name
 											</Label>
 											<FormControl>
-												<Input placeholder="First Name" {...field} />
+												<Input
+													placeholder="First Name"
+													{...field}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -78,13 +87,21 @@ const ProfileForm = () => {
 								<FormField
 									control={form.control}
 									name="username"
-									render={({ field }: { field: FieldValues }) => (
+									render={({
+										field,
+									}: { field: FieldValues }) => (
 										<FormItem>
-											<Label htmlFor="username" className="text-sm font-medium">
+											<Label
+												htmlFor="username"
+												className="text-sm font-medium"
+											>
 												Username
 											</Label>
 											<FormControl>
-												<Input placeholder="Username" {...field} />
+												<Input
+													placeholder="Username"
+													{...field}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -96,13 +113,21 @@ const ProfileForm = () => {
 								<FormField
 									control={form.control}
 									name="lastName"
-									render={({ field }: { field: FieldValues }) => (
+									render={({
+										field,
+									}: { field: FieldValues }) => (
 										<FormItem>
-											<Label htmlFor="lastName" className="text-sm font-medium">
+											<Label
+												htmlFor="lastName"
+												className="text-sm font-medium"
+											>
 												Last Name
 											</Label>
 											<FormControl>
-												<Input placeholder="Last Name" {...field} />
+												<Input
+													placeholder="Last Name"
+													{...field}
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -111,16 +136,24 @@ const ProfileForm = () => {
 								<FormField
 									control={form.control}
 									name="email"
-									render={({ field }: { field: FieldValues }) => (
+									render={({
+										field,
+									}: { field: FieldValues }) => (
 										<FormItem>
-											<Label htmlFor="email" className="text-sm font-medium">
+											<Label
+												htmlFor="email"
+												className="text-sm font-medium"
+											>
 												Email
 											</Label>
 											<FormControl>
 												<Input
 													placeholder="Email"
 													type="email"
-													disabled={user?.authProvider === "google"}
+													disabled={
+														user?.authProvider ===
+														"google"
+													}
 													{...field}
 												/>
 											</FormControl>
@@ -139,8 +172,10 @@ const ProfileForm = () => {
 								variant="default"
 								disabled={
 									isLoading ||
-									Object.keys(form.formState.errors).length > 0 ||
-									(!form.formState.isDirty && !form.formState.isSubmitting)
+									Object.keys(form.formState.errors).length >
+										0 ||
+									(!form.formState.isDirty &&
+										!form.formState.isSubmitting)
 								}
 							>
 								{isLoading && (

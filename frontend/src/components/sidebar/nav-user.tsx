@@ -65,7 +65,9 @@ export function NavUser() {
 									<span className="truncate font-semibold">
 										{user?.firstName}
 									</span>
-									<span className="truncate text-xs">{user?.username}</span>
+									<span className="truncate text-xs">
+										{user?.username}
+									</span>
 								</div>
 								<ChevronsUpDown className="ml-auto size-4" />
 							</SidebarMenuButton>
@@ -91,20 +93,26 @@ export function NavUser() {
 										<span className="truncate font-semibold">
 											{user?.firstName}
 										</span>
-										<span className="truncate text-xs">{user?.email}</span>
+										<span className="truncate text-xs">
+											{user?.email}
+										</span>
 									</div>
 								</div>
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<DropdownMenuSeparator />
 							<DropdownMenuGroup>
-								<DropdownMenuItem onClick={() => navigate("/accounts")}>
+								<DropdownMenuItem
+									onClick={() => navigate("/accounts")}
+								>
 									<BadgeCheck />
 									Account
 								</DropdownMenuItem>
 							</DropdownMenuGroup>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={() => setDialogOpen(true)}>
+							<DropdownMenuItem
+								onClick={() => setDialogOpen(true)}
+							>
 								<LogOut />
 								Log out
 							</DropdownMenuItem>
