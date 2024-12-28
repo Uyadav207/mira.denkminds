@@ -39,20 +39,6 @@ export const profileSchema = z.object({
 		.regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, {
 			message: "Email address should not contain invalid characters.",
 		}),
-	avatar: z
-		.instanceof(File, { message: "Avatar must be a valid file." })
-		.optional()
-		.nullable()
-		.refine(
-			(file) => {
-				if (!file) return true; // Skip validation if file is not present (null or undefined)
-				const validTypes = ["image/png", "image/jpeg", "image/jpg"];
-				return validTypes.includes(file.type);
-			},
-			{
-				message: "Avatar must be a PNG, JPEG, or JPG file.",
-			},
-		),
 });
 
 export type ProfileValues = z.infer<typeof profileSchema>;
@@ -62,5 +48,4 @@ export const USER_INITIAL_VALUES = {
 	lastName: "",
 	username: "",
 	email: "",
-	avatar: null,
 };
