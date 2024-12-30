@@ -1,32 +1,43 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { v4 as uuidv4 } from "uuid";
 import ReactMarkdown from "react-markdown";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { ChatActions } from "@components/chat/chat-actions";
 import { Textarea } from "@components/ui/textarea";
 import { ScrollArea } from "@components/ui/scroll-area";
-import { Card, CardContent } from "@components/ui/card";
+// import { Card, CardContent } from "@components/ui/card";
 import { Spinner } from "@components/loader/spinner";
+
+// import { HumanInTheLoop } from "./human-in-the-loop";
 
 // svg
 import MiraLogo from "../../assets/MiraLogo.svg";
 import MiraAvatar from "../../assets/Mira.svg";
-import GetStarted from "../../assets/GetStarted.svg";
-import SummaryIcon from "../../assets/SummaryIcon.svg";
-import AnalyseIcon from "../../assets/AnalyseIcon.svg";
 
 // types
 import type { Message } from "../../types/message";
-// import { HumanInTheLoop } from "./human-in-the-loop";
-import toast from "react-hot-toast";
+import {
+	// INITIAL_ACTION_CARDS,
+	REPORT_GENERATION,
+	// UPDATED_ACTION_CARDS,
+	URL_PATTERN,
+} from "./constants";
+import { VulnerabilityStandards } from "./vulnerability-standards";
+import { chatApis } from "../../api/chat";
+import { HumanInTheLoop } from "./human-in-the-loop";
+import { CreateFolderDialog } from "../folder/CreateFolderDialog";
+import type { Folder } from "../../types/reports";
 
 const MiraChatBot: React.FC = () => {
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [input, setInput] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
-	// const [showConfirmation, setShowConfirmation] = useState(false);
-	// const [pendingPrompt, setPendingPrompt] = useState("");
+	const [isLoading] = useState(false);
+	// const [actionCards, setActionCards] = useState(INITIAL_ACTION_CARDS);
+	const [pendingAction, setPendingAction] = useState<string | null>(null); // For confirmation
+	const [folders, setFolders] = useState<Folder[]>([]);
+	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies(messages): Intentionally used to trigger behaviour.
 	useEffect(() => {
@@ -40,185 +51,328 @@ const MiraChatBot: React.FC = () => {
 		}
 	}, [messages]);
 
-	const actionCards = [
-		{
-			title: "Get Started",
-			prompt: "Hi How can I help you today?",
-			icon: GetStarted,
-		},
-		{
-			title: "Scan Website",
-			prompt: "Please enter the URL for analysis.",
-			icon: AnalyseIcon,
-		},
-		{
-			title: "Report Generation",
-			prompt: "Please select the report type.",
-			icon: SummaryIcon,
-		},
-	];
-
-	const handleCardClick = (prompt: string) => {
-		const newMessage: Message = {
-			id: Date.now(),
-			text: prompt,
-			sender: "bot",
+	const handleCreateFolder = (name: string) => {
+		const newFolder: Folder = {
+			id: crypto.randomUUID(),
+			name,
+			files: [],
+			createdAt: new Date(),
 		};
-		setMessages([...messages, newMessage]);
-		setInput("");
-
-		// if (prompt.toLowerCase().includes("report")) {
-		// 	response +=
-		// 		" It seems you're interested in reports. Here are some suggested actions.";
-		// 	suggestedActions = [
-		// 		{
-		// 			title: "Generate Report",
-		// 			prompt: "Can you generate a detailed report for me?",
-		// 		},
-		// 		{
-		// 			title: "Analyze Data",
-		// 			prompt: "I need help analyzing the data in my report.",
-		// 		},
-		// 		{
-		// 			title: "Summarize Report",
-		// 			prompt: "Can you summarize the key points of my report?",
-		// 		},
-		// 	];
-		// } else if (prompt.toLowerCase().toLowerCase().includes("data")) {
-		// 	response +=
-		// 		" It looks like you're working with data. Here are some data-related actions.";
-		// 	suggestedActions = [
-		// 		{
-		// 			title: "Data Visualization",
-		// 			prompt: "Can you help me visualize this data?",
-		// 		},
-		// 		{
-		// 			title: "Data Cleaning",
-		// 			prompt: "I need assistance in cleaning my dataset.",
-		// 		},
-		// 		{
-		// 			title: "Statistical Analysis",
-		// 			prompt: "Can you perform a statistical analysis on this data?",
-		// 		},
-		// 	];
-		// } else {
-		// 	response += " Here are some general actions you might find helpful.";
-		// 	suggestedActions = [
-		// 		{ title: "Ask Question", prompt: "I have a question about..." },
-		// 		{ title: "Get Help", prompt: "I need help with..." },
-		// 		{
-		// 			title: "Explore Features",
-		// 			prompt: "What features does this application have?",
-		// 		},
-		// 	];
-		// }
-		// handleUserResponse(prompt);
+		setFolders([...folders, newFolder]);
 	};
-	// const handleConfirm = async (confirmed: boolean) => {
-	// 	if (confirmed && pendingPrompt) {
-	// 		try {
-	// 			setIsLoading(true); // Start loading
 
-	// 			const botMessage: Message = {
-	// 				id: Date.now(),
-	// 				text: "Processing your confirmed request...",
-	// 				sender: "bot",
-	// 				humanInTheLoop: true,
-	// 			};
-	// 			setMessages((prevMessages) => [...prevMessages, botMessage]);
-	// 		} catch (error) {
-	// 			// console.error("Error processing confirmation:", error);
-	// 			if (error instanceof Error) {
-	// 				toast.error(error.message);
-	// 			} else {
-	// 				toast.error("An unknown error occurred.");
-	// 			}
-	// 		} finally {
-	// 			setIsLoading(false); // Stop loading
-	// 			setPendingPrompt("");
-	// 			// setShowConfirmation(false);
-	// 		}
+	// const handleCardClick = (title: string, prompt: string) => {
+	// 	// Default bot response
+	// 	let botResponse = "";
+	// 	let updatedActionCards: typeof actionCards = [];
+
+	// 	// Logic to dynamically update action cards
+	// 	if (title.includes("Get Started")) {
+	// 		botResponse = "Welcome! What would you like to do next?";
+	// 		updatedActionCards = [...UPDATED_ACTION_CARDS];
+	// 	} else if (title.includes("Scan Website")) {
+	// 		botResponse = "Please provide the URL you want me to analyze.";
+	// 		updatedActionCards = [...UPDATED_ACTION_CARDS];
+	// 	} else if (title.includes("Report Generation")) {
+	// 		botResponse = "Please select a report type to generate.";
+	// 		updatedActionCards = [...UPDATED_ACTION_CARDS];
 	// 	} else {
-	// 		setPendingPrompt("");
-	// 		// setShowConfirmation(false);
+	// 		botResponse = "Here are some general actions you can take:";
+	// 		updatedActionCards = [...INITIAL_ACTION_CARDS];
 	// 	}
-	// };
 
-	// const handleCancel = () => {
-	// 	setShowConfirmation(false);
-	// 	setPendingPrompt("");
+	// 	const newMessage: Message = { id: uuidv4(), text: prompt, sender: "bot" };
+	// 	setMessages((prev) => [...prev, newMessage]);
+
+	// 	setInput("");
+
+	// 	setActionCards(updatedActionCards);
 	// };
-	const handleBotResponse = async (prompt: string) => {
-		// Proceed with the action if no confirmation is needed
-		processPrompt(prompt);
-	};
 
 	const processPrompt = async (prompt: string) => {
-		const urlPattern = /(https?:\/\/[^\s]+)/g;
-		const scanKeywords = ["scan", "scan operation"];
+		const lowerPrompt = prompt.toLowerCase().trim();
 
-		if (
-			urlPattern.test(prompt) ||
-			scanKeywords.some((keyword) => prompt.includes(keyword))
-		) {
-			// Ask for confirmation
-			// setPendingPrompt(prompt);
-			// setShowConfirmation(true);
-			// return;
+		const containsURL = URL_PATTERN.test(lowerPrompt);
+		const containsReportGeneration = REPORT_GENERATION.some((keyword) =>
+			lowerPrompt.includes(keyword),
+		);
+		if (containsURL) {
+			requestHumanApproval(
+				"scan",
+				"Which of the following standards would you like to use for the scan?",
+			);
+		} else if (containsReportGeneration) {
+			requestHumanApproval("report", prompt);
+		} else {
+			streamChatResponse(prompt);
+			// setIsLoading(true);
+			// try {
+			// 	const response = await chatApis.chat({ prompt: prompt });
+			// 	addBotMessage(response.data.message);
+			// } catch (error) {
+			// 	console.log("error");
+			// } finally {
+			// 	setIsLoading(false);
+			// }
+		}
+	};
+	const requestHumanApproval = (
+		actionType: string,
+		prompt: string,
+		confirmType?: string,
+	) => {
+		let approvalMessage = "";
+		if (actionType === "scan") {
+			approvalMessage =
+				"Select your preferred standard for the scan. You can choose from the following:";
+		} else if (actionType === "report") {
+			approvalMessage = "What type of report do you want to generate?";
+		} else if (actionType === "approval") {
+			approvalMessage = "Do you want to generate a Report?";
+		} else if (actionType === "folder") {
+			approvalMessage =
+				"Select the folder where you want to save the report.";
+		}
+		const approvalMessageObject: Message = {
+			id: uuidv4(),
+			text: prompt,
+			actionPrompts:
+				actionType === "scan"
+					? standards
+					: actionType === "report"
+						? reports
+						: actionType === "folder"
+							? foldersList
+							: [],
+			sender: "bot",
+			humanInTheLoop: true,
+			actionType: actionType,
+			confirmType: confirmType,
+			humanInTheLoopMessage: approvalMessage,
+		};
+
+		setPendingAction(approvalMessageObject.id);
+
+		setMessages((prev) => [...prev, approvalMessageObject]);
+	};
+
+	const confirmAction = async (standard: string, type: string) => {
+		if (!pendingAction) return;
+
+		if (type === "scan") {
+			//integration with scan api
 			try {
-				setIsLoading(true); // Start loading
-
-				const botMessage: Message = {
-					id: Date.now(),
-					text: "Should Mira proceed with the request?",
-					sender: "bot",
-					humanInTheLoop: true,
+				const userMessage: Message = {
+					id: uuidv4(),
+					text: standard,
+					sender: "user",
 				};
-				setMessages((prevMessages) => [...prevMessages, botMessage]);
-			} catch (error) {
-				if (error instanceof Error) {
-					toast.error(error.message);
-				} else {
-					toast.error("An unknown error occurred.");
-				}
+				setMessages((prev) => [...prev, userMessage]);
+				//do scan api call here
+				addBotMessage(`${type} in progress...`);
+
+				requestHumanApproval(
+					"approval",
+					"Do you want to generate a report?",
+					"report",
+				);
+			} catch {
+				// console.error("Error confirming action:", error);
+				addBotMessage(
+					"An error occurred while processing your request.",
+				);
 			} finally {
-				setIsLoading(false); // Stop loading
+				// Reset pending action
+			}
+		} else if (type === "report") {
+			addBotMessage(`${type} In progress...`);
+		} else if (type === "folder") {
+			// Folder selection
+			if (standard === "Create New Folder") {
+				// Show modal to create a new folder
+				setIsCreateDialogOpen(true);
+				// requestHumanApproval("file", "Please provide a name for the report.");
+
+				// handleFileCreationModal()
+			} else {
+				// Save the report in the selected folder
+				// finalizeReportGeneration()
 			}
 		} else {
-			try {
-				setIsLoading(true); // Start loading
+			// Report generation
 
-				const botMessage: Message = {
-					id: Date.now(),
-					text: `User said: ${prompt}`,
-					sender: "bot",
-					humanInTheLoop: false,
-				};
-				setMessages((prevMessages) => [...prevMessages, botMessage]);
-			} catch (error) {
-				if (error instanceof Error) {
-					toast.error(error.message);
-				} else {
-					toast.error("An unknown error occurred.");
-				}
-			} finally {
-				setIsLoading(false); // Stop loading
-			}
+			addBotMessage(`${type} In progress...`);
 		}
+	};
+
+	const yesClicked = (confirmType: string) => {
+		if (confirmType === "report") {
+			const userMessage: Message = {
+				id: uuidv4(),
+				text: "Yes",
+				sender: "user",
+			};
+			setMessages((prev) => [...prev, userMessage]);
+			addBotMessage(`${confirmType} Generation in progress...`);
+
+			requestHumanApproval(
+				"folder",
+				"Create a new folder. Or select an existing folder to save the report.",
+			);
+			// handleFileCreationModal()
+		}
+	};
+
+	const cancelAction = () => {
+		addBotMessage("Action cancelled. How else can I assist you?");
+		const userMessage: Message = {
+			id: uuidv4(),
+			text: "Yes",
+			sender: "user",
+		};
+		setMessages((prev) => [...prev, userMessage]);
+		setPendingAction(null);
+	};
+
+	const addBotMessage = (text: string) => {
+		const botMessage: Message = { id: uuidv4(), text, sender: "bot" };
+		setMessages((prev) => [...prev, botMessage]);
 	};
 
 	const handleSend = async () => {
 		if (input.trim()) {
-			const newMessage: Message = {
-				id: Date.now(),
+			const userMessage: Message = {
+				id: uuidv4(),
 				text: input,
 				sender: "user",
 			};
-			setMessages([...messages, newMessage]);
+			setMessages((prev) => [...prev, userMessage]);
+			processPrompt(input);
+			// await streamChatResponse(input);
 			setInput("");
-			await handleBotResponse(input);
 		}
 	};
+
+	const updateUI = (message: string) => {
+		setMessages((prev) => {
+			const lastMessage = prev[prev.length - 1];
+			if (lastMessage?.sender === "bot" && lastMessage.isStreaming) {
+				// Update the existing streaming message
+				return [
+					...prev.slice(0, -1),
+					{ ...lastMessage, text: message },
+				];
+			}
+			// Add a new streaming message
+			return [
+				...prev,
+				{
+					id: uuidv4(),
+					text: message,
+					sender: "bot",
+					isStreaming: true,
+				},
+			];
+		});
+	};
+
+	const completeMessage = () => {
+		setMessages((prev) =>
+			prev.map((msg) =>
+				msg.isStreaming ? { ...msg, isStreaming: false } : msg,
+			),
+		);
+	};
+
+	const streamChatResponse = async (prompt: string) => {
+		try {
+			const responseStream = await chatApis.chat({ prompt });
+
+			const reader = responseStream.getReader();
+			const decoder = new TextDecoder();
+			let accumulatedMessage = "";
+
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) {
+					completeMessage();
+					break;
+				}
+
+				const chunk = decoder.decode(value, { stream: true });
+				const lines = chunk
+					.split("\n")
+					.filter((line) => line.trim() !== "");
+
+				for (const line of lines) {
+					try {
+						const parsed = JSON.parse(line);
+						if (parsed.response) {
+							accumulatedMessage += parsed.response;
+							updateUI(accumulatedMessage);
+						}
+					} catch (error) {
+						// console.error("Error parsing line:", line, error);
+						return error;
+					}
+				}
+			}
+		} catch (error) {
+			addBotMessage(
+				"Oops! Something went wrong while streaming the response.",
+			);
+			return error;
+		}
+	};
+
+	const standards = [
+		{
+			id: "1",
+			name: "NIST",
+			type: "scan",
+		},
+		{
+			id: "2",
+			name: "ISO",
+			type: "scan",
+		},
+		{
+			id: "3",
+			name: "GDPR",
+			type: "scan",
+		},
+	];
+
+	const reports = [
+		{
+			id: "1",
+			name: "Chat Summary Report",
+			type: "report",
+		},
+		{
+			id: "2",
+			name: "Vulnerability Report",
+			type: "report",
+		},
+	];
+
+	const foldersList = [
+		{
+			id: "1",
+			name: "Create New Folder",
+			type: "folder",
+		},
+		{
+			id: "2",
+			name: "Folder 1",
+			type: "folder",
+		},
+		{
+			id: "3",
+			name: "Folder 2",
+			type: "folder",
+		},
+	];
 
 	return (
 		<div className="flex flex-col space-y-6 p-4 w-full h-full md:h-[90vh] rounded-lg shadow-lg bg-muted/50">
@@ -272,22 +426,40 @@ const MiraChatBot: React.FC = () => {
 									{message.sender === "user" ? (
 										message.text
 									) : (
-										<>
-											<ReactMarkdown>
-												{message.text}
-											</ReactMarkdown>
-										</>
+										<ReactMarkdown>
+											{message.text}
+										</ReactMarkdown>
 									)}
 								</span>
-								{/* {message.humanInTheLoop &&
+
+								{pendingAction === message.id &&
 									message.sender === "bot" &&
-									showConfirmation && (
-										<HumanInTheLoop
-											handleCancel={handleCancel}
-											handleConfirm={handleConfirm}
-											message="Are you sure you want to proceed?"
+									(message.actionType === "scan" ||
+									message.actionType === "report" ||
+									message.actionType === "folder" ? (
+										<VulnerabilityStandards
+											question={
+												message.humanInTheLoopMessage
+											}
+											actionPrompts={
+												message.actionPrompts || []
+											}
+											onConfirm={confirmAction}
 										/>
-									)} */}
+									) : (
+										message.actionType === "approval" && (
+											<HumanInTheLoop
+												// message={
+												// 	message.humanInTheLoopMessage
+												// }
+												onCancel={cancelAction}
+												confirmType={
+													message.confirmType
+												}
+												onConfirm={yesClicked}
+											/>
+										)
+									))}
 							</motion.div>
 						))}
 					</AnimatePresence>
@@ -305,7 +477,7 @@ const MiraChatBot: React.FC = () => {
 					)}
 				</ScrollArea>
 			)}
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 w-full xl:w-4/5 2xl:w-3/4 mx-auto">
+			{/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 w-full xl:w-4/5 2xl:w-3/4 mx-auto">
 				{actionCards.map((card, index) => (
 					<motion.div
 						key={card.title}
@@ -315,22 +487,16 @@ const MiraChatBot: React.FC = () => {
 					>
 						<Card
 							className="cursor-pointer transition-colors hover:bg-gray-200 h-full p-4"
-							onClick={() => handleCardClick(card.prompt)}
+							onClick={() => handleCardClick(card.title, card.prompt)}
 						>
 							<CardContent className="flex flex-col space-y-2 items-center justify-center">
-								<h2 className="text-lg font-semibold">
-									{card.title}
-								</h2>
-								<img
-									src={card.icon}
-									alt={card.title}
-									className="w-8 h-8"
-								/>
+								<h2 className="text-lg font-semibold">{card.title}</h2>
+								<img src={card.icon} alt={card.title} className="w-8 h-8" />
 							</CardContent>
 						</Card>
 					</motion.div>
 				))}
-			</div>
+			</div> */}
 
 			<div className="flex items-center w-full rounded-lg px-4 py-2 shadow-sm border">
 				<img src={MiraLogo} alt="Logo" className="w-7 h-7 mr-2" />
@@ -349,10 +515,18 @@ const MiraChatBot: React.FC = () => {
 					}}
 					className="flex-1"
 					placeholder="Type your prompt here or click on the action cards..."
+					// disabled={isLoading}
+				/>
+				<ChatActions
+					handleSend={streamChatResponse}
 					disabled={isLoading}
 				/>
-				<ChatActions handleSend={handleSend} disabled={isLoading} />
 			</div>
+			<CreateFolderDialog
+				open={isCreateDialogOpen}
+				onOpenChange={setIsCreateDialogOpen}
+				onCreateFolder={handleCreateFolder}
+			/>
 		</div>
 	);
 };

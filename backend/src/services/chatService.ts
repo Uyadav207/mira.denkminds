@@ -1,33 +1,39 @@
-import { HfInference } from "@huggingface/inference";
-
-// Define the ChatMessage type if not already defined
-type ChatMessage = {
-	role: "user" | "assistant";
-	content: string;
-};
+import { OpenAIService } from "./openAI";
+import { PineconeService } from "./pineconeStore";
+import type { ChatCompletionMessageParam } from "openai/resources/chat";
 
 export class ChatService {
-	private inference: HfInference;
+	private static instance: ChatService;
+	private openai: OpenAIService;
+	private pinecone: PineconeService;
 
-	constructor() {
-		this.inference = new HfInference(process.env.HUGGINGFACE_API_KEY);
+	constructor(openai: OpenAIService, pinecone: PineconeService) {
+		this.openai = openai;
+		this.pinecone = pinecone;
 	}
 
-	async generateChat(messages: ChatMessage[], model: string): Promise<string> {
-		try {
-			const out = await this.inference.chatCompletion({
-				model: model,
-				messages,
-				max_tokens: 500,
-			});
-
-			// Extract and return the assistant's response
-			const assistantMessage = out.choices?.[0]?.message?.content;
-			return assistantMessage || "No response from the model";
-		} catch (error) {
-			// Handle and log errors
-			console.error("Error in generateChat:", error);
-			throw new Error("Failed to generate a chat completion");
+	public static async getInstance(): Promise<ChatService> {
+		if (!ChatService.instance) {
+			const openai = OpenAIService.getInstance();
+			const pinecone = await PineconeService.getInstance();
+			ChatService.instance = new ChatService(openai, pinecone);
 		}
+		return ChatService.instance;
+	}
+
+	async processMessage(message: string, useRAG: boolean): Promise<string> {
+		if (!useRAG) {
+			const messages: ChatCompletionMessageParam[] = [
+				{
+					role: "user",
+					content: message,
+				},
+			];
+			return this.openai.chat(messages);
+		}
+
+		const docs = await this.pinecone.similaritySearch(message);
+		const context = docs.map((doc) => doc.pageContent).join("\n\n");
+		return this.openai.generateAnswer(context, message);
 	}
 }

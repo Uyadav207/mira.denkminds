@@ -1,12 +1,12 @@
 import { Hono } from "hono";
+
 import { authRoutes } from "./routes/authRoutes";
 import { errorHandler } from "./middlewares/errorHandler";
 import { logger } from "hono/logger";
 import { userRoutes } from "./routes/userRoutes";
 import { cors } from "hono/cors";
-import { chatRoute } from "./routes/chatRoute";
-
-import ollama from "ollama";
+import { chat } from "./routes/chatRoute";
+import { rag } from "./routes/rag";
 
 const app = new Hono();
 
@@ -21,12 +21,13 @@ app.use("*", errorHandler);
 // Routes
 app.route("/auth", authRoutes);
 app.route("/users", userRoutes);
-app.route("/chat", chatRoute);
+app.route("/chat", chat);
+app.route("/rag", rag);
+
+const OLLAMA_HOST = "https://35ac-34-16-223-49.ngrok-free.app"; // Change this to your Ollama API URL
 
 app.post("/api/chat", async (c) => {
 	const { prompt } = await c.req.json();
-	const OLLAMA_HOST =
-		process.env.OLLAMA_HOST || "https://549f-34-68-57-129.ngrok-free.app";
 
 	try {
 		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
@@ -36,13 +37,32 @@ app.post("/api/chat", async (c) => {
 			},
 			body: JSON.stringify({
 				prompt: prompt,
-				model: "mistral",
-				stream: false,
+				model: "mistral-cyber",
+				stream: true,
 			}),
 		});
 
-		const output = await response.json();
-		return c.json({ message: output.response });
+		const reader = response.body?.getReader();
+		const decoder = new TextDecoder();
+		const stream = new ReadableStream({
+			start(controller) {
+				function push() {
+					reader?.read().then(({ done, value }) => {
+						if (done) {
+							controller.close();
+							return;
+						}
+						controller.enqueue(decoder.decode(value));
+						push();
+					});
+				}
+				push();
+			},
+		});
+
+		return new Response(stream, {
+			headers: { "Content-Type": "text/event-stream" },
+		});
 	} catch (e) {
 		return c.json({ message: e });
 	}

@@ -1,9 +1,9 @@
 import { Hono } from "hono";
+import { ChatController } from "../controllers/chatController";
 
-import { generateChatResponse } from "../controllers/chatController";
+const chat = new Hono();
+const controller = new ChatController();
 
-const chatRoute = new Hono();
+chat.post("/message", (c) => controller.chat(c));
 
-chatRoute.post("/generate", generateChatResponse);
-
-export { chatRoute };
+export { chat };
