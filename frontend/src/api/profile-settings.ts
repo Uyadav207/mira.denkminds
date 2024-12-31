@@ -34,9 +34,22 @@ const deleteUserByID = (id: string, token: string) =>
 		},
 	});
 
+export const updateAvatar = async (id: string, file: File, token: string) => {
+	const formData = new FormData();
+	formData.append("file", file);
+
+	return axiosInstance.put(`/users/user/avatar/${id}`, formData, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+			"Content-Type": "multipart/form-data",
+		},
+	});
+};
+
 export const userApis = {
 	updateUserById,
 	getUserByID,
 	changeUserPassword,
 	deleteUserByID,
+	updateAvatar,
 };
