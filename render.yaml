@@ -5,7 +5,9 @@ services:
     plan: free
     image:
       url: ghcr.io/zaproxy/zaproxy:stable
-    port: 8080
+    envVars:
+    - key: PORT
+      value: 8080
     disk:
       name: zap-data
       mountPath: /zap/wrk
