@@ -38,7 +38,7 @@ const AuthByProviders: React.FC<{ type: string }> = ({ type }) => {
 					alt="Google Icon"
 					className="mr-2 h-4 w-4"
 				/>
-				{type === "login" ? "Sign in" : "Sign up"} with Google
+				Google
 			</Button>
 		</div>
 	);
