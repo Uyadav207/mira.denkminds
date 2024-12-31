@@ -8,10 +8,6 @@ services:
     envVars:
     - key: PORT
       value: 8080
-    disk:
-      name: zap-data
-      mountPath: /zap/wrk
-      sizeGB: 1
     startCommand: >
       zap.sh -daemon -host 0.0.0.0 -port 8080 
       -config connection.timeoutInSecs=60
