@@ -1,17 +1,18 @@
 services:
   - name: zap
     type: web
-    env: docker
-    plan: starter
-    image: zaproxy/zap-stable
-    ports:
-      - 8080
+    runtime: image
+    plan: free
+    image:
+      url: ghcr.io/zaproxy/zaproxy:stable
+    port: 8080
     disk:
       name: zap-data
       mountPath: /zap/wrk
       sizeGB: 1
     startCommand: >
-      zap.sh -daemon -host 0.0.0.0 -port 8080 -config connection.timeoutInSecs=60
+      zap.sh -daemon -host 0.0.0.0 -port 8080 
+      -config connection.timeoutInSecs=60
       -config api.addrs.addr.name=.* 
       -config api.disablekey=true
       -config api.addrs.addr.regex=true
