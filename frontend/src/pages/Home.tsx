@@ -135,20 +135,29 @@ export const Home = () => {
 							}}
 							className="w-full h-full"
 							onCreated={({ gl, camera, scene }) => {
-								gl.domElement.addEventListener("webglcontextlost", (event) => {
-									event.preventDefault();
-									throw new Error("WebGL context lost");
-								});
+								gl.domElement.addEventListener(
+									"webglcontextlost",
+									(event) => {
+										event.preventDefault();
+										throw new Error("WebGL context lost");
+									},
+								);
 								camera.lookAt(0, 1.8, 0);
 								scene.background = null;
 								gl.setClearColor(0x000000, 0);
 							}}
 						>
 							<ambientLight intensity={1} />
-							<directionalLight position={[10, 10, 5]} intensity={2} />
+							<directionalLight
+								position={[10, 10, 5]}
+								intensity={2}
+							/>
 							<pointLight position={[0, 10, 0]} intensity={2} />
 							<Suspense fallback={null}>
-								<group position={[0, -0.3, 0]} scale={[0.85, 0.85, 0.85]}>
+								<group
+									position={[0, -0.3, 0]}
+									scale={[0.85, 0.85, 0.85]}
+								>
 									<FBXModel
 										key={currentAvatar}
 										file={avatars[currentAvatar].file}
@@ -190,17 +199,29 @@ export const Home = () => {
 						<p className="text-center mb-4 font-bold text-lg">
 							{avatars[currentAvatar].title}
 						</p>
-						<p className="text-center mb-4">{avatars[currentAvatar].role}</p>
+						<p className="text-center mb-4">
+							{avatars[currentAvatar].role}
+						</p>
 						<Button variant="outline" className="w-full" asChild>
-							<a href="/chatbot">Choose {avatars[currentAvatar].name}</a>
+							<a href="/chatbot">
+								Choose {avatars[currentAvatar].name}
+							</a>
 						</Button>
 					</div>
 
 					<div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4">
-						<Button variant="outline" size="icon" onClick={handlePrevAvatar}>
+						<Button
+							variant="outline"
+							size="icon"
+							onClick={handlePrevAvatar}
+						>
 							←
 						</Button>
-						<Button variant="outline" size="icon" onClick={handleNextAvatar}>
+						<Button
+							variant="outline"
+							size="icon"
+							onClick={handleNextAvatar}
+						>
 							→
 						</Button>
 					</div>

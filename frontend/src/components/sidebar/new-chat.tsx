@@ -11,12 +11,21 @@ export function TeamSwitcher() {
 		<SidebarMenu>
 			<SidebarMenuItem>
 				{state === "expanded" ? (
-					<Button size="lg" className="w-full justify-start" onClick={() => navigate("/chatbot")} >
+					<Button
+						size="lg"
+						className="w-full justify-start"
+						onClick={() => navigate("/chatbot")}
+					>
 						<Plus className="mr-2 h-4 w-4" />
 						New Chat
 					</Button>
 				) : (
-					<Button size="icon" variant="default" className="h-9 w-9" onClick={() => navigate("/chatbot")} >
+					<Button
+						size="icon"
+						variant="default"
+						className="h-9 w-9"
+						onClick={() => navigate("/chatbot")}
+					>
 						<Plus className="h-4 w-4" />
 						<span className="sr-only">New Chat</span>
 					</Button>
