@@ -8,6 +8,7 @@ import { userRoutes } from "./routes/userRoutes";
 import { reportRoutes } from "./routes/reportRoutes";
 
 import ollama from "ollama";
+import zapRoutes from "./routes/zapRoutes";
 
 const app = new Hono();
 
@@ -24,6 +25,7 @@ app.route("/auth", authRoutes);
 app.route("/users", userRoutes);
 app.route("/chat", chatRoute);
 app.route("/reports", reportRoutes);
+app.route("/zap", zapRoutes);
 
 app.post("/api/chat", async (c) => {
 	const { prompt } = await c.req.json();
