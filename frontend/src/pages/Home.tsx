@@ -178,7 +178,7 @@ export const Home = () => {
 						</Canvas>
 					</ErrorBoundary>
 
-					<div className="absolute left-1/4 top-1/4 transform -translate-x-1/2 -translate-y-1/2 bg-card border-l border-b border-border shadow-lg rounded-lg p-4 w-64">
+					{/* <div className="absolute left-1/4 top-1/4 transform -translate-x-1/2 -translate-y-1/2 bg-card border-l border-b border-border shadow-lg rounded-lg p-4 w-64">
 						<p className="text-center mb-4 font-bold">
 							Already a member?
 						</p>
@@ -192,18 +192,20 @@ export const Home = () => {
 						<Button variant="outline" className="w-full" asChild>
 							<a href="/register">Register</a>
 						</Button>
-					</div>
+					</div> */}
 
 					{/* Message bubble for avatar name and role */}
 					<div className="absolute left-[70%] top-[10%] transform -translate-x-1/2 -translate-y-1/2 bg-card border-1 border-b border-border shadow-lg rounded-lg p-4 w-64 flex flex-col items-center">
 						<p className="text-center mb-4 font-bold text-lg">
-							{avatars[currentAvatar].name}
+							{avatars[currentAvatar].title}
 						</p>
 						<p className="text-center mb-4">
 							{avatars[currentAvatar].role}
 						</p>
 						<Button variant="outline" className="w-full" asChild>
-							<a href="/">Select Me</a>
+							<a href="/chatbot">
+								Choose {avatars[currentAvatar].name}
+							</a>
 						</Button>
 					</div>
 

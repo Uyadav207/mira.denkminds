@@ -3,13 +3,6 @@ import { useState } from "react";
 import useStore from "../store/store";
 import { authApis } from "../api/auth";
 import DynamicForm from "@components/inputs/dynamic-form";
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@components/ui/card";
 import { Separator } from "@components/ui/separator";
 import AuthByProviders from "@components/inputs/auth-providers";
 
@@ -20,11 +13,12 @@ import type {
 } from "../types/auth";
 import { createLoginResponseBody } from "../utils/auth-helper";
 
-const Auth: React.FC = () => {
+import MiraLogo from "../assets/MiraLogo.svg";
+
+export default function Auth() {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const formType = location.pathname === "/login" ? "login" : "register";
-
 	const { setToken, setUser } = useStore();
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -34,7 +28,6 @@ const Auth: React.FC = () => {
 		try {
 			setIsLoading(true);
 
-			// Type narrowing based on the form type
 			if (formType === "login") {
 				const loginData = createLoginResponseBody(
 					data as LoginApiPayloadType,
@@ -51,94 +44,131 @@ const Auth: React.FC = () => {
 				setUser(result.user);
 			}
 
-			navigate("/chatbot");
+			navigate("/");
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	return (
-		<div className="flex min-h-screen items-center justify-center p-4 sm:p-6 lg:p-8">
-			<Card className="w-full max-w-[400px]">
-				<CardHeader>
-					<CardTitle className="text-2xl font-semibold text-center">
-						{formType === "login"
-							? "Welcome back"
-							: "Create an account"}
-					</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-6">
-					<AuthByProviders type={formType} />
+		<div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
+			{/* Left Column */}
+			<div className="relative hidden bg-black p-10 text-white md:block">
+				<div className="flex h-full flex-col justify-center">
+					<div className="flex flex-col items-center justify-center">
+						<img
+							src={MiraLogo}
+							alt="Logo"
+							className="w-7 h-7 mr-2 flex justify-center"
+						/>
+						<h1 className="mt-3 text-xl font-bold">
+							{" "}
+							MIRA: Minds In Risk Assessment{" "}
+						</h1>
+					</div>
+					<div className="mt-10 flex justify-center space-y-4">
+						<p className="text-lg italic">Powered by denkMinds</p>
+					</div>
+				</div>
+			</div>
 
-					<div className="relative">
-						<div className="absolute inset-0 flex items-center">
-							<Separator />
-						</div>
-						<div className="relative flex justify-center text-xs uppercase">
-							<span className="bg-background px-2 text-muted-foreground">
-								Or continue with
-							</span>
-						</div>
+			{/* Right Column */}
+			<div className="flex items-center justify-center p-8">
+				<div className="mx-auto w-full max-w-md space-y-8">
+					<div className="flex flex-col items-center justify-center">
+						<img
+							src={MiraLogo}
+							alt="Logo"
+							className="w-7 h-7 mr-2 flex justify-center"
+						/>
+						{/* <p className="text-small italic">denkMinds Product</p> */}
 					</div>
 
-					<DynamicForm
-						fields={
-							formType === "login" ? loginFields : registerFields
-						}
-						onSubmit={handleSubmit}
-						submitButton={{
-							displayName:
+					<div className="space-y-2">
+						<h2 className="text-3xl font-bold text-center">
+							{formType === "login"
+								? "Welcome back"
+								: "Create an account"}
+						</h2>
+					</div>
+					<div className="space-y-4">
+						<DynamicForm
+							fields={
 								formType === "login"
-									? "Login"
-									: "Create account",
-							disabled: isLoading,
-						}}
-					/>
+									? loginFields
+									: registerFields
+							}
+							onSubmit={handleSubmit}
+							submitButton={{
+								displayName:
+									formType === "login"
+										? "Sign in with Email"
+										: "Create account",
+								disabled: isLoading,
+							}}
+						/>
 
-					{formType === "login" && (
-						<p className="text-left text-sm text-muted-foreground">
+						<div className="relative">
+							<div className="absolute inset-0 flex items-center">
+								<Separator />
+							</div>
+							<div className="relative flex justify-center text-xs uppercase">
+								<span className="bg-background px-2 text-muted-foreground">
+									{" "}
+									Or continue with{" "}
+								</span>
+							</div>
+						</div>
+
+						<AuthByProviders type={formType} />
+
+						<p className="text-center text-sm text-muted-foreground">
+							By clicking continue, you agree to our{" "}
 							<Link
-								to="/forgot-password"
+								to="/terms"
+								className="underline hover:text-primary"
+							>
+								Terms of Service
+							</Link>{" "}
+							and{" "}
+							<Link
+								to="/privacy"
+								className="underline hover:text-primary"
+							>
+								Privacy Policy
+							</Link>
+							.
+						</p>
+
+						{formType === "login" && (
+							<p className="text-center text-sm">
+								<Link
+									to="/forgot-password"
+									className="text-muted-foreground underline hover:text-primary"
+								>
+									Forgot your password?
+								</Link>
+							</p>
+						)}
+
+						<p className="text-center text-sm text-muted-foreground">
+							{formType === "login"
+								? "Don't have an account?"
+								: "Already have an account?"}{" "}
+							<Link
+								to={
+									formType === "login"
+										? "/register"
+										: "/login"
+								}
 								className="underline underline-offset-4 hover:text-primary"
 							>
-								Forgot Password
+								{formType === "login" ? "Register" : "Log in"}
 							</Link>
 						</p>
-					)}
-				</CardContent>
-				<CardFooter className="flex flex-col space-y-4">
-					<p className="text-sm text-muted-foreground text-center">
-						By continuing, you agree to denkMind's{" "}
-						<Link
-							to="/terms"
-							className="underline underline-offset-4 hover:text-primary"
-						>
-							Terms of Service
-						</Link>
-						. Read our{" "}
-						<Link
-							to="/privacy"
-							className="underline underline-offset-4 hover:text-primary"
-						>
-							Privacy Policy
-						</Link>
-						.
-					</p>
-					<p className="text-center text-sm text-muted-foreground">
-						{formType === "login"
-							? "Don't have an account?"
-							: "Already have an account?"}{" "}
-						<Link
-							to={formType === "login" ? "/register" : "/login"}
-							className="underline underline-offset-4 hover:text-primary"
-						>
-							{formType === "login" ? "Register" : "Log in"}
-						</Link>
-					</p>
-				</CardFooter>
-			</Card>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
-};
-
-export default Auth;
+}
