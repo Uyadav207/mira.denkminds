@@ -11,6 +11,7 @@ export default defineSchema({
 
 	chatHistory: defineTable({
 		chatId: v.id("chats"),
+		humanInTheLoopId: v.string(),
 		sender: v.union(v.literal("user"), v.literal("ai")),
 		message: v.string(),
 		createdAt: v.number(),
