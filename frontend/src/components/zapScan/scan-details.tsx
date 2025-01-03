@@ -1,17 +1,20 @@
+import zapResponse from "../../data/response.json";
+import useStore from "../../store/store";
+const name = useStore.getState().user?.firstName || "Unknown User";
 const scanDetails = [
 	{
 		id: "target",
 		label: "Target",
-		value: "https://denkminds.vercel.app",
+		value: zapResponse.targetUrl,
 		copyable: true,
 	},
-	{ id: "scan-template", label: "Scan Template", value: "Unauthenticated" },
-	{ id: "server-name", label: "Server Name", value: "North Europe" },
-	{ id: "server-ip", label: "Server IP", value: "216.198.79.193" },
+	{
+		id: "compliance-standard",
+		label: "Compliance Standard",
+		value: zapResponse.complianceStandard,
+	},
 	{ id: "last-scan", label: "Last Scan", value: "December 25, 2024 7:48 PM" },
-	{ id: "initiated-by", label: "Initiated By", value: "Sindhura" },
-	{ id: "frontend", label: "Frontend", value: "Unavailable" },
-	{ id: "backend", label: "Backend", value: "Unavailable" },
+	{ id: "initiated-by", label: "Initiated By", value: name },
 ];
 
 export default scanDetails;

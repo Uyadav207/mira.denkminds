@@ -10,18 +10,16 @@ const ScanInfo: React.FC = () => {
 				{scanDetails.map((item) => (
 					<div key={item.id}>
 						<div className="flex justify-between items-center">
-							<span className="text-gray-600 font-medium w-1/4">
-								{item.label}
-							</span>
+							<span className="text-sm font-medium mb-6">{item.label}</span>
 
 							<div className="flex items-center w-3/4 gap-x-2">
-								<span className="text-gray-800 break-all">{item.value}</span>
+								<span className="text-sm  mb-6 break-all">{item.value}</span>
 								{/* Copy Icon */}
 								{item.copyable && (
 									<Button
-										className="p-1 text-gray-500 hover:text-gray-700"
+										className="mb-6"
+										variant="default"
 										onClick={() => navigator.clipboard.writeText(item.value)}
-										variant="outline"
 										size="sm"
 									>
 										<img
