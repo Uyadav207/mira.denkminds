@@ -1,6 +1,5 @@
 import DonutChart from "../components/charts/donut-charts";
 import RadialSemiCircleChart from "../components/charts/radial-charts";
-import MultilayeredRadialChart from "../components/charts/multi-layer-radial-chart";
 import ScanInfo from "../components/zapScan/scan-info";
 import StackedColumnChart from "../components/charts/bar-chart";
 
@@ -14,10 +13,8 @@ export function Dashboard() {
 				</div>
 
 				<div className="bg-transparent border border-gray-300 rounded-lg flex flex-col items-center justify-center p-6 shadow-md col-span-3">
-					<h3 className="text-xl font-semibold mb-4">
-						Vulnerabilities by request type
-					</h3>
-					<StackedColumnChart />
+					<h3 className="text-xl font-semibold mb-4 ">Scanning Status</h3>
+					<RadialSemiCircleChart />
 				</div>
 			</div>
 
@@ -30,15 +27,17 @@ export function Dashboard() {
 				</div>
 
 				<div className="bg-transparent border border-gray-300 rounded-lg flex flex-col items-center justify-center p-6 shadow-md">
-					<h3 className="text-xl font-semibold mb-4">Crawled Pages</h3>
-					<RadialSemiCircleChart />
+					<h3 className="text-xl font-semibold mb-4">
+						Vulnerabilities by request type
+					</h3>
+					<StackedColumnChart />
 				</div>
 			</div>
 
-			<div className="bg-transparent border border-gray-300 rounded-lg flex flex-col items-center justify-center p-6 shadow-md">
+			{/* <div className="bg-transparent border border-gray-300 rounded-lg flex flex-col items-center justify-center p-6 shadow-md">
 				<h3 className="text-xl font-semibold mb-4">Certificate Score</h3>
 				<MultilayeredRadialChart />
-			</div>
+			</div> */}
 		</div>
 	);
 }

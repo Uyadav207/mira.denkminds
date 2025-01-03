@@ -1,15 +1,36 @@
 import { useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, type PieProps } from "recharts";
+import zapResponse from "../../data/response.json";
 
-const data = [
-	{ name: "Critical", value: 10, color: "#FF4C4C" },
-	{ name: "Medium", value: 69, color: "#FFB24C" },
-	{ name: "Low", value: 90, color: "#4C4CFF" },
-	{ name: "Info", value: 8, color: "#4CCAFF" },
-];
+type ChartData = {
+	name: string;
+	value: number;
+	color: string;
+};
+
+const transformData = (): ChartData[] => {
+	const riskColors: Record<string, string> = {
+		Critical: "#800000",
+		High: "#FF4C4C",
+		Medium: "#FFB24C",
+		Low: "#4C4CFF",
+		Informational: "#4CCAFF",
+	};
+
+	const risks = zapResponse.filteredResults?.total_risks || {};
+	return Object.entries(risks)
+		.map(([risk, count]) => ({
+			name: risk,
+			value: count,
+			color: riskColors[risk] || "#CCCCCC",
+		}))
+		.filter((entry) => entry.value > 0);
+};
 
 const DonutChart: React.FC = () => {
 	const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
+
+	const data = transformData();
 
 	const total = data.reduce((sum, entry) => sum + entry.value, 0);
 
@@ -24,7 +45,7 @@ const DonutChart: React.FC = () => {
 	return (
 		<div className="flex flex-col items-center justify-center relative">
 			<div className="relative">
-				<PieChart width={400} height={400}>
+				<PieChart width={500} height={500}>
 					<Pie
 						data={data}
 						dataKey="value"
@@ -34,7 +55,7 @@ const DonutChart: React.FC = () => {
 						innerRadius={130}
 						outerRadius={160}
 						fill="#8884d8"
-						paddingAngle={5}
+						paddingAngle={8}
 						onMouseEnter={onPieEnter}
 						onMouseLeave={onPieLeave}
 					>
@@ -42,12 +63,14 @@ const DonutChart: React.FC = () => {
 							<Cell
 								key={`cell-${entry.name}`}
 								fill={entry.color}
-								stroke={hoveredSegment === entry.name ? "#000" : "none"}
-								strokeWidth={hoveredSegment === entry.name ? 2 : 0}
+								stroke="#fff"
+								strokeWidth={hoveredSegment === entry.name ? 2 : 1}
 							/>
 						))}
 					</Pie>
-					<Tooltip />
+					<Tooltip
+						formatter={(value, name) => [`${value}`, `Risk Level: ${name}`]}
+					/>
 				</PieChart>
 
 				<div
