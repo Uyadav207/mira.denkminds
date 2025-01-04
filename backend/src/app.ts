@@ -9,6 +9,8 @@ import { errorHandler } from "./middlewares/errorHandler";
 import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
 import { reportRoutes } from "./routes/reportRoutes";
+import zapRoutes from "./routes/zapRoutes";
+// import { chatRoute } from "./routes/chatRoute";
 
 const app = new Hono();
 
@@ -25,6 +27,8 @@ app.route("/auth", authRoutes);
 app.route("/users", userRoutes);
 // app.route("/chat", chat);
 // app.route("/rag", rag);
+app.route("/reports", reportRoutes);
+app.route("/zap", zapRoutes);
 
 const OLLAMA_HOST = "https://ece1-34-143-178-40.ngrok-free.app"; // Change this to your Ollama API URL
 // app.route("/chat", chatRoute);

@@ -702,10 +702,11 @@ const MiraChatBot: React.FC = () => {
 						}
 
 						const isUser = message.sender === "user";
-						const messageClasses = `inline-block p-2 rounded-lg ${isUser
+						const messageClasses = `inline-block p-2 rounded-lg ${
+							isUser
 								? "bg-black text-white"
 								: "bg-gray-200 text-black mt-10"
-							}`;
+						}`;
 						const containerClasses = `mb-4 ${isUser ? "text-right" : "text-left"}`;
 
 						return (

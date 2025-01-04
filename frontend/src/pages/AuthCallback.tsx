@@ -63,7 +63,7 @@ const AuthCallback = () => {
 						setToken(result.token);
 					}
 
-					navigate("/chatbot");
+					navigate("/");
 				} else {
 					throw new Error("No session data found");
 				}

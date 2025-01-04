@@ -1,0 +1,24 @@
+networks:
+  zap-net: # Define the zap-net network
+    driver: bridge
+
+services:
+  zap:
+    image: zaproxy/zap-stable
+    container_name: zap
+    networks:
+      - zap-net
+    ports:
+      - "8080:8080"
+    command: >
+      zap.sh -daemon -host 0.0.0.0 -port 8080
+      -config connection.timeoutInSecs=60
+      -config api.addrs.addr.name=.*
+      -config api.disablekey=true
+      -config api.addrs.addr.regex=true
+      -config ascan.attackStrength=HIGH
+      -config connection.timeoutInMs=60000
+      -config ascan.delayInMs=500
+    volumes:
+      - ./zap:/zap/wrk
+
