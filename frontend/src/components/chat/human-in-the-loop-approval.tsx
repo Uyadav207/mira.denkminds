@@ -1,15 +1,17 @@
 import { Button } from "../ui/button";
 
 interface HumanInTheLoopProps {
-	handleConfirm: () => void;
-	handleCancel: () => void;
-	message: string;
+	onConfirm: (confirmType: string) => void;
+	onCancel: () => void;
+	message?: string;
+	confirmType: string;
 }
 
-const HumanInTheLoop: React.FC<HumanInTheLoopProps> = ({
-	handleConfirm,
-	handleCancel,
+const HumanInTheLoopApproval: React.FC<HumanInTheLoopProps> = ({
+	onConfirm,
+	onCancel,
 	message,
+	confirmType,
 }) => {
 	return (
 		<div className="flex flex-col mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-primary">
@@ -19,7 +21,9 @@ const HumanInTheLoop: React.FC<HumanInTheLoopProps> = ({
 					variant="secondary"
 					size="lg"
 					className="border"
-					onClick={handleConfirm}
+					onClick={() => {
+						onConfirm(confirmType);
+					}}
 				>
 					Yes
 				</Button>
@@ -27,7 +31,7 @@ const HumanInTheLoop: React.FC<HumanInTheLoopProps> = ({
 					size="lg"
 					variant="destructive"
 					type="button"
-					onClick={handleCancel}
+					onClick={onCancel}
 				>
 					No
 				</Button>
@@ -36,4 +40,4 @@ const HumanInTheLoop: React.FC<HumanInTheLoopProps> = ({
 	);
 };
 
-export { HumanInTheLoop };
+export { HumanInTheLoopApproval };
