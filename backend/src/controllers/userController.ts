@@ -1,5 +1,5 @@
-import type { Context } from "hono";
 import { PrismaClient } from "@prisma/client";
+import type { Context } from "hono";
 import { UserService } from "../services/userService";
 import { comparePasswords, hashPassword } from "../utils/passwordUtils";
 
@@ -26,6 +26,29 @@ export const updateUserById = async (c: Context) => {
 		return c.json(user);
 	} catch (error) {
 		return c.json({ error: (error as Error).message }, 404);
+	}
+};
+
+// TODO: Update user avatar
+export const updateAvatarById = async (c: Context) => {
+	const id = c.req.param("id");
+	const { file } = await c.req.parseBody();
+	if (!(file instanceof File)) {
+		return c.json({ error: "Invalid file provided" }, 400);
+	}
+
+	if (!file) {
+		return c.json({ error: "No file provided" }, 400);
+	}
+
+	try {
+		const updatedUser = await userService.updateAvatar(Number(id), file);
+		return c.json({
+			message: "Avatar updated successfully",
+			user: updatedUser,
+		});
+	} catch (error) {
+		return c.json({ error: (error as Error).message }, 500);
 	}
 };
 
@@ -60,11 +83,10 @@ export const changePassword = async (c: Context) => {
 		if (!isOldPasswordCorrect) {
 			return c.json({ error: "Incorrect old password" }, 400);
 		}
-		const hashedNewPassword = await hashPassword(newPassword);
 
 		const updatedUser = await userService.updatePassword(
 			Number(id),
-			hashedNewPassword,
+			newPassword,
 		);
 
 		return c.json({ updatedUser }, 200);

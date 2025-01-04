@@ -6,7 +6,7 @@ interface VulnerabilityStandardsProps {
 	onConfirm: (selectedStandard: string, type: string) => void;
 }
 
-const VulnerabilityStandards: React.FC<VulnerabilityStandardsProps> = ({
+const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 	question,
 	actionPrompts,
 	onConfirm,
@@ -31,4 +31,4 @@ const VulnerabilityStandards: React.FC<VulnerabilityStandardsProps> = ({
 	);
 };
 
-export { VulnerabilityStandards };
+export { HumanInTheLoopOptions };

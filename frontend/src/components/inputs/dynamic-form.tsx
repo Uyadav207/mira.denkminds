@@ -1,11 +1,16 @@
 import type React from "react";
-import type { FieldValues, ControllerRenderProps } from "react-hook-form";
+import type {
+	FieldValues,
+	ControllerRenderProps,
+	DefaultValues,
+} from "react-hook-form";
 
 import { Button } from "@components/ui/button";
 import { Form, FormField } from "@components/ui/form";
 import type { DynamicFormProps, FieldType } from "../../types/input";
 import { DynamicInput } from "./dynamic-inputs";
 import { useDynamicForm } from "../../hooks/dynamic-form-hook";
+import { useEffect } from "react";
 
 export default function DynamicForm<T extends FieldValues>({
 	fields,
@@ -14,10 +19,23 @@ export default function DynamicForm<T extends FieldValues>({
 }: DynamicFormProps<T>): React.ReactElement {
 	const form = useDynamicForm<T>(fields);
 
+	// Reset form state whenever the fields change
+	useEffect(() => {
+		const defaultValues = fields.reduce(
+			(acc, field) => {
+				acc[field.name] = ""; // Reset all fields to empty values
+				return acc;
+			},
+			{} as DefaultValues<T>,
+		);
+		form.reset(defaultValues);
+	}, [fields, form]);
+
 	const handleSubmit = async (data: T) => {
 		try {
 			await onSubmit(data);
 		} finally {
+			// This is added because when user clicked on submit button again n again the toaster is shown many times
 			form.reset();
 		}
 	};

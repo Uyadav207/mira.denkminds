@@ -5,6 +5,7 @@ export interface User {
 	email: string;
 	avatar: string | null;
 	username: string;
+	authProvider: string;
 }
 
 export type Password = {
@@ -27,4 +28,5 @@ export interface UpdateUserResponse {
 	lastName: string;
 	avatar: string | null;
 	email: string;
+	authProvider: string;
 }

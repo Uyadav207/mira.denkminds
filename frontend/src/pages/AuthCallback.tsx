@@ -47,6 +47,7 @@ const AuthCallback = () => {
 						const result = response.data;
 						// Set user in your app's state
 						setUser(result.user);
+						setToken(result.token);
 
 						// Redirect to the desired page after successful login
 					} else if (type === "login") {
@@ -57,10 +58,11 @@ const AuthCallback = () => {
 						const response =
 							await authApis.googleLogin(loginRequestBody);
 						const result = response.data;
+
 						setUser(result.user);
+						setToken(result.token);
 					}
 
-					setToken(authData.session.access_token);
 					navigate("/chatbot");
 				} else {
 					throw new Error("No session data found");

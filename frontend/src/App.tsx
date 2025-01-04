@@ -3,16 +3,16 @@ import { Toaster } from "react-hot-toast";
 
 import { ThemeProvider } from "./components/theme/theme-provider";
 
-import Home from "@pages/Home";
+// import Home from "@pages/Home";
 import Chatbot from "./pages/Chatbot";
 import { Settings } from "./pages/Settings";
 import { Layout } from "./components/dashboard/Layout";
 import { Dashboard } from "./pages/Dashboard";
 import { Reports } from "./pages/Reports";
-import ForgotPassword from "./pages/ForgotPassword";
 import Auth from "./pages/Auth";
 import AuthCallback from "./pages/AuthCallback";
 import ProfileSettings from "./pages/ProfileSettings";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const App = () => {
 	return (
@@ -21,7 +21,7 @@ const App = () => {
 				<Toaster />
 				<Router>
 					<Routes>
-						<Route path="/" element={<Home />} />
+						{/* <Route path="/" element={<Home />} /> */}
 						<Route path="/login" element={<Auth />} />
 						<Route path="/register" element={<Auth />} />
 						<Route
@@ -33,7 +33,10 @@ const App = () => {
 							element={<AuthCallback />}
 						/>
 						<Route element={<Layout />}>
-							<Route path="/chatbot" element={<Chatbot />} />
+							<Route
+								path="/chatbot/:chatId?"
+								element={<Chatbot />}
+							/>
 							<Route path="/settings" element={<Settings />} />
 							<Route path="/dashboard" element={<Dashboard />} />
 							<Route path="/reports" element={<Reports />} />

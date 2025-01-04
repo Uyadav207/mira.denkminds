@@ -15,21 +15,16 @@ import {
 import { Input } from "@components/ui/input";
 import type { FieldValues } from "react-hook-form";
 import useStore from "../../store/store";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog } from "../dialog";
-
-import {
-	handleFileChange,
-	handleSubmit,
-	handleDelete,
-} from "./profile-actions";
+import { handleSubmit, handleDelete } from "./profile-actions";
+import AvatarUpload from "./AvatarUpload";
 
 const ProfileForm = () => {
 	const user = useStore((state) => state.user);
-	const [imageSrc, setImageSrc] = useState<string | null>(null);
-	const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-	const [isDialog, setIsDialogOpen] = useState(false); // State for dialog visibility
+	const [isDialog, setIsDialogOpen] = useState(false);
+	const token = useStore((state) => state.token);
 	const [, setUserIdToDelete] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -38,20 +33,15 @@ const ProfileForm = () => {
 		defaultValues: user
 			? {
 					...user,
-					avatar: user?.avatar ? null : undefined,
 				}
 			: USER_INITIAL_VALUES,
 	});
 
-	useEffect(() => {
-		const storedAvatar = localStorage.getItem("avatar");
-		if (storedAvatar) {
-			setImageSrc(storedAvatar); // Set the Base64 string from localStorage as the image source
-		}
-	}, []);
-
 	return (
 		<div className="flex flex-col w-full bg-transparent px-4 md:px-8">
+			<div className="flex justify-left items-left mb-10 px-20">
+				<AvatarUpload userId={user?.id ?? ""} token={token || ""} />
+			</div>
 			<div className="flex justify-center items-center">
 				<Form {...form}>
 					<form
@@ -59,7 +49,6 @@ const ProfileForm = () => {
 							if (user) {
 								handleSubmit(
 									data,
-									uploadedFile,
 									{ userId: user.id },
 									setIsLoading,
 								);
@@ -69,56 +58,6 @@ const ProfileForm = () => {
 						})}
 						className="w-full max-w-4xl"
 					>
-						{/* Avatar Section */}
-						<div className="flex justify-start items-center mb-8">
-							<FormField
-								control={form.control}
-								name="avatar"
-								render={() => (
-									<FormItem>
-										<FormControl>
-											<div className="relative cursor-pointer">
-												<img
-													src={
-														imageSrc ||
-														"/profile.svg"
-													}
-													alt="Profile"
-													className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-background shadow-md"
-												/>
-												<input
-													id="file-upload"
-													type="file"
-													className="absolute inset-0 opacity-0 cursor-pointer"
-													onChange={(e) =>
-														handleFileChange(
-															e,
-															form,
-															setImageSrc,
-															setUploadedFile,
-														)
-													}
-												/>
-												<div className="absolute bottom-2 right-2 bg-background p-1.5 rounded-full shadow-md cursor-pointer">
-													<label
-														htmlFor="file-upload"
-														className="cursor-pointer"
-													>
-														<img
-															src="/upload.svg"
-															alt="Upload"
-															className="w-6 h-6"
-														/>
-													</label>
-												</div>
-											</div>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						</div>
-
 						{/* Form Layout */}
 						<div className="flex gap-8">
 							<div className="flex flex-col gap-8 w-1/2">
@@ -211,6 +150,10 @@ const ProfileForm = () => {
 												<Input
 													placeholder="Email"
 													type="email"
+													disabled={
+														user?.authProvider ===
+														"google"
+													}
 													{...field}
 												/>
 											</FormControl>
@@ -231,7 +174,8 @@ const ProfileForm = () => {
 									isLoading ||
 									Object.keys(form.formState.errors).length >
 										0 ||
-									(!form.formState.isDirty && !imageSrc)
+									(!form.formState.isDirty &&
+										!form.formState.isSubmitting)
 								}
 							>
 								{isLoading && (

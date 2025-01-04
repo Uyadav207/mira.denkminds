@@ -1,4 +1,4 @@
-import { OpenAIService } from "./openAI";
+import { OpenAIService } from "./openai";
 import { PineconeService } from "./pineconeStore";
 import type { ChatCompletionMessageParam } from "openai/resources/chat";
 

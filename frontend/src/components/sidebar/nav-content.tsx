@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 import {
 	Folder,
 	Home,
@@ -5,7 +7,7 @@ import {
 	MoreHorizontal,
 	Settings2,
 	Trash2,
-	Share2,
+	// Share2,
 	Copy,
 } from "lucide-react";
 import {
@@ -28,25 +30,44 @@ import {
 } from "@components/ui/dropdown-menu";
 import { SidebarMenuBadge } from "@components/ui/sidebar";
 import { useNavigate } from "react-router-dom";
+import useStore from "../../store/store";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import type { Chats } from "../../types/chats";
 
-interface Chat {
-	id: string;
-	title: string;
-	url: string;
-}
-
-const recentChats: Chat[] = [
-	{ id: "1", title: "What is this app about?", url: "#" },
-	{ id: "2", title: "What AI is doing?", url: "#" },
-	{ id: "3", title: "Find out best solution using AI?", url: "#" },
-	{ id: "4", title: "How to use the app effectively?", url: "#" },
-	{ id: "5", title: "Troubleshooting common issues", url: "#" },
-	{ id: "6", title: "Advanced AI techniques", url: "#" },
-	{ id: "7", title: "Customizing AI responses", url: "#" },
-];
+const ChatSkeleton = () => {
+	return (
+		<div className="animate-pulse">
+			{[...Array(5)].map((_, i) => {
+				const key = `skeleton-${i}`;
+				return (
+					<div key={key} className="flex items-center space-x-4 p-2">
+						<div className="h-4 w-4 rounded-full bg-gray-200 dark:bg-gray-700" />
+						<div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-700" />
+					</div>
+				);
+			})}
+		</div>
+	);
+};
 
 export default function NavContent() {
 	const navigate = useNavigate();
+	const [isLoading, setIsLoading] = useState(true);
+	const user = useStore((state) => state.user);
+	if (!user) {
+		return null;
+	}
+	const { id } = user;
+
+	const recentChats = useQuery(api.chats.getChatsByUserId, {
+		userId: String(id),
+	});
+	useEffect(() => {
+		if (recentChats) {
+			setIsLoading(false);
+		}
+	}, [recentChats]);
 
 	return (
 		<>
@@ -90,67 +111,73 @@ export default function NavContent() {
 				<SidebarContent className="h-[calc(100vh-280px)]">
 					<SidebarGroupContent>
 						<SidebarMenu>
-							{recentChats.map((chat) => (
-								<SidebarMenuItem key={chat.id}>
-									<SidebarMenuButton
-										asChild
-										className="w-full justify-between"
-									>
-										<a
-											href={chat.url}
-											className="flex items-center"
+							{isLoading ? (
+								<ChatSkeleton />
+							) : (
+								recentChats?.map((chat: Chats) => (
+									<SidebarMenuItem key={chat._id}>
+										<SidebarMenuButton
+											asChild
+											className="w-full justify-between cursor-pointer"
+											onClick={() =>
+												navigate(`/chatbot/${chat._id}`)
+											}
 										>
-											<MessageCircle className="mr-2 h-4 w-4 shrink-0" />
-											<span className="flex-grow truncate">
-												{chat.title}
-											</span>
-											<DropdownMenu>
-												<DropdownMenuTrigger asChild>
-													<Button
-														variant="ghost"
-														size="sm"
-														className="ml-auto h-8 w-8 p-0"
+											<div className="flex items-center">
+												<MessageCircle className="mr-2 h-4 w-4 shrink-0" />
+												<span className="flex-grow truncate">
+													{chat.title}
+												</span>
+												<DropdownMenu>
+													<DropdownMenuTrigger
+														asChild
 													>
-														<MoreHorizontal className="h-4 w-4 ml-auto" />
-														<span className="sr-only">
-															Open menu
-														</span>
-													</Button>
-												</DropdownMenuTrigger>
-												<DropdownMenuContent
-													align="end"
-													className="w-[160px]"
-												>
-													<DropdownMenuItem
-													// onClick={() =>
-													// 	handleCopy(chat.id)
-													// }
+														<Button
+															variant="ghost"
+															size="sm"
+															className="ml-auto h-8 w-8 p-0"
+														>
+															<MoreHorizontal className="h-4 w-4 ml-auto" />
+															<span className="sr-only">
+																Open menu
+															</span>
+														</Button>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent
+														align="end"
+														className="w-[160px]"
 													>
-														<Copy className="mr-2 h-4 w-4" />
-														<span>Copy</span>
-													</DropdownMenuItem>
-													<DropdownMenuItem
-													// onClick={() =>
-													// 	handleShare(chat.id)
-													// }
-													>
-														<Share2 className="mr-2 h-4 w-4" />
-														<span>Share</span>
-													</DropdownMenuItem>
-													<DropdownMenuSeparator />
-													<DropdownMenuItem
-														// onClick={() => handleDelete(chat.id)}
-														className="text-red-600"
-													>
-														<Trash2 className="mr-2 h-4 w-4" />
-														<span>Delete</span>
-													</DropdownMenuItem>
-												</DropdownMenuContent>
-											</DropdownMenu>
-										</a>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-							))}
+														<DropdownMenuItem
+														// onClick={() =>
+														// 	handleCopy(chat.id)
+														// }
+														>
+															<Copy className="mr-2 h-4 w-4" />
+															<span>Copy</span>
+														</DropdownMenuItem>
+														{/* <DropdownMenuItem
+														// onClick={() =>
+														// 	handleShare(chat.id)
+														// }
+														>
+															<Share2 className="mr-2 h-4 w-4" />
+															<span>Share</span>
+														</DropdownMenuItem> */}
+														<DropdownMenuSeparator />
+														<DropdownMenuItem
+															// onClick={() => handleDelete(chat.id)}
+															className="text-red-600"
+														>
+															<Trash2 className="mr-2 h-4 w-4" />
+															<span>Delete</span>
+														</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								))
+							)}
 						</SidebarMenu>
 					</SidebarGroupContent>
 				</SidebarContent>

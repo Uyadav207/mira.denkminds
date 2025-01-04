@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import { hashPassword, comparePasswords } from "../utils/passwordUtils";
+import { comparePasswords, hashPassword } from "../utils/passwordUtils";
 
 export class AuthService {
 	private prisma: PrismaClient;

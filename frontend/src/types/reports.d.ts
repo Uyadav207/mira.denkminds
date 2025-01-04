@@ -13,3 +13,15 @@ export interface File {
 	type: "pdf";
 	size: number;
 }
+
+export interface FolderType {
+	_id: string;
+	folderName: string;
+	type: "folder";
+}
+
+export interface FolderItem {
+	id: string;
+	name: string;
+	type: string;
+}

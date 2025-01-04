@@ -1,6 +1,4 @@
 import axiosInstance from "./axios";
-
-//login api
 interface ChatPayload {
 	prompt: string;
 }
@@ -26,7 +24,15 @@ const chat = async (payload: ChatPayload) => {
 };
 const scan = (payload: ScanPayload) => axiosInstance.post("/api/scan", payload);
 
+interface GenerateTitlePayload {
+	initialMessage: string;
+}
+
+const generateTitle = (payload: GenerateTitlePayload) =>
+	axiosInstance.post("/api/generate-title", payload);
+
 export const chatApis = {
 	chat,
 	scan,
+	generateTitle,
 };

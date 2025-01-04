@@ -1,12 +1,13 @@
 import { Hono } from "hono";
 import {
+	changePassword,
 	deleteUserById,
 	getUserById,
 	requestReset,
 	resetPassword,
+	updateAvatarById,
 	updateUserById,
 	verifyOtp,
-	changePassword,
 } from "../controllers/userController";
 import { authMiddleware } from "../middlewares/authMiddleware";
 
@@ -20,5 +21,6 @@ userRoutes.post("/user/reset_req", requestReset);
 userRoutes.post("/user/verify", verifyOtp);
 userRoutes.post("/user/resetpass", resetPassword);
 userRoutes.put("/user/change_password/:id", authMiddleware, changePassword);
+userRoutes.put("/user/avatar/:id", authMiddleware, updateAvatarById);
 
 export { userRoutes };
