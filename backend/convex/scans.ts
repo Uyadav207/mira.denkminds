@@ -10,7 +10,7 @@ export const fetchScansByUserId = query({
 		// Fetch scans by userId from the database
 		const scans = await ctx.db
 			.query("scans")
-			.filter((sc) => sc.eq("userId", userId))
+			.withIndex("by_userId", (q) => q.eq("userId", userId))
 			.collect();
 		return scans;
 	},
@@ -53,7 +53,7 @@ export const saveScan = mutation({
 			totalVulnerabilities,
 			uniqueUrls,
 			totalRisks,
-			createdAt: now,
+			scanedAt: now,
 		});
 
 		return { scanId }; // Return the generated scanId

@@ -51,19 +51,20 @@ export default defineSchema({
 			Critical: v.number(),
 			Informational: v.number(),
 		}),
-		createdAt: v.number(),
+		scanedAt: v.number(),
 	}).index("by_userId", ["userId"]),
 
 	vulnerabilities: defineTable({
 		scanId: v.id("scans"), // Reference to the scan
 		name: v.string(),
+		totalCount: v.number(),
 		description: v.string(),
 		solution: v.string(),
 		cweId: v.string(),
 		alert: v.string(),
 		complianceDetails: v.array(v.string()), // Array of compliance details
 		cveIds: v.array(v.string()), // Array of CVE IDs
-		createdAt: v.number(),
+		updatedAt: v.number(),
 	}).index("by_scanId", ["scanId"]),
 
 	urls: defineTable({
@@ -71,6 +72,6 @@ export default defineSchema({
 		url: v.string(),
 		method: v.string(),
 		riskLevel: v.string(), // Medium, High, Low, Critical, etc.
-		createdAt: v.number(),
+		updatedAt: v.number(),
 	}).index("by_vulnerabilityId", ["vulnerabilityId"]),
 });
