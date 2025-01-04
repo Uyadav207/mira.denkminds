@@ -75,7 +75,9 @@ const RadialSemiCircleChart: React.FC = () => {
 			{/* Metrics Section */}
 			<div className="grid grid-cols-3 gap-6 w-full max-w-md mt-6">
 				<div className="text-center">
-					<p className="text-sm font-semibold">{metrics.uniqueUrls}</p>
+					<p className="text-sm font-semibold">
+						{metrics.uniqueUrls}
+					</p>
 					<p className="text-lg font-bold">Unique URLs</p>
 				</div>
 				<div className="text-center">

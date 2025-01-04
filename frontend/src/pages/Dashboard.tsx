@@ -13,7 +13,9 @@ export function Dashboard() {
 				</div>
 
 				<div className="bg-transparent border border-gray-300 rounded-lg flex flex-col items-center justify-center p-6 shadow-md col-span-3">
-					<h3 className="text-xl font-semibold mb-4 ">Scanning Status</h3>
+					<h3 className="text-xl font-semibold mb-4 ">
+						Scanning Status
+					</h3>
 					<RadialSemiCircleChart />
 				</div>
 			</div>
