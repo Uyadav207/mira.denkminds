@@ -4,12 +4,12 @@ import { v } from "convex/values";
 // Query for fetching scans by userId
 export const fetchVulnerabilityByScanId = query({
 	args: {
-		scanId: v.string(), // External user ID
+		scanId: v.id("scans"), // External user ID
 	},
 	handler: async (ctx, { scanId }) => {
 		const vulnerabilites = await ctx.db
 			.query("vulnerabilities")
-			.filter((sc) => sc.eq("scanId", scanId))
+			.withIndex("by_scanId", (q) => q.eq("scanId", scanId))
 			.collect();
 		return vulnerabilites;
 	},
@@ -21,6 +21,7 @@ export const saveVulnerability = mutation({
 		scanId: v.id("scans"),
 		name: v.string(),
 		description: v.string(),
+		totalCount: v.number(),
 		solution: v.string(),
 		cweId: v.string(),
 		alert: v.string(),
@@ -52,7 +53,8 @@ export const saveVulnerability = mutation({
 			alert,
 			complianceDetails,
 			cveIds,
-			createdAt: now,
+			updatedAt: now,
+			totalCount: 0,
 		});
 
 		return { vulnerabilityId }; // Return the generated vulnerabilityId
