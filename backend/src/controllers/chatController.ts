@@ -23,4 +23,39 @@ export class ChatController {
 			return c.json({ status: "error", message: errorMessage }, 500);
 		}
 	}
+
+	async chatStream(c: Context) {
+		try {
+			const { message, useRAG = false } = await c.req.json();
+			const stream = await this.chatService.processMessageStream(
+				message,
+				useRAG,
+			);
+
+			return new Response(
+				new ReadableStream({
+					async start(controller) {
+						for await (const chunk of stream) {
+							const content = chunk.choices[0]?.delta?.content;
+							if (content) {
+								controller.enqueue(new TextEncoder().encode(content));
+							}
+						}
+						controller.close();
+					},
+				}),
+				{
+					headers: {
+						"Content-Type": "text/event-stream",
+						"Cache-Control": "no-cache",
+						Connection: "keep-alive",
+					},
+				},
+			);
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : "Unknown error";
+			return c.json({ status: "error", message: errorMessage }, 500);
+		}
+	}
 }
