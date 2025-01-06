@@ -7,12 +7,8 @@ import {
 	MoreHorizontal,
 	Settings2,
 	Trash2,
-	// Share2,
 	Copy,
-	ScanBarcodeIcon,
 	ScanText,
-	LucideScanFace,
-	Scan,
 } from "lucide-react";
 import {
 	SidebarGroup,
@@ -38,11 +34,7 @@ import useStore from "../../store/store";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Chats } from "../../types/chats";
-import {
-	SidebarMenuSub,
-	SidebarMenuSubButton,
-	SidebarMenuSubItem,
-} from "../ui/sidebar";
+import { SidebarMenuSub } from "../ui/sidebar";
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -87,15 +79,6 @@ export default function NavContent() {
 		<>
 			<SidebarGroup>
 				<SidebarMenu>
-					{/* <SidebarMenuItem> */}
-					{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
-					{/* <a onClick={() => navigate("/dashboard")}>
-							<SidebarMenuButton tooltip="Home">
-								<Home className="h-4 w-4" />
-								<span>Dashboard</span>
-							</SidebarMenuButton>
-						</a>
-					</SidebarMenuItem> */}
 					<Collapsible defaultOpen className="group/collapsible">
 						<SidebarMenuItem>
 							<CollapsibleTrigger asChild>
@@ -162,20 +145,28 @@ export default function NavContent() {
 										<SidebarMenuButton
 											asChild
 											className="w-full justify-between cursor-pointer"
-											onClick={() => navigate(`/chatbot/${chat._id}`)}
+											onClick={() =>
+												navigate(`/chatbot/${chat._id}`)
+											}
 										>
 											<div className="flex items-center">
 												<MessageCircle className="mr-2 h-4 w-4 shrink-0" />
-												<span className="flex-grow truncate">{chat.title}</span>
+												<span className="flex-grow truncate">
+													{chat.title}
+												</span>
 												<DropdownMenu>
-													<DropdownMenuTrigger asChild>
+													<DropdownMenuTrigger
+														asChild
+													>
 														<Button
 															variant="ghost"
 															size="sm"
 															className="ml-auto h-8 w-8 p-0"
 														>
 															<MoreHorizontal className="h-4 w-4 ml-auto" />
-															<span className="sr-only">Open menu</span>
+															<span className="sr-only">
+																Open menu
+															</span>
 														</Button>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent

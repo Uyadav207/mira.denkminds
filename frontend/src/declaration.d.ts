@@ -65,6 +65,7 @@ declare module "@store/store";
 
 //lib
 declare module "@lib/utils";
+declare module "@/lib/utils";
 
 // hooks
 declare module "@hooks/use-mobile";
