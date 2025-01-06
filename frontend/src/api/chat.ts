@@ -21,7 +21,7 @@ const chat = async (payload: ChatPayload) => {
 		throw new Error("No response body");
 	}
 
-	return response.body; // Return the readable stream for processing
+	return response; // Return the readable stream for processing
 };
 const scan = (payload: ScanPayload) => axiosInstance.post("/api/scan", payload);
 
