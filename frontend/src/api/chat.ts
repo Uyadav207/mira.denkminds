@@ -1,6 +1,7 @@
 import axiosInstance from "./axios";
 interface ChatPayload {
-	prompt: string;
+	message: string;
+	useRAG?: boolean;
 }
 interface ScanPayload {
 	website: string;
@@ -8,7 +9,7 @@ interface ScanPayload {
 }
 
 const chat = async (payload: ChatPayload) => {
-	const response = await fetch("http://localhost:8000/api/chat", {
+	const response = await fetch("http://localhost:8000/chat/message/stream", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
