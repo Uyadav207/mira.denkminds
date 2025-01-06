@@ -44,7 +44,7 @@ export default function Auth() {
 				setUser(result.user);
 			}
 
-			navigate("/");
+			navigate("/chatbot");
 		} finally {
 			setIsLoading(false);
 		}
