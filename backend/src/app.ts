@@ -30,7 +30,7 @@ app.route("/users", userRoutes);
 app.route("/reports", reportRoutes);
 app.route("/zap", zapRoutes);
 
-const OLLAMA_HOST = "https://ece1-34-143-178-40.ngrok-free.app"; // Change this to your Ollama API URL
+const OLLAMA_HOST = "https://b2dc-34-148-150-106.ngrok-free.app"; // Change this to your Ollama API URL
 // app.route("/chat", chatRoute);
 app.route("/reports", reportRoutes);
 
@@ -114,5 +114,53 @@ app.post("/api/chat", async (c) => {
 		return c.json({ message: e });
 	}
 });
+app.post("/api/chat/summary", async (c) => {
+	const { messages } = await c.req.json();
+	console.log("Messages:", messages);
+	try {
+		// Format the chat history into a single string for processing
+		const chatHistory = messages
+			.map((msg) => {
+				const role = msg.sender === "user" ? "User" : "Assistant";
+				return `${role}: ${msg.message}`;
+			})
+			.join("\n");
 
+		// Create the prompt for summarization
+		const prompt = `Please provide a summary of the following chat conversation:\n\n${chatHistory}`;
+		console.log("Prompt:", prompt);
+		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
+			
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				prompt: prompt,
+				model: "summary-model", // Use the custom model we defined
+				stream: false,
+				
+			}),
+		});
+
+		const output = await response.json();
+
+		// Format the response
+		return c.json({
+			summary: output.response,
+			originalMessageCount: messages.length,
+			timestamp: new Date().toISOString(),
+		});
+	}
+	catch (e) {
+		console.error("Error generating summary:", e);
+		return c.json(
+			{
+				error: "Failed to generate summary",
+				details: e.message,
+			},
+			500,
+		);
+	}
+});
 export default app;
