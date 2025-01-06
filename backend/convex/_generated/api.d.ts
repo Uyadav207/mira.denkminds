@@ -9,14 +9,14 @@
  */
 
 import type {
-	ApiFromModules,
-	FilterApi,
-	FunctionReference,
+  ApiFromModules,
+  FilterApi,
+  FunctionReference,
 } from "convex/server";
 import type * as chats from "../chats.js";
 import type * as reports from "../reports.js";
-import type * as summaries from "../summaries.js";
 import type * as scans from "../scans.js";
+import type * as summaries from "../summaries.js";
 import type * as urls from "../urls.js";
 import type * as vulnerabilities from "../vulnerabilities.js";
 
@@ -29,18 +29,18 @@ import type * as vulnerabilities from "../vulnerabilities.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-	chats: typeof chats;
-	reports: typeof reports;
-	summaries: typeof summaries;
-	scans: typeof scans;
-	urls: typeof urls;
-	vulnerabilities: typeof vulnerabilities;
+  chats: typeof chats;
+  reports: typeof reports;
+  scans: typeof scans;
+  summaries: typeof summaries;
+  urls: typeof urls;
+  vulnerabilities: typeof vulnerabilities;
 }>;
 export declare const api: FilterApi<
-	typeof fullApi,
-	FunctionReference<any, "public">
+  typeof fullApi,
+  FunctionReference<any, "public">
 >;
 export declare const internal: FilterApi<
-	typeof fullApi,
-	FunctionReference<any, "internal">
+  typeof fullApi,
+  FunctionReference<any, "internal">
 >;
