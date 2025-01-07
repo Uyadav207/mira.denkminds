@@ -56,10 +56,10 @@ const Url: React.FC = () => {
 						<div
 							// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 							key={index}
-							className="flex items-center bg-secondary space-x-3 p-4 rounded-md animate-pulse"
+							className="flex items-center space-x-3 p-4 rounded-md animate-pulse"
 						>
-							<div className="w-16 h-6 bg-popover rounded" />
-							<div className="w-full h-6 bg-popover rounded" />
+							<div className="w-16 h-6 bg-secondary rounded" />
+							<div className="w-full h-6 bg-secondary rounded" />
 						</div>
 					))}
 				</div>
@@ -78,7 +78,7 @@ const Url: React.FC = () => {
 				{urlData.map((url) => (
 					<div
 						key={url.id}
-						className="flex items-center space-x-3 p-4 border rounded-md"
+						className="flex items-center space-x-3 p-4 border bg-sidebar rounded-sm"
 					>
 						<Badge
 							className={`px-3 py-1 rounded text-xs font-semibold ${

@@ -38,12 +38,12 @@ export const spiderAndScanUrl = async (ctx: Context) => {
 		};
 
 		const filteredResults = processJsonForSummary(inputData, cweToCveMap);
-		await userService.saveZapScanToConvex(
-			targetUrl,
-			complianceStandard,
-			filteredResults,
-			userId,
-		);
+		// await userService.saveZapScanToConvex(
+		// 	targetUrl,
+		// 	complianceStandard,
+		// 	filteredResults,
+		// 	userId,
+		// );
 
 		return ctx.json(
 			{

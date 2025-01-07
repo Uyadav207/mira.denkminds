@@ -8,10 +8,19 @@ import {
 	isValidUrl,
 	checkUrl,
 } from "../utils/baselineScanUtils";
+import { PrismaClient } from "@prisma/client";
+import { ScanStoreService } from "../services/scanStoreService";
+
+const prisma = new PrismaClient();
+const zapToConvex = new ScanStoreService(prisma);
 
 export const baselineScanHandler = async (c: Context) => {
 	const body = await c.req.json();
-	const { url: targetUrl, complianceStandard, scanType } = body;
+	const { url: targetUrl, complianceStandard, scanType, userId } = body;
+
+	if (!userId) {
+		return c.json({ error: "UserId is required" }, 400);
+	}
 
 	if (!targetUrl) {
 		return c.json({ error: "URL is required" }, 400);
@@ -60,20 +69,25 @@ export const baselineScanHandler = async (c: Context) => {
 
 		const severityCounts = calculateSeverityCounts(filteredAlerts);
 		const totalIssues = calculateTotalIssues(filteredAlerts);
-
-		return c.json({
+		const filteredResults = {
 			message:
 				complianceStandard === "all"
 					? "Scan completed successfully. Returning all results."
 					: `Scan completed successfully for compliance standard: ${complianceStandard}.`,
 			totals: {
 				totalIssues,
+				totalIssue: totalIssues,
 				...severityCounts,
 			},
 			complianceStandardUrl: complianceStandard,
 			targetUrl,
+			scanType,
 			filteredAlerts,
-		});
+			userId,
+		};
+		console.log("zap scan done");
+		await zapToConvex.saveZapScanToConvex(filteredResults, userId);
+		return c.json(filteredResults);
 	} catch (error: unknown) {
 		if (error instanceof Error) {
 			return c.json({ error: error.message }, 500);

@@ -88,7 +88,7 @@ const UserScans: React.FC = () => {
 	}
 
 	return (
-		<div className="rounded-lg border p-6">
+		<div className="rounded-lg border p-6 bg-sidebar">
 			<h2 className="text-xl font-semibold mb-4 p-4">Recent Scans</h2>
 			{scans.map((scan) => (
 				// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
@@ -100,25 +100,17 @@ const UserScans: React.FC = () => {
 					<div className="flex items-center space-x-3">
 						<span
 							className={`w-4 h-4 rounded-full ${
-								scan.status === "yellow"
-									? "bg-yellow-500"
-									: "bg-red-500"
+								scan.status === "yellow" ? "bg-yellow-500" : "bg-red-500"
 							}`}
 						/>
 						<span className="text-purple-600 hover:underline">
 							{scan.targetUrl}
 						</span>
-						<Badge variant="secondary">
-							{scan.CompilanceStandard}
-						</Badge>
+						<Badge variant="secondary">{scan.CompilanceStandard}</Badge>
 					</div>
 					<div className="flex justify-evenly gap-4">
-						<Badge variant="destructive">
-							{scan.totalVulnerabilities}
-						</Badge>
-						<span className="text-sm text-gray-400">
-							{scan.scanedAt}
-						</span>
+						<Badge variant="destructive">{scan.totalVulnerabilities}</Badge>
+						<span className="text-sm text-gray-400">{scan.scanedAt}</span>
 					</div>
 				</div>
 			))}

@@ -48,8 +48,8 @@ const ChatSkeleton = () => {
 				const key = `skeleton-${i}`;
 				return (
 					<div key={key} className="flex items-center space-x-4 p-2">
-						<div className="h-4 w-4 rounded-full bg-gray-200 dark:bg-gray-700" />
-						<div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-700" />
+						<div className="h-5 w-5 rounded-full bg-secondary " />
+						<div className="h-5 w-3/4 rounded bg-secondary" />
 					</div>
 				);
 			})}
@@ -145,28 +145,20 @@ export default function NavContent() {
 										<SidebarMenuButton
 											asChild
 											className="w-full justify-between cursor-pointer"
-											onClick={() =>
-												navigate(`/chatbot/${chat._id}`)
-											}
+											onClick={() => navigate(`/chatbot/${chat._id}`)}
 										>
 											<div className="flex items-center">
 												<MessageCircle className="mr-2 h-4 w-4 shrink-0" />
-												<span className="flex-grow truncate">
-													{chat.title}
-												</span>
+												<span className="flex-grow truncate">{chat.title}</span>
 												<DropdownMenu>
-													<DropdownMenuTrigger
-														asChild
-													>
+													<DropdownMenuTrigger asChild>
 														<Button
 															variant="ghost"
 															size="sm"
 															className="ml-auto h-8 w-8 p-0"
 														>
 															<MoreHorizontal className="h-4 w-4 ml-auto" />
-															<span className="sr-only">
-																Open menu
-															</span>
+															<span className="sr-only">Open menu</span>
 														</Button>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent
