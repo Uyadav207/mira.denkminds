@@ -7,6 +7,23 @@ export interface ZapAlertInstance {
 	otherinfo: string;
 }
 
+export interface ZapAlertRequestBody {
+	userId: string;
+	targetUrl: string;
+	complianceStandardUrl: string;
+	scanType: string;
+	totals: {
+		totalIssues: number;
+		medium: number;
+		high: number;
+		low: number;
+		critical: number;
+		informational: number;
+		totalIssue: number;
+	};
+	filteredAlerts: ZapAlert[];
+}
+
 export interface ZapAlert {
 	pluginid: string;
 	alertRef: string;
