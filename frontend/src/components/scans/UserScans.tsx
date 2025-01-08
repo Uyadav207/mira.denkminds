@@ -1,65 +1,33 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "../ui/badge";
+import useStore from "../../store/store";
 
 type Scan = {
+	_id: string;
 	targetUrl: string;
 	status: "yellow" | "red";
-	CompilanceStandard: string;
+	complianceStandard: string;
 	scanedAt: string;
-	totalVulnerabilities?: number;
-	scanId: string;
+	totalIssues?: number;
+	scanType: string;
+	_creationTime: string;
 };
 
 const UserScans: React.FC = () => {
+	const user = useStore((state) => state.user);
+	if (!user) {
+		return null;
+	}
+	const { id } = user;
 	const navigate = useNavigate();
-	const [scans, setScans] = useState<Scan[]>([]);
-	const [loading, setLoading] = useState(true);
 
-	// Mimic API call on component mount
-	useEffect(() => {
-		const fetchScans = async () => {
-			setLoading(true);
+	const scans = useQuery(api.scans.fetchScansByUserIdWithoutRisks, {
+		userId: String(id),
+	});
 
-			// Simulate an API call with mock data
-			const mockScans: Scan[] = [
-				{
-					scanId: "1",
-					targetUrl: "https://denkminds.vercel.app",
-					status: "yellow",
-					CompilanceStandard: "GDPR",
-					scanedAt: "a month ago",
-					totalVulnerabilities: 100,
-				},
-				{
-					scanId: "2",
-					targetUrl: "https://vulnerable.zerothreat.ai",
-					status: "red",
-					CompilanceStandard: "NIST",
-					scanedAt: "8 months ago",
-					totalVulnerabilities: 33,
-				},
-				{
-					scanId: "3",
-					targetUrl: "https://aspdotnet.vulnerable.zerothreat.ai",
-					status: "red",
-					CompilanceStandard: "ISO",
-					scanedAt: "8 months ago",
-					totalVulnerabilities: 22,
-				},
-			];
-
-			// Simulate API delay
-			setTimeout(() => {
-				setScans(mockScans);
-				setLoading(false);
-			}, 1500);
-		};
-
-		fetchScans();
-	}, []);
-
-	if (loading) {
+	if (!scans) {
 		return (
 			<div className="rounded-lg border p-6">
 				<div className="flex items-center justify-between space-x-4 mb-4">
@@ -90,27 +58,42 @@ const UserScans: React.FC = () => {
 	return (
 		<div className="rounded-lg border p-6 bg-sidebar">
 			<h2 className="text-xl font-semibold mb-4 p-4">Recent Scans</h2>
-			{scans.map((scan) => (
+			{scans.map((scan: Scan) => (
 				// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 				<div
-					key={scan.scanId}
-					onClick={() => navigate(`/recent-scan/${scan.scanId}`)}
+					key={scan._id}
+					onClick={() => navigate(`/recent-scan/${scan._id}`)}
 					className="flex items-center justify-between border-b pb-4 pt-4 px-3 rounded-sm last:border-none hover:bg-secondary-combi cursor-pointer"
 				>
 					<div className="flex items-center space-x-3">
 						<span
 							className={`w-4 h-4 rounded-full ${
-								scan.status === "yellow" ? "bg-yellow-500" : "bg-red-500"
+								scan.complianceStandard === "yellow"
+									? "bg-yellow-500"
+									: "bg-red-500"
 							}`}
 						/>
 						<span className="text-purple-600 hover:underline">
 							{scan.targetUrl}
 						</span>
-						<Badge variant="secondary">{scan.CompilanceStandard}</Badge>
+						<Badge variant="secondary">
+							{scan.complianceStandard}
+						</Badge>
+						<Badge
+							className={`${
+								scan.scanType === "passive"
+									? "bg-yellow-500"
+									: "bg-green-500"
+							}`}
+						>
+							{scan.scanType}
+						</Badge>
 					</div>
 					<div className="flex justify-evenly gap-4">
-						<Badge variant="destructive">{scan.totalVulnerabilities}</Badge>
-						<span className="text-sm text-gray-400">{scan.scanedAt}</span>
+						<Badge variant="destructive">{scan.totalIssues}</Badge>
+						<span className="text-sm text-gray-400">
+							{new Date(scan._creationTime).toLocaleString()}
+						</span>
 					</div>
 				</div>
 			))}
