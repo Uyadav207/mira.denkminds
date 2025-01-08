@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export const createReportFolder = mutation({
 	args: {
 		userId: v.string(), // External user ID
-		folderName: v.string(), // Name of the folder
+		folderName: v.string(),
 	},
 	handler: async (ctx, { userId, folderName }) => {
 		const now = Date.now();
@@ -16,7 +16,7 @@ export const createReportFolder = mutation({
 			createdAt: now,
 		});
 
-		return folderId; // Return the folder ID
+		return folderId;
 	},
 });
 
@@ -31,15 +31,15 @@ export const getReportFoldersByUser = query({
 			.withIndex("by_userId", (q) => q.eq("userId", userId))
 			.collect();
 
-		return folders; // Return all report folders for the user
+		return folders;
 	},
 });
 
 export const addReport = mutation({
 	args: {
 		folderId: v.id("reportFolders"), // ID of the report folder
-		fileName: v.string(), // Name of the file
-		fileUrl: v.string(), // URL of the uploaded file
+		fileName: v.string(),
+		fileUrl: v.string(),
 	},
 	handler: async (ctx, { folderId, fileName, fileUrl }) => {
 		const now = Date.now();
@@ -52,13 +52,13 @@ export const addReport = mutation({
 			createdAt: now,
 		});
 
-		return reportId; // Return the report ID
+		return reportId;
 	},
 });
 
 export const getReportsByFolder = query({
 	args: {
-		folderId: v.id("reportFolders"), // ID of the report folder
+		folderId: v.id("reportFolders"),
 	},
 	handler: async (ctx, { folderId }) => {
 		// Query reports table by folderId
@@ -67,6 +67,6 @@ export const getReportsByFolder = query({
 			.withIndex("by_folderId", (q) => q.eq("folderId", folderId))
 			.collect();
 
-		return reports; // Return all reports in the folder
+		return reports;
 	},
 });

@@ -7,8 +7,8 @@ import {
 	MoreHorizontal,
 	Settings2,
 	Trash2,
-	// Share2,
 	Copy,
+	ScanText,
 } from "lucide-react";
 import {
 	SidebarGroup,
@@ -34,6 +34,12 @@ import useStore from "../../store/store";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Chats } from "../../types/chats";
+import { SidebarMenuSub } from "../ui/sidebar";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "../ui/collapsible";
 
 const ChatSkeleton = () => {
 	return (
@@ -42,8 +48,8 @@ const ChatSkeleton = () => {
 				const key = `skeleton-${i}`;
 				return (
 					<div key={key} className="flex items-center space-x-4 p-2">
-						<div className="h-4 w-4 rounded-full bg-gray-200 dark:bg-gray-700" />
-						<div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-700" />
+						<div className="h-5 w-5 rounded-full bg-secondary " />
+						<div className="h-5 w-3/4 rounded bg-secondary" />
 					</div>
 				);
 			})}
@@ -73,15 +79,35 @@ export default function NavContent() {
 		<>
 			<SidebarGroup>
 				<SidebarMenu>
-					<SidebarMenuItem>
-						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
-						<a onClick={() => navigate("/dashboard")}>
-							<SidebarMenuButton tooltip="Home">
-								<Home className="h-4 w-4" />
-								<span>Dashboard</span>
-							</SidebarMenuButton>
-						</a>
-					</SidebarMenuItem>
+					<Collapsible defaultOpen className="group/collapsible">
+						<SidebarMenuItem>
+							<CollapsibleTrigger asChild>
+								<SidebarMenuButton tooltip="Dashboard">
+									<Home className="h-4 w-4" />
+									<span>Dashboard</span>
+								</SidebarMenuButton>
+							</CollapsibleTrigger>
+							<CollapsibleContent>
+								<SidebarMenuSub>
+									{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+									<a onClick={() => navigate("/recent-scan")}>
+										<SidebarMenuButton tooltip="Scans">
+											<ScanText className="h-4 w-4" />
+											<span>Scans</span>
+										</SidebarMenuButton>
+									</a>
+								</SidebarMenuSub>
+								{/* <SidebarMenuSub>
+									
+									<a onClick={() => navigate("/api-scan")}>
+										<SidebarMenuButton tooltip="Api Scans">
+											<span>Api Scans</span>
+										</SidebarMenuButton>
+									</a>
+								</SidebarMenuSub> */}
+							</CollapsibleContent>
+						</SidebarMenuItem>
+					</Collapsible>
 					<SidebarMenuItem>
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/settings")}>
@@ -119,28 +145,20 @@ export default function NavContent() {
 										<SidebarMenuButton
 											asChild
 											className="w-full justify-between cursor-pointer"
-											onClick={() =>
-												navigate(`/chatbot/${chat._id}`)
-											}
+											onClick={() => navigate(`/chatbot/${chat._id}`)}
 										>
 											<div className="flex items-center">
 												<MessageCircle className="mr-2 h-4 w-4 shrink-0" />
-												<span className="flex-grow truncate">
-													{chat.title}
-												</span>
+												<span className="flex-grow truncate">{chat.title}</span>
 												<DropdownMenu>
-													<DropdownMenuTrigger
-														asChild
-													>
+													<DropdownMenuTrigger asChild>
 														<Button
 															variant="ghost"
 															size="sm"
 															className="ml-auto h-8 w-8 p-0"
 														>
 															<MoreHorizontal className="h-4 w-4 ml-auto" />
-															<span className="sr-only">
-																Open menu
-															</span>
+															<span className="sr-only">Open menu</span>
 														</Button>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent

@@ -25,7 +25,7 @@ export default defineSchema({
 	}).index("by_userId", ["userId"]),
 
 	reportFolders: defineTable({
-		userId: v.string(), // External userId as a string
+		userId: v.string(),
 		folderName: v.string(),
 		createdAt: v.number(),
 	}).index("by_userId", ["userId"]),
@@ -33,7 +33,7 @@ export default defineSchema({
 	reports: defineTable({
 		folderId: v.id("reportFolders"),
 		fileName: v.string(),
-		fileUrl: v.string(), // URL for uploaded file
+		fileUrl: v.string(),
 		createdAt: v.number(),
 	}).index("by_folderId", ["folderId"]),
 
@@ -41,37 +41,40 @@ export default defineSchema({
 		userId: v.string(), // Reference to the user
 		targetUrl: v.string(),
 		complianceStandard: v.string(),
-		totalVulnerabilities: v.number(),
-		uniqueUrls: v.number(),
+		scanType: v.string(),
 		totalRisks: v.object({
-			// Object to hold risk levels
+			totalVulnerabilities: v.number(),
 			Medium: v.number(),
 			High: v.number(),
 			Low: v.number(),
 			Critical: v.number(),
 			Informational: v.number(),
 		}),
-		scanedAt: v.number(),
 	}).index("by_userId", ["userId"]),
 
 	vulnerabilities: defineTable({
 		scanId: v.id("scans"), // Reference to the scan
-		name: v.string(),
-		totalCount: v.number(),
-		description: v.string(),
-		solution: v.string(),
-		cweId: v.string(),
 		alert: v.string(),
-		complianceDetails: v.array(v.string()), // Array of compliance details
-		cveIds: v.array(v.string()), // Array of CVE IDs
-		updatedAt: v.number(),
+		AffectedUrisCount: v.string(),
+		riskDesc: v.string(),
 	}).index("by_scanId", ["scanId"]),
 
-	urls: defineTable({
-		vulnerabilityId: v.id("vulnerabilities"), // Reference to the vulnerability
-		url: v.string(),
-		method: v.string(),
-		riskLevel: v.string(), // Medium, High, Low, Critical, etc.
-		updatedAt: v.number(),
+	vulnerabilityInfo: defineTable({
+		vulnerabilityId: v.id("vulnerabilities"),
+		riskLevel: v.string(),
+		cweId: v.string(),
+		cveIds: v.array(v.string()),
+		description: v.string(),
+		affectedUrls: v.array(
+			v.object({
+				uri: v.string(),
+				method: v.string(),
+				attack: v.string(),
+				evidence: v.string(),
+			}),
+		),
+		solution: v.string(),
+		confidence: v.string(),
+		reference: v.string(),
 	}).index("by_vulnerabilityId", ["vulnerabilityId"]),
 });

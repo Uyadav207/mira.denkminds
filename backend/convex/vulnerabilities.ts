@@ -4,7 +4,7 @@ import { v } from "convex/values";
 // Query for fetching scans by userId
 export const fetchVulnerabilityByScanId = query({
 	args: {
-		scanId: v.id("scans"), // External user ID
+		scanId: v.id("scans"),
 	},
 	handler: async (ctx, { scanId }) => {
 		const vulnerabilites = await ctx.db
@@ -15,48 +15,25 @@ export const fetchVulnerabilityByScanId = query({
 	},
 });
 
-// Mutation for saving vulnerability details
+//  save vulnerability details
 export const saveVulnerability = mutation({
 	args: {
 		scanId: v.id("scans"),
-		name: v.string(),
-		description: v.string(),
-		totalCount: v.number(),
-		solution: v.string(),
-		cweId: v.string(),
 		alert: v.string(),
-		complianceDetails: v.array(v.string()),
-		cveIds: v.array(v.string()),
+		AffectedUrisCount: v.string(),
+
+		riskDesc: v.string(),
 	},
-	handler: async (
-		ctx,
-		{
-			scanId,
-			name,
-			description,
-			solution,
-			cweId,
-			alert,
-			complianceDetails,
-			cveIds,
-		},
-	) => {
+	handler: async (ctx, { scanId, alert, AffectedUrisCount, riskDesc }) => {
 		const now = Date.now();
 
-		// Insert the vulnerability data into the `vulnerabilities` table
 		const vulnerabilityId = await ctx.db.insert("vulnerabilities", {
 			scanId,
-			name,
-			description,
-			solution,
-			cweId,
 			alert,
-			complianceDetails,
-			cveIds,
-			updatedAt: now,
-			totalCount: 0,
+			AffectedUrisCount,
+			riskDesc,
 		});
 
-		return { vulnerabilityId }; // Return the generated vulnerabilityId
+		return { vulnerabilityId };
 	},
 });

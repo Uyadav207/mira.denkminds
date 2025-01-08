@@ -50,9 +50,7 @@ const MiraChatBot: React.FC = () => {
 	const [humanInTheLoopMessage, setHumanInTheLoopMessage] = useState<
 		string | null
 	>(null);
-	const [createdChatId, setCreatedChatId] = useState<Id<"chats"> | null>(
-		null,
-	);
+	const [createdChatId, setCreatedChatId] = useState<Id<"chats"> | null>(null);
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const { chatId: chatIdParam } = useParams<{ chatId: string }>();
 	const chatId = chatIdParam as Id<"chats">;
@@ -217,12 +215,7 @@ const MiraChatBot: React.FC = () => {
 			}
 			setPendingAction(botMessage.id as string);
 			setPendingAction(botMessage.id as string);
-			requestHumanApproval(
-				"report",
-				manualMessage,
-				"none",
-				botMessage.id,
-			);
+			requestHumanApproval("report", manualMessage, "none", botMessage.id);
 		} else {
 			//handled properly
 			streamChatResponse(userMessage.message);
@@ -279,8 +272,7 @@ const MiraChatBot: React.FC = () => {
 			setActionPrompts([]);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "folder") {
-			approvalMessage =
-				"Select the folder where you want to save the report.";
+			approvalMessage = "Select the folder where you want to save the report.";
 			setActionPrompts(foldersList);
 			setHumanInTheLoopMessage(approvalMessage);
 		}
@@ -347,9 +339,7 @@ const MiraChatBot: React.FC = () => {
 					botMessage.id,
 				);
 			} catch {
-				addBotMessage(
-					"An error occurred while processing your request.",
-				);
+				addBotMessage("An error occurred while processing your request.");
 			}
 		} else if (type === "report") {
 			addBotMessage(`${type} Generation In progress...`);
@@ -414,12 +404,7 @@ const MiraChatBot: React.FC = () => {
 			});
 
 			setPendingAction(botMessage.id as string);
-			requestHumanApproval(
-				"folder",
-				manualMessage,
-				"report",
-				botMessage.id,
-			);
+			requestHumanApproval("folder", manualMessage, "report", botMessage.id);
 		}
 	};
 
@@ -507,10 +492,7 @@ const MiraChatBot: React.FC = () => {
 		setMessages((prev) => {
 			const lastMessage = prev[prev.length - 1];
 			if (lastMessage?.sender === "ai" && lastMessage.isStreaming) {
-				return [
-					...prev.slice(0, -1),
-					{ ...lastMessage, message: message },
-				];
+				return [...prev.slice(0, -1), { ...lastMessage, message: message }];
 			}
 
 			return [
@@ -531,16 +513,12 @@ const MiraChatBot: React.FC = () => {
 			const updatedMessages = prev.map((msg) =>
 				msg.isStreaming ? { ...msg, isStreaming: false } : msg,
 			);
-			latestmessage = updatedMessages;
+			latestmessage = [...updatedMessages];
 			return updatedMessages;
 		});
 
 		if (latestmessage.length === 2 && !chatId) {
 			const response = await handleTitleGeneration(latestmessage);
-			// const result = await saveChat({
-			// 	userId: String(response?.userId as),
-			// 	title: response?.title,
-			// });
 
 			const result = await saveChat({
 				userId: String((response as { userId: string }).userId),
@@ -582,45 +560,40 @@ const MiraChatBot: React.FC = () => {
 	const streamChatResponse = async (prompt: string) => {
 		try {
 			setIsLoading(true);
-			const responseStream = await chatApis.chat({ prompt });
-			setIsLoading(false);
+			const responseStream = (await chatApis.chat({
+				message: prompt,
+				useRAG: false,
+			})) as StreamResponse;
 
-			const reader = responseStream.getReader();
+			if (!responseStream.ok || !responseStream.body) {
+				throw new Error("Failed to get response stream");
+			}
+
+			const reader = responseStream.body.getReader();
 			const decoder = new TextDecoder();
 			let accumulatedMessage = "";
+
 			while (true) {
 				const { done, value } = await reader.read();
+
 				if (done) {
 					completeMessage();
-
 					break;
 				}
 
+				// Decode and append new chunk
 				const chunk = decoder.decode(value, { stream: true });
-				const lines = chunk
-					.split("\n")
-					.filter((line) => line.trim() !== "");
+				accumulatedMessage += chunk;
 
-				for (const line of lines) {
-					try {
-						const parsed = JSON.parse(line);
-						if (parsed.response) {
-							accumulatedMessage += parsed.response;
-							updateUI(accumulatedMessage);
-						}
-					} catch (error) {
-						return error;
-					}
-				}
+				// Update UI with accumulated message
+				updateUI(accumulatedMessage);
 			}
 		} catch (error) {
-			addBotMessage(
-				"Oops! Something went wrong while streaming the response.",
-			);
-			return error;
+			const errorMessage =
+				error instanceof Error ? error.message : "Unknown error occurred";
+			addBotMessage(`Error: ${errorMessage}`);
 		} finally {
 			setIsLoading(false);
-			// setIsStreaming(false);
 		}
 	};
 
@@ -703,9 +676,7 @@ const MiraChatBot: React.FC = () => {
 
 						const isUser = message.sender === "user";
 						const messageClasses = `inline-block p-2 rounded-lg ${
-							isUser
-								? "bg-black text-white"
-								: "bg-gray-200 text-black mt-10"
+							isUser ? "bg-black text-white" : "bg-gray-200 text-black mt-10"
 						}`;
 						const containerClasses = `mb-4 ${isUser ? "text-right" : "text-left"}`;
 
@@ -716,13 +687,11 @@ const MiraChatBot: React.FC = () => {
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 							>
-								<span className={messageClasses}>
+								<span className={`${messageClasses}`}>
 									{isUser ? (
 										message.message
 									) : (
-										<ReactMarkdown>
-											{message.message}
-										</ReactMarkdown>
+										<ReactMarkdown>{message.message}</ReactMarkdown>
 									)}
 								</span>
 							</motion.div>
@@ -750,9 +719,7 @@ const MiraChatBot: React.FC = () => {
 					onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
 						setInput(e.target.value)
 					}
-					onKeyPress={(
-						e: React.KeyboardEvent<HTMLTextAreaElement>,
-					) => {
+					onKeyPress={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 						if (e.key === "Enter" && !e.shiftKey) {
 							e.preventDefault();
 							handleSend();

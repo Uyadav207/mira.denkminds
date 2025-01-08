@@ -1,6 +1,7 @@
 import axiosInstance from "./axios";
 interface ChatPayload {
-	prompt: string;
+	message: string;
+	useRAG?: boolean;
 }
 interface ScanPayload {
 	website: string;
@@ -8,7 +9,7 @@ interface ScanPayload {
 }
 
 const chat = async (payload: ChatPayload) => {
-	const response = await fetch("http://localhost:8000/api/chat", {
+	const response = await fetch("http://localhost:8000/chat/message/stream", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -20,7 +21,7 @@ const chat = async (payload: ChatPayload) => {
 		throw new Error("No response body");
 	}
 
-	return response.body; // Return the readable stream for processing
+	return response; // Return the readable stream for processing
 };
 const scan = (payload: ScanPayload) => axiosInstance.post("/api/scan", payload);
 
