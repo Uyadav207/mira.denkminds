@@ -1,0 +1,1477 @@
+[
+	{
+		"id": "0",
+		"alert": "Directory Browsing",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "2",
+		"alert": "Private IP Disclosure",
+		"compliance": ["HIPAA"]
+	},
+	{
+		"id": "3",
+		"alert": "Session ID in URL Rewrite",
+		"compliance": ["OWASP", "GDPR"]
+	},
+	{
+		"id": "3-1",
+		"alert": "Session ID in URL Rewrite",
+		"compliance": ["OWASP", "GDPR"]
+	},
+	{
+		"id": "3-2",
+		"alert": "Session ID in URL Rewrite",
+		"compliance": ["OWASP", "GDPR"]
+	},
+	{
+		"id": "3-3",
+		"alert": "Referer Exposes Session ID",
+		"compliance": ["OWASP", "HIPAA"]
+	},
+	{
+		"id": "6",
+		"alert": "Path Traversal",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "6-1",
+		"alert": "Path Traversal",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "6-2",
+		"alert": "Path Traversal",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "6-3",
+		"alert": "Path Traversal",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "6-4",
+		"alert": "Path Traversal",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "6-5",
+		"alert": "Path Traversal",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "7",
+		"alert": "Remote File Inclusion",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "41",
+		"alert": "Source Code Disclosure - Git",
+		"compliance": []
+	},
+	{
+		"id": "42",
+		"alert": "Source Code Disclosure - SVN",
+		"compliance": []
+	},
+	{
+		"id": "43",
+		"alert": "Source Code Disclosure - File Inclusion",
+		"compliance": []
+	},
+	{
+		"id": "10003",
+		"alert": "Vulnerable JS Library",
+		"compliance": ["PCIDSS"]
+	},
+	{
+		"id": "10004",
+		"alert": "Tech Detection Passive Scanner",
+		"compliance": []
+	},
+	{
+		"id": "10009",
+		"alert": "In Page Banner Information Leak",
+		"compliance": ["GDPR"]
+	},
+	{
+		"id": "10010",
+		"alert": "Cookie No HttpOnly Flag",
+		"compliance": []
+	},
+	{
+		"id": "10011",
+		"alert": "Cookie Without Secure Flag",
+		"compliance": ["OWASP", "PCIDSS"]
+	},
+	{
+		"id": "10015",
+		"alert": "Re-examine Cache-control Directives",
+		"compliance": []
+	},
+	{
+		"id": "10016",
+		"alert": "Web Browser XSS Protection Not Enabled",
+		"compliance": []
+	},
+	{
+		"id": "10017",
+		"alert": "Cross-Domain JavaScript Source File Inclusion",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "10019",
+		"alert": "Content-Type Header Missing",
+		"compliance": ["OWASP", "GDPR"]
+	},
+	{
+		"id": "10019-1",
+		"alert": "Content-Type Header Missing",
+		"compliance": ["OWASP", "GDPR"]
+	},
+	{
+		"id": "10019-2",
+		"alert": "Content-Type Header Empty",
+		"compliance": []
+	},
+	{
+		"id": "10020",
+		"alert": "Anti-clickjacking Header",
+		"compliance": []
+	},
+	{
+		"id": "10020-1",
+		"alert": "Missing Anti-clickjacking Header",
+		"compliance": ["PCIDSS"]
+	},
+	{
+		"id": "10020-2",
+		"alert": "Multiple X-Frame-Options Header Entries",
+		"compliance": []
+	},
+	{
+		"id": "10020-3",
+		"alert": "X-Frame-Options Defined via META (Non-compliant with Spec)",
+		"compliance": []
+	},
+	{
+		"id": "10020-4",
+		"alert": "X-Frame-Options Setting Malformed",
+		"compliance": []
+	},
+	{
+		"id": "10021",
+		"alert": "X-Content-Type-Options Header Missing",
+		"compliance": []
+	},
+	{
+		"id": "10023",
+		"alert": "Information Disclosure - Debug Error Messages",
+		"compliance": ["GDPR", "HIPAA"]
+	},
+	{
+		"id": "10024",
+		"alert": "Information Disclosure - Sensitive Information in URL",
+		"compliance": ["GDPR", "HIPAA"]
+	},
+	{
+		"id": "10025",
+		"alert": "Information Disclosure - Sensitive Information in HTTP Referrer Header",
+		"compliance": ["GDPR"]
+	},
+	{
+		"id": "10026",
+		"alert": "HTTP Parameter Override",
+		"compliance": []
+	},
+	{
+		"id": "10027",
+		"alert": "Information Disclosure - Suspicious Comments",
+		"compliance": []
+	},
+	{
+		"id": "10028",
+		"alert": "Open Redirect",
+		"compliance": []
+	},
+	{
+		"id": "10029",
+		"alert": "Cookie Poisoning",
+		"compliance": []
+	},
+	{
+		"id": "10030",
+		"alert": "User Controllable Charset",
+		"compliance": []
+	},
+	{
+		"id": "10031",
+		"alert": "User Controllable HTML Element Attribute (Potential XSS)",
+		"compliance": []
+	},
+	{
+		"id": "10032",
+		"alert": "Viewstate",
+		"compliance": []
+	},
+	{
+		"id": "10032-1",
+		"alert": "Potential IP Addresses Found in the Viewstate",
+		"compliance": []
+	},
+	{
+		"id": "10032-2",
+		"alert": "Emails Found in the Viewstate",
+		"compliance": []
+	},
+	{
+		"id": "10032-3",
+		"alert": "Old Asp.Net Version in Use",
+		"compliance": []
+	},
+	{
+		"id": "10032-4",
+		"alert": "Viewstate without MAC Signature (Unsure)",
+		"compliance": []
+	},
+	{
+		"id": "10032-5",
+		"alert": "Viewstate without MAC Signature (Sure)",
+		"compliance": []
+	},
+	{
+		"id": "10032-6",
+		"alert": "Split Viewstate in Use",
+		"compliance": []
+	},
+	{
+		"id": "10033",
+		"alert": "Directory Browsing",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "10034",
+		"alert": "Heartbleed OpenSSL Vulnerability (Indicative)",
+		"compliance": []
+	},
+	{
+		"id": "10035",
+		"alert": "Strict-Transport-Security Header",
+		"compliance": []
+	},
+	{
+		"id": "10035-1",
+		"alert": "Strict-Transport-Security Header Not Set",
+		"compliance": ["ISO27001-A"]
+	},
+	{
+		"id": "10035-2",
+		"alert": "Strict-Transport-Security Disabled",
+		"compliance": []
+	},
+	{
+		"id": "10035-3",
+		"alert": "Strict-Transport-Security Multiple Header Entries (Non-compliant with Spec)",
+		"compliance": []
+	},
+	{
+		"id": "10035-4",
+		"alert": "Strict-Transport-Security Header on Plain HTTP Response",
+		"compliance": []
+	},
+	{
+		"id": "10035-5",
+		"alert": "Strict-Transport-Security Missing Max-Age (Non-compliant with Spec)",
+		"compliance": []
+	},
+	{
+		"id": "10035-6",
+		"alert": "Strict-Transport-Security Defined via META (Non-compliant with Spec)",
+		"compliance": []
+	},
+	{
+		"id": "10035-7",
+		"alert": "Strict-Transport-Security Max-Age Malformed (Non-compliant with Spec)",
+		"compliance": []
+	},
+	{
+		"id": "10035-8",
+		"alert": "Strict-Transport-Security Malformed Content (Non-compliant with Spec)",
+		"compliance": []
+	},
+	{
+		"id": "10036",
+		"alert": "HTTP Server Response Header",
+		"compliance": []
+	},
+	{
+		"id": "10036-1",
+		"alert": "Server Leaks its Webserver Application via \"Server\" HTTP Response Header Field",
+		"compliance": []
+	},
+	{
+		"id": "10036-2",
+		"alert": "Server Leaks Version Information via \"Server\" HTTP Response Header Field",
+		"compliance": []
+	},
+	{
+		"id": "10037",
+		"alert": "Server Leaks Information via \"X-Powered-By\" HTTP Response Header Field(s)",
+		"compliance": []
+	},
+	{
+		"id": "10038",
+		"alert": "Content Security Policy (CSP) Header Not Set",
+		"compliance": ["ISO27001-A"]
+	},
+	{
+		"id": "10038-1",
+		"alert": "Content Security Policy (CSP) Header Not Set",
+		"compliance": ["ISO27001-A"]
+	},
+	{
+		"id": "10038-2",
+		"alert": "Obsolete Content Security Policy (CSP) Header Found",
+		"compliance": []
+	},
+	{
+		"id": "10038-3",
+		"alert": "Content Security Policy (CSP) Report-Only Header Found",
+		"compliance": []
+	},
+	{
+		"id": "10039",
+		"alert": "X-Backend-Server Header Information Leak",
+		"compliance": []
+	},
+	{
+		"id": "10040",
+		"alert": "Secure Pages Include Mixed Content",
+		"compliance": ["ISO27001-A"]
+	},
+	{
+		"id": "10041",
+		"alert": "HTTP to HTTPS Insecure Transition in Form Post",
+		"compliance": []
+	},
+	{
+		"id": "10042",
+		"alert": "HTTPS to HTTP Insecure Transition in Form Post",
+		"compliance": []
+	},
+	{
+		"id": "10043",
+		"alert": "User Controllable JavaScript Event (XSS)",
+		"compliance": []
+	},
+	{
+		"id": "10044",
+		"alert": "Big Redirect Detected (Potential Sensitive Information Leak)",
+		"compliance": []
+	},
+	{
+		"id": "10044-1",
+		"alert": "Big Redirect Detected (Potential Sensitive Information Leak)",
+		"compliance": []
+	},
+	{
+		"id": "10044-2",
+		"alert": "Multiple HREFs Redirect Detected (Potential Sensitive Information Leak)",
+		"compliance": []
+	},
+	{
+		"id": "10045",
+		"alert": "Source Code Disclosure - /WEB-INF Folder",
+		"compliance": []
+	},
+	{
+		"id": "10045-1",
+		"alert": "Source Code Disclosure - /WEB-INF Folder",
+		"compliance": []
+	},
+	{
+		"id": "10045-2",
+		"alert": "Properties File Disclosure - /WEB-INF folder",
+		"compliance": []
+	},
+	{
+		"id": "10046",
+		"alert": "Insecure Component",
+		"compliance": ["ISO27001-A"]
+	},
+	{
+		"id": "10047",
+		"alert": "HTTPS Content Available via HTTP",
+		"compliance": []
+	},
+	{
+		"id": "10048",
+		"alert": "Remote Code Execution - Shell Shock",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "10048-1",
+		"alert": "Remote Code Execution - Shell Shock",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "10048-2",
+		"alert": "Remote Code Execution - Shell Shock",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "10049",
+		"alert": "Content Cacheability",
+		"compliance": []
+	},
+	{
+		"id": "10049-1",
+		"alert": "Non-Storable Content",
+		"compliance": []
+	},
+	{
+		"id": "10049-2",
+		"alert": "Storable but Non-Cacheable Content",
+		"compliance": []
+	},
+	{
+		"id": "10049-3",
+		"alert": "Storable and Cacheable Content",
+		"compliance": []
+	},
+	{
+		"id": "10050",
+		"alert": "Retrieved from Cache",
+		"compliance": []
+	},
+	{
+		"id": "10050-1",
+		"alert": "Retrieved from Cache",
+		"compliance": []
+	},
+	{
+		"id": "10050-2",
+		"alert": "Retrieved from Cache",
+		"compliance": []
+	},
+	{
+		"id": "10051",
+		"alert": "Relative Path Confusion",
+		"compliance": []
+	},
+	{
+		"id": "10052",
+		"alert": "X-ChromeLogger-Data (XCOLD) Header Information Leak",
+		"compliance": []
+	},
+	{
+		"id": "10053",
+		"alert": "Apache Range Header DoS (CVE-2011-3192)",
+		"compliance": []
+	},
+	{
+		"id": "10054",
+		"alert": "Cookie without SameSite Attribute",
+		"compliance": ["PCIDSS"]
+	},
+	{
+		"id": "10054-1",
+		"alert": "Cookie without SameSite Attribute",
+		"compliance": ["PCIDSS"]
+	},
+	{
+		"id": "10054-2",
+		"alert": "Cookie with SameSite Attribute None",
+		"compliance": []
+	},
+	{
+		"id": "10054-3",
+		"alert": "Cookie with Invalid SameSite Attribute",
+		"compliance": []
+	},
+	{
+		"id": "10055",
+		"alert": "CSP",
+		"compliance": []
+	},
+	{
+		"id": "10055-1",
+		"alert": "CSP: X-Content-Security-Policy",
+		"compliance": []
+	},
+	{
+		"id": "10055-2",
+		"alert": "CSP: X-WebKit-CSP",
+		"compliance": []
+	},
+	{
+		"id": "10055-3",
+		"alert": "CSP: Notices",
+		"compliance": []
+	},
+	{
+		"id": "10055-4",
+		"alert": "CSP: Wildcard Directive",
+		"compliance": []
+	},
+	{
+		"id": "10055-5",
+		"alert": "CSP: script-src unsafe-inline",
+		"compliance": []
+	},
+	{
+		"id": "10055-6",
+		"alert": "CSP: style-src unsafe-inline",
+		"compliance": []
+	},
+	{
+		"id": "10055-7",
+		"alert": "CSP: script-src unsafe-hashes",
+		"compliance": []
+	},
+	{
+		"id": "10055-8",
+		"alert": "CSP: style-src unsafe-hashes",
+		"compliance": []
+	},
+	{
+		"id": "10055-9",
+		"alert": "CSP: Malformed Policy (Non-ASCII)",
+		"compliance": []
+	},
+	{
+		"id": "10055-10",
+		"alert": "CSP: script-src unsafe-eval",
+		"compliance": []
+	},
+	{
+		"id": "10055-11",
+		"alert": "CSP: Meta Policy Invalid Directive",
+		"compliance": []
+	},
+	{
+		"id": "10055-12",
+		"alert": "CSP: Header & Meta",
+		"compliance": []
+	},
+	{
+		"id": "10056",
+		"alert": "X-Debug-Token Information Leak",
+		"compliance": []
+	},
+	{
+		"id": "10057",
+		"alert": "Username Hash Found",
+		"compliance": []
+	},
+	{
+		"id": "10058",
+		"alert": "GET for POST",
+		"compliance": []
+	},
+	{
+		"id": "10061",
+		"alert": "X-AspNet-Version Response Header",
+		"compliance": []
+	},
+	{
+		"id": "10062",
+		"alert": "PII Disclosure",
+		"compliance": ["GDPR"]
+	},
+	{
+		"id": "10063",
+		"alert": "Permissions Policy Header Not Set",
+		"compliance": ["ISO27001-A"]
+	},
+	{
+		"id": "10063-1",
+		"alert": "Permissions Policy Header Not Set",
+		"compliance": ["ISO27001-A"]
+	},
+	{
+		"id": "10063-2",
+		"alert": "Deprecated Feature Policy Header Set",
+		"compliance": []
+	},
+	{
+		"id": "10070",
+		"alert": "Use of SAML",
+		"compliance": []
+	},
+	{
+		"id": "10094",
+		"alert": "Base64 Disclosure",
+		"compliance": []
+	},
+	{
+		"id": "10094-1",
+		"alert": "ASP.NET ViewState Disclosure",
+		"compliance": []
+	},
+	{
+		"id": "10094-2",
+		"alert": "ASP.NET ViewState Integrity",
+		"compliance": []
+	},
+	{
+		"id": "10094-3",
+		"alert": "Base64 Disclosure",
+		"compliance": []
+	},
+	{
+		"id": "10095",
+		"alert": "Backup File Disclosure",
+		"compliance": []
+	},
+	{
+		"id": "10096",
+		"alert": "Timestamp Disclosure - Unix",
+		"compliance": []
+	},
+	{
+		"id": "10097",
+		"alert": "Hash Disclosure - MD4 / MD5",
+		"compliance": []
+	},
+	{
+		"id": "10098",
+		"alert": "Cross-Domain Misconfiguration",
+		"compliance": []
+	},
+	{
+		"id": "10099",
+		"alert": "Source Code Disclosure - PHP",
+		"compliance": []
+	},
+	{
+		"id": "10101",
+		"alert": "Access Control Issue - Improper Authentication",
+		"compliance": []
+	},
+	{
+		"id": "10102",
+		"alert": "Access Control Issue - Improper Authorization",
+		"compliance": []
+	},
+	{
+		"id": "10103",
+		"alert": "Image Exposes Location or Privacy Data",
+		"compliance": []
+	},
+	{
+		"id": "10104",
+		"alert": "User Agent Fuzzer",
+		"compliance": []
+	},
+	{
+		"id": "10105",
+		"alert": "Weak Authentication Method",
+		"compliance": []
+	},
+	{
+		"id": "10105-1",
+		"alert": "Authentication Credentials Captured",
+		"compliance": []
+	},
+	{
+		"id": "10105-2",
+		"alert": "Weak Authentication Method",
+		"compliance": []
+	},
+	{
+		"id": "10106",
+		"alert": "HTTP Only Site",
+		"compliance": []
+	},
+	{
+		"id": "10107",
+		"alert": "Httpoxy - Proxy Header Misuse",
+		"compliance": []
+	},
+	{
+		"id": "10108",
+		"alert": "Reverse Tabnabbing",
+		"compliance": []
+	},
+	{
+		"id": "10109",
+		"alert": "Modern Web Application",
+		"compliance": []
+	},
+	{
+		"id": "10110",
+		"alert": "Dangerous JS Functions",
+		"compliance": []
+	},
+	{
+		"id": "10111",
+		"alert": "Authentication Request Identified",
+		"compliance": []
+	},
+	{
+		"id": "10112",
+		"alert": "Session Management Response Identified",
+		"compliance": []
+	},
+	{
+		"id": "10113",
+		"alert": "Verification Request Identified",
+		"compliance": []
+	},
+	{
+		"id": "10115",
+		"alert": "Script Served From Malicious Domain (polyfill)",
+		"compliance": []
+	},
+	{
+		"id": "10115-1",
+		"alert": "Script Served From Malicious Domain (polyfill)",
+		"compliance": []
+	},
+	{
+		"id": "10115-2",
+		"alert": "Script Served From Malicious Domain (polyfill)",
+		"compliance": []
+	},
+	{
+		"id": "10202",
+		"alert": "Absence of Anti-CSRF Tokens",
+		"compliance": []
+	},
+	{
+		"id": "20012",
+		"alert": "Anti-CSRF Tokens Check",
+		"compliance": []
+	},
+	{
+		"id": "20014",
+		"alert": "HTTP Parameter Pollution",
+		"compliance": []
+	},
+	{
+		"id": "20015",
+		"alert": "Heartbleed OpenSSL Vulnerability",
+		"compliance": []
+	},
+	{
+		"id": "20016",
+		"alert": "Cross-Domain Misconfiguration",
+		"compliance": []
+	},
+	{
+		"id": "20016-1",
+		"alert": "Cross-Domain Misconfiguration - Adobe - Read",
+		"compliance": []
+	},
+	{
+		"id": "20016-2",
+		"alert": "Cross-Domain Misconfiguration - Adobe - Send",
+		"compliance": []
+	},
+	{
+		"id": "20016-3",
+		"alert": "Cross-Domain Misconfiguration - Silverlight",
+		"compliance": []
+	},
+	{
+		"id": "20017",
+		"alert": "Source Code Disclosure - CVE-2012-1823",
+		"compliance": []
+	},
+	{
+		"id": "20018",
+		"alert": "Remote Code Execution - CVE-2012-1823",
+		"compliance": []
+	},
+	{
+		"id": "20019",
+		"alert": "External Redirect",
+		"compliance": []
+	},
+	{
+		"id": "20019-1",
+		"alert": "External Redirect",
+		"compliance": []
+	},
+	{
+		"id": "20019-2",
+		"alert": "External Redirect",
+		"compliance": []
+	},
+	{
+		"id": "20019-3",
+		"alert": "External Redirect",
+		"compliance": []
+	},
+	{
+		"id": "20019-4",
+		"alert": "External Redirect",
+		"compliance": []
+	},
+	{
+		"id": "30001",
+		"alert": "Buffer Overflow",
+		"compliance": []
+	},
+	{
+		"id": "30002",
+		"alert": "Format String Error",
+		"compliance": []
+	},
+	{
+		"id": "30003",
+		"alert": "Integer Overflow Error",
+		"compliance": []
+	},
+	{
+		"id": "40003",
+		"alert": "CRLF Injection",
+		"compliance": []
+	},
+	{
+		"id": "40008",
+		"alert": "Parameter Tampering",
+		"compliance": []
+	},
+	{
+		"id": "40009",
+		"alert": "Server Side Include",
+		"compliance": []
+	},
+	{
+		"id": "40012",
+		"alert": "Cross Site Scripting (Reflected)",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "40013",
+		"alert": "Session Fixation",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "40014",
+		"alert": "Cross Site Scripting (Persistent)",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "40015",
+		"alert": "LDAP Injection",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "40016",
+		"alert": "Cross Site Scripting (Persistent) - Prime",
+		"compliance": []
+	},
+	{
+		"id": "40017",
+		"alert": "Cross Site Scripting (Persistent) - Spider",
+		"compliance": []
+	},
+	{
+		"id": "40018",
+		"alert": "SQL Injection",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "40019",
+		"alert": "SQL Injection - MySQL",
+		"compliance": []
+	},
+	{
+		"id": "40020",
+		"alert": "SQL Injection - Hypersonic SQL",
+		"compliance": []
+	},
+	{
+		"id": "40021",
+		"alert": "SQL Injection - Oracle",
+		"compliance": []
+	},
+	{
+		"id": "40022",
+		"alert": "SQL Injection - PostgreSQL",
+		"compliance": []
+	},
+	{
+		"id": "40023",
+		"alert": "Possible Username Enumeration",
+		"compliance": []
+	},
+	{
+		"id": "40024",
+		"alert": "SQL Injection - SQLite",
+		"compliance": []
+	},
+	{
+		"id": "40025",
+		"alert": "Proxy Disclosure",
+		"compliance": []
+	},
+	{
+		"id": "40026",
+		"alert": "Cross Site Scripting (DOM Based)",
+		"compliance": []
+	},
+	{
+		"id": "40027",
+		"alert": "SQL Injection - MsSQL",
+		"compliance": []
+	},
+	{
+		"id": "40028",
+		"alert": "ELMAH Information Leak",
+		"compliance": []
+	},
+	{
+		"id": "40029",
+		"alert": "Trace.axd Information Leak",
+		"compliance": []
+	},
+	{
+		"id": "40031",
+		"alert": "Out of Band XSS",
+		"compliance": []
+	},
+	{
+		"id": "40032",
+		"alert": ".htaccess Information Leak",
+		"compliance": []
+	},
+	{
+		"id": "40033",
+		"alert": "NoSQL Injection - MongoDB",
+		"compliance": []
+	},
+	{
+		"id": "40034",
+		"alert": ".env Information Leak",
+		"compliance": []
+	},
+	{
+		"id": "40035",
+		"alert": "Hidden File Found",
+		"compliance": []
+	},
+	{
+		"id": "40036",
+		"alert": "JWT Scan Rule",
+		"compliance": []
+	},
+	{
+		"id": "40038",
+		"alert": "Bypassing 403",
+		"compliance": []
+	},
+	{
+		"id": "40039",
+		"alert": "Web Cache Deception",
+		"compliance": []
+	},
+	{
+		"id": "40040",
+		"alert": "CORS Header",
+		"compliance": []
+	},
+	{
+		"id": "40040-1",
+		"alert": "CORS Header",
+		"compliance": []
+	},
+	{
+		"id": "40040-2",
+		"alert": "CORS Misconfiguration",
+		"compliance": []
+	},
+	{
+		"id": "40040-3",
+		"alert": "CORS Misconfiguration",
+		"compliance": []
+	},
+	{
+		"id": "40041",
+		"alert": "File Upload",
+		"compliance": []
+	},
+	{
+		"id": "40042",
+		"alert": "Spring Actuator Information Leak",
+		"compliance": []
+	},
+	{
+		"id": "40043",
+		"alert": "Log4Shell",
+		"compliance": []
+	},
+	{
+		"id": "40043-1",
+		"alert": "Log4Shell (CVE-2021-44228)",
+		"compliance": []
+	},
+	{
+		"id": "40043-2",
+		"alert": "Log4Shell (CVE-2021-45046)",
+		"compliance": []
+	},
+	{
+		"id": "40044",
+		"alert": "Exponential Entity Expansion (Billion Laughs Attack)",
+		"compliance": []
+	},
+	{
+		"id": "40045",
+		"alert": "Spring4Shell",
+		"compliance": []
+	},
+	{
+		"id": "40046",
+		"alert": "Server Side Request Forgery",
+		"compliance": []
+	},
+	{
+		"id": "40047",
+		"alert": "Text4shell (CVE-2022-42889)",
+		"compliance": []
+	},
+	{
+		"id": "50007",
+		"alert": "ExtensionGraphQl",
+		"compliance": []
+	},
+	{
+		"id": "50007-1",
+		"alert": "GraphQL Endpoint Supports Introspection",
+		"compliance": []
+	},
+	{
+		"id": "50007-2",
+		"alert": "GraphQL Server Implementation Identified",
+		"compliance": []
+	},
+	{
+		"id": "90001",
+		"alert": "Insecure JSF ViewState",
+		"compliance": []
+	},
+	{
+		"id": "90002",
+		"alert": "Java Serialization Object",
+		"compliance": []
+	},
+	{
+		"id": "90003",
+		"alert": "Sub Resource Integrity Attribute Missing",
+		"compliance": []
+	},
+	{
+		"id": "90004",
+		"alert": "Insufficient Site Isolation Against Spectre Vulnerability",
+		"compliance": []
+	},
+	{
+		"id": "90004-1",
+		"alert": "Insufficient Site Isolation Against Spectre Vulnerability",
+		"compliance": []
+	},
+	{
+		"id": "90004-2",
+		"alert": "Insufficient Site Isolation Against Spectre Vulnerability",
+		"compliance": []
+	},
+	{
+		"id": "90004-3",
+		"alert": "Insufficient Site Isolation Against Spectre Vulnerability",
+		"compliance": []
+	},
+	{
+		"id": "90005",
+		"alert": "Fetch Metadata Request Headers",
+		"compliance": []
+	},
+	{
+		"id": "90005-1",
+		"alert": "Sec-Fetch-Site Header is Missing",
+		"compliance": []
+	},
+	{
+		"id": "90005-2",
+		"alert": "Sec-Fetch-Mode Header is Missing",
+		"compliance": []
+	},
+	{
+		"id": "90005-3",
+		"alert": "Sec-Fetch-Dest Header is Missing",
+		"compliance": []
+	},
+	{
+		"id": "90005-4",
+		"alert": "Sec-Fetch-User Header is Missing",
+		"compliance": []
+	},
+	{
+		"id": "90005-5",
+		"alert": "Sec-Fetch-Site Header Has an Invalid Value",
+		"compliance": []
+	},
+	{
+		"id": "90005-6",
+		"alert": "Sec-Fetch-Mode Header Has an Invalid Value",
+		"compliance": []
+	},
+	{
+		"id": "90005-7",
+		"alert": "Sec-Fetch-Dest Header Has an Invalid Value",
+		"compliance": []
+	},
+	{
+		"id": "90005-8",
+		"alert": "Sec-Fetch-User Header Has an Invalid Value",
+		"compliance": []
+	},
+	{
+		"id": "90011",
+		"alert": "Charset Mismatch",
+		"compliance": []
+	},
+	{
+		"id": "90017",
+		"alert": "XSLT Injection",
+		"compliance": []
+	},
+	{
+		"id": "90018",
+		"alert": "Advanced SQL Injection",
+		"compliance": []
+	},
+	{
+		"id": "90019",
+		"alert": "Server Side Code Injection",
+		"compliance": []
+	},
+	{
+		"id": "90019-1",
+		"alert": "Server Side Code Injection - PHP Code Injection",
+		"compliance": []
+	},
+	{
+		"id": "90019-2",
+		"alert": "Server Side Code Injection - ASP Code Injection",
+		"compliance": []
+	},
+	{
+		"id": "90020",
+		"alert": "Remote OS Command Injection",
+		"compliance": []
+	},
+	{
+		"id": "90021",
+		"alert": "XPath Injection",
+		"compliance": []
+	},
+	{
+		"id": "90022",
+		"alert": "Application Error Disclosure",
+		"compliance": []
+	},
+	{
+		"id": "90023",
+		"alert": "XML External Entity Attack",
+		"compliance": []
+	},
+	{
+		"id": "90024",
+		"alert": "Generic Padding Oracle",
+		"compliance": []
+	},
+	{
+		"id": "90025",
+		"alert": "Expression Language Injection",
+		"compliance": []
+	},
+	{
+		"id": "90026",
+		"alert": "SOAP Action Spoofing",
+		"compliance": []
+	},
+	{
+		"id": "90027",
+		"alert": "Cookie Slack Detector",
+		"compliance": []
+	},
+	{
+		"id": "90028",
+		"alert": "Insecure HTTP Method",
+		"compliance": ["OWASP"]
+	},
+	{
+		"id": "90029",
+		"alert": "SOAP XML Injection",
+		"compliance": []
+	},
+	{
+		"id": "90030",
+		"alert": "WSDL File Detection",
+		"compliance": []
+	},
+	{
+		"id": "90033",
+		"alert": "Loosely Scoped Cookie",
+		"compliance": []
+	},
+	{
+		"id": "90034",
+		"alert": "Cloud Metadata Potentially Exposed",
+		"compliance": []
+	},
+	{
+		"id": "90035",
+		"alert": "Server Side Template Injection",
+		"compliance": []
+	},
+	{
+		"id": "90036",
+		"alert": "Server Side Template Injection (Blind)",
+		"compliance": []
+	},
+	{
+		"id": "90039",
+		"alert": "NoSQL Injection - MongoDB (Time Based)",
+		"compliance": []
+	},
+	{
+		"id": "100002",
+		"alert": "Server is running on Clacks - GNU Terry Pratchett",
+		"compliance": []
+	},
+	{
+		"id": "100003",
+		"alert": "Cookie Set Without HttpOnly Flag",
+		"compliance": []
+	},
+	{
+		"id": "100004",
+		"alert": "Content Security Policy Violations Reporting Enabled",
+		"compliance": []
+	},
+	{
+		"id": "100005",
+		"alert": "SameSite Cookie Attribute Protection Used",
+		"compliance": []
+	},
+	{
+		"id": "100006",
+		"alert": "Information Disclosure - IP Exposed via F5 BIG-IP Persistence Cookie",
+		"compliance": []
+	},
+	{
+		"id": "100007",
+		"alert": "Information Disclosure - Base64-encoded String",
+		"compliance": []
+	},
+	{
+		"id": "100008",
+		"alert": "Information Disclosure - Credit Card Number",
+		"compliance": ["PCIDSS"]
+	},
+	{
+		"id": "100009",
+		"alert": "Information Disclosure - Email Addresses",
+		"compliance": ["HIPAA"]
+	},
+	{
+		"id": "100010",
+		"alert": "Information Disclosure - Hash",
+		"compliance": []
+	},
+	{
+		"id": "100011",
+		"alert": "Information Disclosure - HTML Comments",
+		"compliance": []
+	},
+	{
+		"id": "100012",
+		"alert": "Information Disclosure - IBAN Numbers",
+		"compliance": []
+	},
+	{
+		"id": "100013",
+		"alert": "Information Disclosure - Private IP Address",
+		"compliance": []
+	},
+	{
+		"id": "100014",
+		"alert": "Reflected HTTP GET Parameter(s)",
+		"compliance": []
+	},
+	{
+		"id": "100015",
+		"alert": "HUNT Methodology",
+		"compliance": []
+	},
+	{
+		"id": "100016",
+		"alert": "Missing Security Headers",
+		"compliance": []
+	},
+	{
+		"id": "100017",
+		"alert": "Non Static Site Detected",
+		"compliance": []
+	},
+	{
+		"id": "100018",
+		"alert": "Relative Path Overwrite",
+		"compliance": []
+	},
+	{
+		"id": "100019",
+		"alert": "Information Disclosure - Server Header",
+		"compliance": []
+	},
+	{
+		"id": "100020",
+		"alert": "Information Disclosure - SQL Error",
+		"compliance": []
+	},
+	{
+		"id": "100021",
+		"alert": "Telerik UI for ASP.NET AJAX Cryptographic Weakness (CVE-2017-9248)",
+		"compliance": []
+	},
+	{
+		"id": "100022",
+		"alert": "Upload Form Discovered",
+		"compliance": []
+	},
+	{
+		"id": "100023",
+		"alert": "Information Disclosure - X-Powered-By Header",
+		"compliance": []
+	},
+	{
+		"id": "100025",
+		"alert": "Cross-Site WebSocket Hijacking",
+		"compliance": []
+	},
+	{
+		"id": "100026",
+		"alert": "JWT None Exploit",
+		"compliance": []
+	},
+	{
+		"id": "100029",
+		"alert": "File Content Disclosure (CVE-2019-5418)",
+		"compliance": []
+	},
+	{
+		"id": "100030",
+		"alert": "Backup File Detected",
+		"compliance": []
+	},
+	{
+		"id": "100034",
+		"alert": "Information Disclosure - Google API Key",
+		"compliance": []
+	},
+	{
+		"id": "100035",
+		"alert": "Information Disclosure - Java Stack Trace",
+		"compliance": []
+	},
+	{
+		"id": "100036",
+		"alert": "Information Disclosure - Amazon S3 Bucket URL",
+		"compliance": []
+	},
+	{
+		"id": "110001",
+		"alert": "Application Error Disclosure via WebSockets",
+		"compliance": []
+	},
+	{
+		"id": "110002",
+		"alert": "Base64 Disclosure in WebSocket message",
+		"compliance": []
+	},
+	{
+		"id": "110003",
+		"alert": "Information Disclosure - Debug Error Messages via WebSocket",
+		"compliance": []
+	},
+	{
+		"id": "110004",
+		"alert": "Email address found in WebSocket message",
+		"compliance": []
+	},
+	{
+		"id": "110005",
+		"alert": "Personally Identifiable Information via WebSocket",
+		"compliance": []
+	},
+	{
+		"id": "110006",
+		"alert": "Private IP Disclosure via WebSocket",
+		"compliance": []
+	},
+	{
+		"id": "110007",
+		"alert": "Username Hash Found in WebSocket message",
+		"compliance": []
+	},
+	{
+		"id": "110008",
+		"alert": "Information Disclosure - Suspicious Comments in XML via WebSocket",
+		"compliance": []
+	},
+	{
+		"id": "110009",
+		"alert": "Full Path Disclosure",
+		"compliance": []
+	},
+	{
+		"id": "120000",
+		"alert": "Information Disclosure - Information in Browser Storage",
+		"compliance": []
+	},
+	{
+		"id": "120000-1",
+		"alert": "Information Disclosure - Information in Browser localStorage",
+		"compliance": []
+	},
+	{
+		"id": "120000-2",
+		"alert": "Information Disclosure - Information in Browser sessionStorage",
+		"compliance": []
+	},
+	{
+		"id": "120001",
+		"alert": "Information Disclosure - Sensitive Information in Browser Storage",
+		"compliance": []
+	},
+	{
+		"id": "120001-1",
+		"alert": "Information Disclosure - Sensitive Information in Browser localStorage",
+		"compliance": []
+	},
+	{
+		"id": "120001-2",
+		"alert": "Information Disclosure - Sensitive Information in Browser sessionStorage",
+		"compliance": []
+	},
+	{
+		"id": "120002",
+		"alert": "Information Disclosure - JWT in Browser Storage",
+		"compliance": []
+	},
+	{
+		"id": "120002-1",
+		"alert": "Information Disclosure - JWT in Browser localStorage",
+		"compliance": []
+	},
+	{
+		"id": "120002-2",
+		"alert": "Information Disclosure - JWT in Browser sessionStorage",
+		"compliance": []
+	}
+]

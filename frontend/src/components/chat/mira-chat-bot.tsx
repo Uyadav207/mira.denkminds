@@ -537,10 +537,6 @@ const MiraChatBot: React.FC = () => {
 
 		if (latestmessage.length === 2 && !chatId) {
 			const response = await handleTitleGeneration(latestmessage);
-			// const result = await saveChat({
-			// 	userId: String(response?.userId as),
-			// 	title: response?.title,
-			// });
 
 			const result = await saveChat({
 				userId: String((response as { userId: string }).userId),
@@ -582,45 +578,42 @@ const MiraChatBot: React.FC = () => {
 	const streamChatResponse = async (prompt: string) => {
 		try {
 			setIsLoading(true);
-			const responseStream = await chatApis.chat({ prompt });
-			setIsLoading(false);
+			const responseStream = (await chatApis.chat({
+				message: prompt,
+				useRAG: false,
+			})) as unknown as StreamResponse;
 
-			const reader = responseStream.getReader();
+			if (!responseStream || !responseStream) {
+				throw new Error("Failed to get response stream");
+			}
+
+			const reader = (responseStream.body as ReadableStream)?.getReader();
 			const decoder = new TextDecoder();
 			let accumulatedMessage = "";
+
 			while (true) {
 				const { done, value } = await reader.read();
+
 				if (done) {
 					completeMessage();
-
 					break;
 				}
 
+				// Decode and append new chunk
 				const chunk = decoder.decode(value, { stream: true });
-				const lines = chunk
-					.split("\n")
-					.filter((line) => line.trim() !== "");
+				accumulatedMessage += chunk;
 
-				for (const line of lines) {
-					try {
-						const parsed = JSON.parse(line);
-						if (parsed.response) {
-							accumulatedMessage += parsed.response;
-							updateUI(accumulatedMessage);
-						}
-					} catch (error) {
-						return error;
-					}
-				}
+				// Update UI with accumulated message
+				updateUI(accumulatedMessage);
 			}
 		} catch (error) {
-			addBotMessage(
-				"Oops! Something went wrong while streaming the response.",
-			);
-			return error;
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: "Unknown error occurred";
+			addBotMessage(`Error: ${errorMessage}`);
 		} finally {
 			setIsLoading(false);
-			// setIsStreaming(false);
 		}
 	};
 
@@ -716,7 +709,7 @@ const MiraChatBot: React.FC = () => {
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 							>
-								<span className={messageClasses}>
+								<span className={`${messageClasses}`}>
 									{isUser ? (
 										message.message
 									) : (

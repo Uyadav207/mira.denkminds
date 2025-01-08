@@ -10,7 +10,7 @@ import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
 import { reportRoutes } from "./routes/reportRoutes";
 import zapRoutes from "./routes/zapRoutes";
-// import { chatRoute } from "./routes/chatRoute";
+// import { chatRoutes } from "./routes/chatRoute";
 
 const app = new Hono();
 
@@ -25,12 +25,12 @@ app.use("*", errorHandler);
 // Routes
 app.route("/auth", authRoutes);
 app.route("/users", userRoutes);
-// app.route("/chat", chat);
+// app.route("/chat", chatRoutes);
 // app.route("/rag", rag);
 app.route("/reports", reportRoutes);
 app.route("/zap", zapRoutes);
 
-const OLLAMA_HOST = "https://b2dc-34-148-150-106.ngrok-free.app"; // Change this to your Ollama API URL
+const OLLAMA_HOST = "https://a1cf-34-141-214-142.ngrok-free.app"; // Change this to your Ollama API URL
 // app.route("/chat", chatRoute);
 app.route("/reports", reportRoutes);
 

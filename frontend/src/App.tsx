@@ -3,16 +3,32 @@ import { Toaster } from "react-hot-toast";
 
 import { ThemeProvider } from "./components/theme/theme-provider";
 
-// import Home from "@pages/Home";
 import Chatbot from "./pages/Chatbot";
 import { Settings } from "./pages/Settings";
 import { Layout } from "./components/dashboard/Layout";
-import { Dashboard } from "./pages/Dashboard";
 import { Reports } from "./pages/Reports";
 import Auth from "./pages/Auth";
 import AuthCallback from "./pages/AuthCallback";
 import ProfileSettings from "./pages/ProfileSettings";
 import ForgotPassword from "./pages/ForgotPassword";
+import { RecentScans } from "./pages/scans/RecentScans";
+import { ApiScans } from "./pages/scans/ApiScans";
+import Vulnerabilities from "./pages/scans/vulnerabilities/vulnerabilities";
+import Urls from "./pages/scans/VulnerableUrls/Urls";
+import { PrintableTemplate } from "./components/PDF/PrintableTemplate";
+import { FolderView } from "./components/folder/FolderView";
+import { ChatTemplate } from "./components/PDF/Chattemplate";
+// import TemplateContentPage from "./components/PDF/TemplateContentPage";
+
+// const mockFolder = {
+// 	id: "folder1",
+// 	name: "Sample Folder",
+// 	files: [], // Add your mock files here
+//   };
+  
+//   const handleBack = () => {
+// 	console.log("Back to previous view");
+//   };
 
 const App = () => {
 	return (
@@ -32,13 +48,31 @@ const App = () => {
 							path="/auth/callback"
 							element={<AuthCallback />}
 						/>
+						 
+						 <Route path="/printtemplate" element={<PrintableTemplate />} />
+						 <Route path="/ChatTemplate" element={<ChatTemplate />} />
+						
+						 {/* <Route path="/template/:templateId" element={<TemplateContentPage />} /> */}
+						
 						<Route element={<Layout />}>
 							<Route
 								path="/chatbot/:chatId?"
 								element={<Chatbot />}
 							/>
 							<Route path="/settings" element={<Settings />} />
-							<Route path="/dashboard" element={<Dashboard />} />
+							<Route
+								path="/recent-scan"
+								element={<RecentScans />}
+							/>
+							<Route
+								path="/recent-scan/:scanId/"
+								element={<Vulnerabilities />}
+							/>
+							<Route
+								path="/recent-scan/:scanId/vulnerability/:vulnerabilityId/"
+								element={<Urls />}
+							/>
+							<Route path="/api-scan" element={<ApiScans />} />
 							<Route path="/reports" element={<Reports />} />
 							<Route
 								path="/accounts"

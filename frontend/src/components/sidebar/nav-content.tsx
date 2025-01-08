@@ -7,8 +7,8 @@ import {
 	MoreHorizontal,
 	Settings2,
 	Trash2,
-	// Share2,
 	Copy,
+	ScanText,
 } from "lucide-react";
 import {
 	SidebarGroup,
@@ -34,6 +34,12 @@ import useStore from "../../store/store";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Chats } from "../../types/chats";
+import { SidebarMenuSub } from "../ui/sidebar";
+import {
+	Collapsible,
+	CollapsibleContent,
+	CollapsibleTrigger,
+} from "../ui/collapsible";
 
 const ChatSkeleton = () => {
 	return (
@@ -73,15 +79,35 @@ export default function NavContent() {
 		<>
 			<SidebarGroup>
 				<SidebarMenu>
-					<SidebarMenuItem>
-						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
-						<a onClick={() => navigate("/dashboard")}>
-							<SidebarMenuButton tooltip="Home">
-								<Home className="h-4 w-4" />
-								<span>Dashboard</span>
-							</SidebarMenuButton>
-						</a>
-					</SidebarMenuItem>
+					<Collapsible defaultOpen className="group/collapsible">
+						<SidebarMenuItem>
+							<CollapsibleTrigger asChild>
+								<SidebarMenuButton tooltip="Dashboard">
+									<Home className="h-4 w-4" />
+									<span>Dashboard</span>
+								</SidebarMenuButton>
+							</CollapsibleTrigger>
+							<CollapsibleContent>
+								<SidebarMenuSub>
+									{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+									<a onClick={() => navigate("/recent-scan")}>
+										<SidebarMenuButton tooltip="Scans">
+											<ScanText className="h-4 w-4" />
+											<span>Scans</span>
+										</SidebarMenuButton>
+									</a>
+								</SidebarMenuSub>
+								{/* <SidebarMenuSub>
+									
+									<a onClick={() => navigate("/api-scan")}>
+										<SidebarMenuButton tooltip="Api Scans">
+											<span>Api Scans</span>
+										</SidebarMenuButton>
+									</a>
+								</SidebarMenuSub> */}
+							</CollapsibleContent>
+						</SidebarMenuItem>
+					</Collapsible>
 					<SidebarMenuItem>
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/settings")}>

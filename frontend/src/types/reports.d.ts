@@ -10,7 +10,7 @@ export interface File {
 	name: string;
 	url: string;
 	createdAt: Date;
-	type: "pdf";
+	type: "pdf" | "docx" | "image"; 
 	size: number;
 }
 
