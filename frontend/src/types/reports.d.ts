@@ -1,6 +1,6 @@
 export interface Folder {
-	id: string;
-	name: string;
+	_id: string;
+	folderName: string;
 	files: File[];
 	createdAt: Date;
 }

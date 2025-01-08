@@ -36,18 +36,18 @@ export function FolderView({ folder, onUploadFile, onBack }: FolderViewProps) {
 				type: "pdf",
 				size: file.size,
 			};
-			onUploadFile(folder.id, newFile);
+			onUploadFile(folder._id, newFile);
 		}
 	};
 
 	return (
 		<div className="space-y-4">
-			<div className="flex items-center justify-between">
-				<h2 className="text-2xl font-bold">{folder.name}</h2>
-				<Button variant="outline" onClick={onBack}>
+			<div className="flex flex-col gap-4 items-start">
+				<Button variant="outline" onClick={onBack} className="w-auto">
 					<ArrowLeft className="mr-2 h-4 w-4" />
 					Back to Folders
 				</Button>
+				<h2 className="text-2xl font-bold">{folder.folderName}</h2>
 			</div>
 			<div className="flex items-center gap-4">
 				<Input
@@ -67,9 +67,9 @@ export function FolderView({ folder, onUploadFile, onBack }: FolderViewProps) {
 				</label>
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-				{folder.files.map((file) => (
+				{folder.files.map((file, index) => (
 					<div
-						key={file.id}
+						key={`${file.id}-${index}`}
 						className="flex flex-col border rounded-lg p-4"
 					>
 						<FileIcon className="h-16 w-16 text-blue-500 mx-auto" />

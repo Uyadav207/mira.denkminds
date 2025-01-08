@@ -149,14 +149,14 @@ const MiraChatBot: React.FC = () => {
 
 	const handleCreateFolder = async (name: string) => {
 		const newFolder: Folder = {
-			id: uuidv4(),
-			name,
+			_id: uuidv4(),
+			folderName: name,
 			files: [],
 			createdAt: new Date(),
 		};
 
 		const response = await saveReport({
-			folderName: newFolder.name,
+			folderName: newFolder.folderName,
 			userId: String(id),
 		});
 		if (response) {
