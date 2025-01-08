@@ -26,12 +26,24 @@ const App = () => {
 						{/* <Route path="/" element={<Home />} /> */}
 						<Route path="/login" element={<Auth />} />
 						<Route path="/register" element={<Auth />} />
-						<Route path="/forgot-password" element={<ForgotPassword />} />
-						<Route path="/auth/callback" element={<AuthCallback />} />
+						<Route
+							path="/forgot-password"
+							element={<ForgotPassword />}
+						/>
+						<Route
+							path="/auth/callback"
+							element={<AuthCallback />}
+						/>
 						<Route element={<Layout />}>
-							<Route path="/chatbot/:chatId?" element={<Chatbot />} />
+							<Route
+								path="/chatbot/:chatId?"
+								element={<Chatbot />}
+							/>
 							<Route path="/settings" element={<Settings />} />
-							<Route path="/recent-scan" element={<RecentScans />} />
+							<Route
+								path="/recent-scan"
+								element={<RecentScans />}
+							/>
 							<Route
 								path="/recent-scan/:scanId/"
 								element={<Vulnerabilities />}
@@ -42,7 +54,10 @@ const App = () => {
 							/>
 							<Route path="/api-scan" element={<ApiScans />} />
 							<Route path="/reports" element={<Reports />} />
-							<Route path="/accounts" element={<ProfileSettings />} />
+							<Route
+								path="/accounts"
+								element={<ProfileSettings />}
+							/>
 						</Route>
 					</Routes>
 				</Router>
