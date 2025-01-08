@@ -30,7 +30,7 @@ app.route("/users", userRoutes);
 app.route("/reports", reportRoutes);
 app.route("/zap", zapRoutes);
 
-const OLLAMA_HOST = "https://f6ca-34-16-144-45.ngrok-free.app"; // Change this to your Ollama API URL
+const OLLAMA_HOST = "https://588a-34-138-24-166.ngrok-free.app"; // Change this to your Ollama API URL
 app.route("/reports", reportRoutes);
 
 app.post("/api/generate-title", async (c) => {
@@ -74,6 +74,89 @@ app.post("/api/generate-title", async (c) => {
 //streaming chat response
 app.post("/api/chat", async (c) => {
 	const { prompt } = await c.req.json();
+
+	try {
+		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				prompt: prompt,
+				model: "mistral-cyber",
+				stream: true,
+			}),
+		});
+
+		const reader = response.body?.getReader();
+		const decoder = new TextDecoder();
+		const stream = new ReadableStream({
+			start(controller) {
+				function push() {
+					reader?.read().then(({ done, value }) => {
+						if (done) {
+							controller.close();
+							return;
+						}
+						controller.enqueue(decoder.decode(value));
+						push();
+					});
+				}
+				push();
+			},
+		});
+
+		return new Response(stream, {
+			headers: { "Content-Type": "text/event-stream" },
+		});
+	} catch (e) {
+		return c.json({ message: e });
+	}
+});
+
+app.post("/api/summary", async (c) => {
+	const { scanResults } = await c.req.json();
+	console.log(scanResults);
+
+	const prompt = `
+					Analyze the following OWASP ZAP security scan results for ${scanResults.targetUrl} and provide a comprehensive security assessment:
+
+					Target Information:
+					- URL: ${scanResults.targetUrl}
+					- Compliance Standard: ${scanResults.complianceStandard}
+					- Total Vulnerabilities: ${scanResults.filteredResults.total_vulnerabilities}
+					- Risk Distribution: ${Object.entries(
+						scanResults.filteredResults.total_risks,
+					)
+						.map(([level, count]) => `${level}: ${count}`)
+						.join(", ")}
+
+					Detailed Findings:
+					${scanResults.filteredResults.findings
+						.map(
+							(finding, index) => `
+					${index + 1}. ${finding.name}
+					- Risk Level: ${finding.url_details[0]?.risk_level || "Unknown"}
+					- Description: ${finding.description}
+					- Impact: Based on CWE-${finding.cwe_id}
+					- CVEs: ${finding.cve_ids.length ? finding.cve_ids.join(", ") : "None identified"}
+					- Solution: ${finding.solution}
+					`,
+						)
+						.join("\n")}
+
+					Please provide:
+					1. Executive Summary: A brief overview of the scan results and their potential business impact
+					2. Critical Findings: Highlight the most severe vulnerabilities that require immediate attention
+					3. Risk Analysis: Break down the findings by risk level and provide context for each category
+					4. Remediation Roadmap: Prioritized list of recommendations with:
+					- Immediate actions (24-48 hours)
+					- Short-term fixes (1-2 weeks)
+					- Long-term security improvements
+					5. Technical Details: Include specific CVEs and their implications
+
+					Format the response in markdown with clear sections and bullet points for readability.
+	`;
 
 	try {
 		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
