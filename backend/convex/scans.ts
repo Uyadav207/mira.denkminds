@@ -1,18 +1,31 @@
-import { mutation, query } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
-// Query for fetching scans by userId
-export const fetchScansByUserId = query({
+// Query for fetching scans by userId excluding totalRisks
+export const fetchScansByUserIdWithoutRisks = query({
 	args: {
-		userId: v.string(), // External user ID
+		userId: v.string(),
 	},
 	handler: async (ctx, { userId }) => {
-		// Fetch scans by userId from the database
 		const scans = await ctx.db
 			.query("scans")
 			.withIndex("by_userId", (q) => q.eq("userId", userId))
 			.collect();
-		return scans;
+		return scans.map(({ totalRisks, ...rest }) => rest);
+	},
+});
+
+// Query for fetching totalRisks by userId
+export const fetchTotalRisksByUserId = query({
+	args: {
+		userId: v.string(),
+	},
+	handler: async (ctx, { userId }) => {
+		const scans = await ctx.db
+			.query("scans")
+			.withIndex("by_userId", (q) => q.eq("userId", userId))
+			.collect();
+		return scans.map(({ totalRisks }) => totalRisks);
 	},
 });
 
@@ -22,9 +35,9 @@ export const saveScan = mutation({
 		userId: v.string(),
 		targetUrl: v.string(),
 		complianceStandard: v.string(),
-		totalVulnerabilities: v.number(),
-		uniqueUrls: v.number(),
+		scanType: v.string(),
 		totalRisks: v.object({
+			totalVulnerabilities: v.number(),
 			Medium: v.number(),
 			High: v.number(),
 			Low: v.number(),
@@ -34,28 +47,16 @@ export const saveScan = mutation({
 	},
 	handler: async (
 		ctx,
-		{
-			userId,
-			targetUrl,
-			complianceStandard,
-			totalVulnerabilities,
-			uniqueUrls,
-			totalRisks,
-		},
+		{ userId, targetUrl, complianceStandard, totalRisks, scanType },
 	) => {
-		const now = Date.now();
-
-		// Insert the scan data into the `scans` table
 		const scanId = await ctx.db.insert("scans", {
 			userId,
 			targetUrl,
 			complianceStandard,
-			totalVulnerabilities,
-			uniqueUrls,
 			totalRisks,
-			scanedAt: now,
+			scanType,
 		});
 
-		return { scanId }; // Return the generated scanId
+		return { scanId };
 	},
 });
