@@ -1,4 +1,4 @@
-interface ScanResults {
+export interface ScanResults {
 	targetUrl: string;
 	complianceStandard: string;
 	filteredResults: {
@@ -13,4 +13,24 @@ interface ScanResults {
 			solution: string;
 		}>;
 	};
+}
+
+export interface Finding {
+	name: string;
+	url_details: { risk_level: string }[];
+	description: string;
+	cwe_id: number;
+	cve_ids: string[];
+	solution: string;
+}
+
+export interface FindingBasline {
+	name: string;
+	url_details: { risk_level: string }[];
+	riskdesc: string;
+	desc: string;
+	cwe_id: number;
+	cweid: string;
+	cve_id: string;
+	solution: string;
 }

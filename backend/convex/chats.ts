@@ -75,3 +75,30 @@ export const getChatsByUserId = query({
 		return chats;
 	},
 });
+
+// Delete a specific Chat and its History
+export const deleteChatById = mutation({
+	args: {
+		chatId: v.id("chats"), // The chat ID to delete
+	},
+	handler: async (ctx, { chatId }) => {
+		// Fetch all chat history entries for the given chatId
+		const chatHistory = await ctx.db
+			.query("chatHistory")
+			.withIndex("by_chatId", (q) => q.eq("chatId", chatId))
+			.collect();
+
+		// Delete each message in the chat history
+		for (const message of chatHistory) {
+			await ctx.db.delete(message._id); // Delete message
+		}
+
+		// Delete the chat itself
+		await ctx.db.delete(chatId);
+
+		return {
+			success: true,
+			message: "Chat and its history deleted successfully",
+		};
+	},
+});
