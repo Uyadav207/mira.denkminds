@@ -1,6 +1,5 @@
 import { NavUser } from "./nav-user";
-import { TeamSwitcher } from "./new-chat";
-import NavContent from "./nav-content";
+import { NewChat } from "./new-chat";
 import {
 	Sidebar,
 	SidebarContent,
@@ -9,6 +8,8 @@ import {
 	SidebarRail,
 	SidebarSeparator,
 } from "../ui/sidebar";
+import { Logout } from "./logout";
+import ChatHistory from "./nav-chat-history";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
@@ -18,10 +19,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			</SidebarHeader>
 			<SidebarSeparator />
 			<SidebarContent>
-				<NavContent />
+				<ChatHistory />
 			</SidebarContent>
 			<SidebarFooter>
-				<TeamSwitcher />
+				<Logout />
+				<NewChat />
 			</SidebarFooter>
 			<SidebarRail />
 		</Sidebar>
