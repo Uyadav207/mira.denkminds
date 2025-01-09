@@ -23,14 +23,14 @@ export const saveSummary = mutation({
 });
 
 // Query for getting summaries by userId
-export const getSummariesByUser = query({
+export const getSummariesByUserId = query({
 	args: {
 		userId: v.string(),
 	},
 	handler: async (ctx, { userId }) => {
 		const summaries = await ctx.db
 			.query("summaries")
-			.filter((q) => q.eq("userId", userId))
+			.withIndex("by_userId", (q) => q.eq("userId", userId))
 			.collect();
 
 		return summaries;
