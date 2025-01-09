@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 
+import { MessageSquareCode } from "lucide-react";
 import {
 	Folder,
 	Home,
@@ -34,7 +35,7 @@ import useStore from "../../store/store";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Chats } from "../../types/chats";
-import { SidebarMenuSub } from "../ui/sidebar";
+import { SidebarMenuSub, useSidebar } from "../ui/sidebar";
 import {
 	Collapsible,
 	CollapsibleContent,
@@ -60,6 +61,7 @@ const ChatSkeleton = () => {
 export default function NavContent() {
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(true);
+	const { state } = useSidebar();
 	const user = useStore((state) => state.user);
 	if (!user) {
 		return null;
@@ -97,14 +99,6 @@ export default function NavContent() {
 										</SidebarMenuButton>
 									</a>
 								</SidebarMenuSub>
-								{/* <SidebarMenuSub>
-									
-									<a onClick={() => navigate("/api-scan")}>
-										<SidebarMenuButton tooltip="Api Scans">
-											<span>Api Scans</span>
-										</SidebarMenuButton>
-									</a>
-								</SidebarMenuSub> */}
 							</CollapsibleContent>
 						</SidebarMenuItem>
 					</Collapsible>
@@ -133,12 +127,21 @@ export default function NavContent() {
 			</SidebarGroup>
 			<SidebarSeparator />
 			<SidebarGroup>
-				<SidebarGroupLabel>Recent Chats</SidebarGroupLabel>
+				{recentChats?.length > 0 && (
+					<SidebarGroupLabel>Recent Chats</SidebarGroupLabel>
+				)}
 				<SidebarContent className="h-[calc(100vh-280px)]">
 					<SidebarGroupContent>
 						<SidebarMenu>
 							{isLoading ? (
 								<ChatSkeleton />
+							) : recentChats?.length === 0 ? (
+								<SidebarMenuItem>
+									<div className="mt-10 flex flex-col items-center justify-center">
+										<MessageSquareCode />
+										{state === "expanded" && <p>No recent chats</p>}
+									</div>
+								</SidebarMenuItem>
 							) : (
 								recentChats?.map((chat: Chats) => (
 									<SidebarMenuItem key={chat._id}>
@@ -182,13 +185,13 @@ export default function NavContent() {
 															<span>Copy</span>
 														</DropdownMenuItem>
 														{/* <DropdownMenuItem
-														// onClick={() =>
-														// 	handleShare(chat.id)
-														// }
-														>
-															<Share2 className="mr-2 h-4 w-4" />
-															<span>Share</span>
-														</DropdownMenuItem> */}
+								// onClick={() =>
+								// 	handleShare(chat.id)
+								// }
+								>
+									<Share2 className="mr-2 h-4 w-4" />
+									<span>Share</span>
+								</DropdownMenuItem> */}
 														<DropdownMenuSeparator />
 														<DropdownMenuItem
 															// onClick={() => handleDelete(chat.id)}

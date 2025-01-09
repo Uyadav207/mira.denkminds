@@ -1,5 +1,5 @@
 import SendIcon from "../../assets/SendIcon.svg";
-import AttachIcon from "../../assets/AttachIcon.svg";
+// import AttachIcon from "../../assets/AttachIcon.svg";
 
 interface ChatActionsProps {
 	handleSend: () => void;
@@ -8,23 +8,19 @@ interface ChatActionsProps {
 const ChatActions: React.FC<ChatActionsProps> = ({ handleSend }) => {
 	return (
 		<>
-			<button type="button" className="p-2 hover:bg-gray-200 rounded-md">
+			{/* <button type="button" className="p-2 hover:bg-gray-200 rounded-md">
 				<img
-					src={AttachIcon} // Replace with your icon URL
+					src={AttachIcon} 
 					alt="Logo"
 					className="w-5 h-5"
 				/>
-			</button>
+			</button> */}
 			<button
 				onClick={handleSend}
 				type="button"
 				className="p-2 hover:bg-gray-200 rounded-md"
 			>
-				<img
-					src={SendIcon} // Replace with your icon URL
-					alt="Logo"
-					className="w-5 h-5"
-				/>
+				<img src={SendIcon} alt="Logo" className="w-5 h-5" />
 			</button>
 		</>
 	);

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { motion } from "framer-motion";
+import type { Components } from "react-markdown";
 import { v4 as uuidv4 } from "uuid";
 
 //components
@@ -9,9 +10,16 @@ import { ChatActions } from "@components/chat/chat-actions";
 import { Textarea } from "@components/ui/textarea";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { Spinner } from "@components/loader/spinner";
+import { Progress } from "@components/ui/progress";
 import { HumanInTheLoopOptions } from "./human-in-the-loop-options";
 import { HumanInTheLoopApproval } from "./human-in-the-loop-approval";
 import { CreateFolderDialog } from "../folder/CreateFolderDialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@components/ui/dialog";
 
 //apis
 import { useMutation, useQuery } from "convex/react";
@@ -27,7 +35,7 @@ import MiraLogo from "../../assets/MiraLogo.svg";
 import MiraAvatar from "../../assets/Mira.svg";
 
 // types
-import type { Message, ChatHistory } from "../../types/chats";
+import type { Message, ChatHistory, Info } from "../../types/chats";
 import type { Folder, FolderItem, FolderType } from "../../types/reports";
 
 //constants
@@ -37,22 +45,31 @@ import {
 	STANDARDS,
 	REPORTS,
 	CREATE_FOLDER_ACTION,
+	NEGATION_PATTERNS,
+	CLARIFICATION_PATTERNS,
+	SCANTYPES,
 } from "./constants";
+import { scanApis } from "../../api/scan";
+import useScanStore from "../../store/scanStore";
+// import { scanApis } from "../../api/scan";
 
 const MiraChatBot: React.FC = () => {
-	const [isLoading, setIsLoading] = useState(false);
 	const [messages, setMessages] = useState<Message[]>([]);
+	const [targetUrl, setTargetUrl] = useState<string | null>(null);
+	const [scanType, setScanType] = useState<string | null>(null);
 	const [actionType, setActionType] = useState<string | null>(null);
 	const [confirmType, setConfirmType] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const [streaming, setStreaming] = useState(false);
+	const [info, setInfo] = useState<Info[]>([]);
+	const [isScanLoading, setIsScanLoading] = useState(false);
 	const [actionPrompts, setActionPrompts] = useState<
 		{ id: string; name: string; type: string }[] | []
 	>([]);
 	const [humanInTheLoopMessage, setHumanInTheLoopMessage] = useState<
 		string | null
 	>(null);
-	const [createdChatId, setCreatedChatId] = useState<Id<"chats"> | null>(
-		null,
-	);
+	const [createdChatId, setCreatedChatId] = useState<Id<"chats"> | null>(null);
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const { chatId: chatIdParam } = useParams<{ chatId: string }>();
 	const chatId = chatIdParam as Id<"chats">;
@@ -65,6 +82,8 @@ const MiraChatBot: React.FC = () => {
 	const [foldersList, setFoldersList] = useState(CREATE_FOLDER_ACTION);
 
 	const user = useStore((state) => state.user);
+	const { scanResponse, setScanResponse } = useScanStore();
+
 	if (!user) {
 		return null;
 	}
@@ -82,10 +101,18 @@ const MiraChatBot: React.FC = () => {
 
 	const saveReport = useMutation(api.reports.createReportFolder);
 
+	const [progress, setProgress] = useState(0);
+	const inputRef = useRef<HTMLInputElement>(null);
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
 		handleScrollToBottom();
 	}, [messages]);
+
+	useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, []);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
@@ -169,13 +196,43 @@ const MiraChatBot: React.FC = () => {
 
 	const processPrompt = async (userMessage: Message) => {
 		const lowerPrompt = userMessage.message.toLowerCase().trim();
-		//also check if URL is valid
-		const containsURL = URL_PATTERN.test(lowerPrompt);
-		const containsReportGeneration = REPORT_GENERATION.some((keyword) =>
-			lowerPrompt.includes(keyword),
+
+		const reportKeywords = REPORT_GENERATION.map(
+			(keyword) => `\\b${keyword}\\b`,
 		);
-		if (containsURL) {
-			const manualMessage = "Thank you for providing the URL";
+		const reportRegex = new RegExp(reportKeywords.join("|"), "i"); // Matches exact words only
+		const containsReportGeneration = reportRegex.test(lowerPrompt);
+
+		//handle negations
+
+		const hasNegation = NEGATION_PATTERNS.some((pattern) =>
+			pattern.test(input),
+		);
+
+		const isClarificationQuery = CLARIFICATION_PATTERNS.test(lowerPrompt);
+
+		// URL Validation
+		const containsURL = URL_PATTERN.test(lowerPrompt);
+		if (hasNegation) {
+			setIsLoading(true);
+			const responseStream = await chatApis.chatOllama({
+				prompt: userMessage.message,
+			});
+			setIsLoading(false);
+			streamOllamaChatResponse(responseStream);
+		} else if (isClarificationQuery) {
+			//handled properly
+			// streamChatResponse(userMessage.message);
+			setIsLoading(true);
+			const responseStream = await chatApis.chatOllama({
+				prompt: userMessage.message,
+			});
+			setIsLoading(false);
+			streamOllamaChatResponse(responseStream);
+		} else if (containsURL) {
+			setTargetUrl(lowerPrompt);
+			const manualMessage =
+				"Thank you for providing the URL. Please select type of scan you want to perform.";
 			const botMessage: Message = {
 				id: uuidv4(),
 				message: manualMessage,
@@ -216,16 +273,16 @@ const MiraChatBot: React.FC = () => {
 				});
 			}
 			setPendingAction(botMessage.id as string);
-			setPendingAction(botMessage.id as string);
-			requestHumanApproval(
-				"report",
-				manualMessage,
-				"none",
-				botMessage.id,
-			);
+			requestHumanApproval("report", manualMessage, "none", botMessage.id);
 		} else {
 			//handled properly
-			streamChatResponse(userMessage.message);
+			// streamChatResponse(userMessage.message);
+			setIsLoading(true);
+			const responseStream = await chatApis.chatOllama({
+				prompt: userMessage.message,
+			});
+			setIsLoading(false);
+			streamOllamaChatResponse(responseStream);
 		}
 	};
 
@@ -267,20 +324,25 @@ const MiraChatBot: React.FC = () => {
 		let approvalMessage = "";
 		if (action === "scan") {
 			approvalMessage =
+				"Select your preferred scan type. You can choose from the following:";
+			setActionPrompts(SCANTYPES);
+			setHumanInTheLoopMessage(approvalMessage);
+		} else if (action === "standards") {
+			approvalMessage =
 				"Select your preferred standard for the scan. You can choose from the following:";
 			setActionPrompts(STANDARDS);
+			setInfo(STANDARDS);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "report") {
 			approvalMessage = "What type of report do you want to generate?";
 			setActionPrompts(REPORTS);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "approval") {
-			approvalMessage = "Do you want to generate a Report?";
+			approvalMessage = "Do you want to generate a brief summary?";
 			setActionPrompts([]);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "folder") {
-			approvalMessage =
-				"Select the folder where you want to save the report.";
+			approvalMessage = "Select the folder where you want to save the report.";
 			setActionPrompts(foldersList);
 			setHumanInTheLoopMessage(approvalMessage);
 		}
@@ -297,6 +359,8 @@ const MiraChatBot: React.FC = () => {
 		setMessages((prev) => [...prev, approvalMessageObject]);
 	};
 
+	const [showInfo, setShowInfo] = useState(false);
+
 	const confirmAction = async (action: string, type: string) => {
 		if (!pendingAction) return;
 
@@ -307,10 +371,8 @@ const MiraChatBot: React.FC = () => {
 		};
 
 		if (type === "scan") {
-			//integration with scan api
+			setScanType(action);
 			try {
-				//do scan api call here
-
 				if (createdChatId) {
 					setMessages((prev) => [...prev, userMessage]);
 				} else {
@@ -321,14 +383,74 @@ const MiraChatBot: React.FC = () => {
 						message: userMessage.message,
 					});
 				}
-				addBotMessage("SCANNED RESULT USING SINDURA'S API...");
-				const manualMessage = "Do you want to generate a report?";
+				const manualMessage =
+					"Thank you for providing the scan type. Please select the standard you want to scan against.";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
 					sender: "ai",
 				};
-				//save this as well
+				setPendingAction(botMessage.id as string);
+				await saveChatMessage({
+					chatId: createdChatId
+						? (createdChatId as Id<"chats">)
+						: (chatId as Id<"chats">),
+					humanInTheLoopId: botMessage.id,
+					sender: botMessage.sender,
+					message: botMessage.message,
+				});
+
+				requestHumanApproval("standards", manualMessage, "none", botMessage.id);
+			} catch {
+				addBotMessage("An error occurred while processing your request.");
+			}
+		} else if (type === "standards") {
+			try {
+				if (createdChatId) {
+					setMessages((prev) => [...prev, userMessage]);
+				} else {
+					await saveChatMessage({
+						humanInTheLoopId: userMessage.id,
+						chatId: chatId as Id<"chats">,
+						sender: userMessage.sender,
+						message: userMessage.message,
+					});
+				}
+
+				//scan api call
+
+				try {
+					const payload = {
+						url: targetUrl as string,
+						complianceStandard: action as string,
+						scanType: scanType as string,
+						userId: Number(id),
+					};
+					setIsScanLoading(true);
+					setProgress(0);
+					const response = await scanApis.scanWithProgress(
+						payload,
+						(progress) => {
+							setProgress(progress);
+						},
+					);
+					setScanResponse(response.data);
+
+					setIsScanLoading(false);
+					addBotMessage(
+						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
+					);
+				} catch (error) {
+					addBotMessage("An error occurred while processing your request.");
+					return error;
+				}
+
+				const manualMessage = "Do you want to generate a brief summary?";
+				const botMessage: Message = {
+					id: uuidv4(),
+					message: manualMessage,
+					sender: "ai",
+				};
 
 				await saveChatMessage({
 					chatId: createdChatId
@@ -347,12 +469,66 @@ const MiraChatBot: React.FC = () => {
 					botMessage.id,
 				);
 			} catch {
-				addBotMessage(
-					"An error occurred while processing your request.",
-				);
+				addBotMessage("An error occurred while processing your request.");
 			}
 		} else if (type === "report") {
-			addBotMessage(`${type} Generation In progress...`);
+			if (action === "Chat Summary Report") {
+				if (createdChatId) {
+					setMessages((prev) => [...prev, userMessage]);
+				} else {
+					await saveChatMessage({
+						humanInTheLoopId: userMessage.id,
+						chatId: chatId as Id<"chats">,
+						sender: userMessage.sender,
+						message: userMessage.message,
+					});
+				}
+				const manualMessage = "Thank you for providing the report type";
+				const botMessage: Message = {
+					id: uuidv4(),
+					message: manualMessage,
+					sender: "ai",
+				};
+
+				await saveChatMessage({
+					chatId: createdChatId
+						? (createdChatId as Id<"chats">)
+						: (chatId as Id<"chats">),
+					humanInTheLoopId: botMessage.id,
+					sender: botMessage.sender,
+					message: botMessage.message,
+				});
+				addBotMessage("Report generation in progress...");
+
+				// requestHumanApproval("folder", manualMessage, "report", botMessage.id);
+			} else if (action === "Vulnerability Report") {
+				if (createdChatId) {
+					setMessages((prev) => [...prev, userMessage]);
+				} else {
+					await saveChatMessage({
+						humanInTheLoopId: userMessage.id,
+						chatId: chatId as Id<"chats">,
+						sender: userMessage.sender,
+						message: userMessage.message,
+					});
+				}
+				const manualMessage = "Thank you for providing the report type";
+				const botMessage: Message = {
+					id: uuidv4(),
+					message: manualMessage,
+					sender: "ai",
+				};
+
+				await saveChatMessage({
+					chatId: createdChatId
+						? (createdChatId as Id<"chats">)
+						: (chatId as Id<"chats">),
+					humanInTheLoopId: botMessage.id,
+					sender: botMessage.sender,
+					message: botMessage.message,
+				});
+				addBotMessage("Vulnerability generation in progress...");
+			}
 		} else if (type === "folder") {
 			// Folder selection
 			if (action === "Create New Folder") {
@@ -366,10 +542,7 @@ const MiraChatBot: React.FC = () => {
 						message: userMessage.message,
 					});
 				}
-
-				// Show modal to create a new folder
 				setIsCreateDialogOpen(true);
-				// finalizeReportGeneration()
 			} else {
 				//add more functionalities for human intervention
 			}
@@ -379,6 +552,7 @@ const MiraChatBot: React.FC = () => {
 	};
 
 	const yesClicked = async (confirmType: string) => {
+		setPendingAction(null);
 		if (confirmType === "report") {
 			const userMessage: Message = {
 				id: uuidv4(),
@@ -395,31 +569,44 @@ const MiraChatBot: React.FC = () => {
 					message: userMessage.message,
 				});
 			}
-			addBotMessage(`${confirmType} Generated`);
-			const manualMessage =
-				"Create a new folder. Or select an existing folder to save the report.";
-			const botMessage: Message = {
-				id: uuidv4(),
-				message: manualMessage,
-				sender: "ai",
-			};
 
-			await saveChatMessage({
-				chatId: createdChatId
-					? (createdChatId as Id<"chats">)
-					: (chatId as Id<"chats">),
-				humanInTheLoopId: botMessage.id,
-				sender: botMessage.sender,
-				message: botMessage.message,
-			});
+			try {
+				setIsLoading(true);
+				//report generation api call
+				const responseStream =
+					await scanApis.scanReportGeneration(scanResponse);
+				setIsLoading(false);
 
-			setPendingAction(botMessage.id as string);
-			requestHumanApproval(
-				"folder",
-				manualMessage,
-				"report",
-				botMessage.id,
-			);
+				await streamOllamaChatResponse(responseStream);
+				// if (!streaming) {
+				// 	const manualMessage =
+				// 		"Create a new folder. Or select an existing folder to save the report.";
+				// 	const botMessage: Message = {
+				// 		id: uuidv4(),
+				// 		message: manualMessage,
+				// 		sender: "ai",
+				// 	};
+
+				// 	await saveChatMessage({
+				// 		chatId: createdChatId
+				// 			? (createdChatId as Id<"chats">)
+				// 			: (chatId as Id<"chats">),
+				// 		humanInTheLoopId: botMessage.id,
+				// 		sender: botMessage.sender,
+				// 		message: botMessage.message,
+				// 	});
+
+				// 	setPendingAction(botMessage.id as string);
+				// 	requestHumanApproval(
+				// 		"folder",
+				// 		manualMessage,
+				// 		"report",
+				// 		botMessage.id,
+				// 	);
+				// }
+			} catch (error) {
+				return error;
+			}
 		}
 	};
 
@@ -455,7 +642,6 @@ const MiraChatBot: React.FC = () => {
 			sender: botMessage.sender,
 			message: botMessage.message,
 		});
-		// setPendingAction(null);
 	};
 
 	const generateTitle = async (updatedMessages: string[]) => {
@@ -479,7 +665,7 @@ const MiraChatBot: React.FC = () => {
 				sender: "user",
 			};
 			setMessages((prev) => [...prev, userMessage]);
-
+			setInput("");
 			if (createdChatId || chatId) {
 				try {
 					await saveChatMessage({
@@ -493,12 +679,9 @@ const MiraChatBot: React.FC = () => {
 					processPrompt(userMessage);
 				} catch (error) {
 					return error;
-				} finally {
-					setInput("");
 				}
 			} else {
 				processPrompt(userMessage);
-				setInput("");
 			}
 		}
 	};
@@ -507,10 +690,7 @@ const MiraChatBot: React.FC = () => {
 		setMessages((prev) => {
 			const lastMessage = prev[prev.length - 1];
 			if (lastMessage?.sender === "ai" && lastMessage.isStreaming) {
-				return [
-					...prev.slice(0, -1),
-					{ ...lastMessage, message: message },
-				];
+				return [...prev.slice(0, -1), { ...lastMessage, message: message }];
 			}
 
 			return [
@@ -525,13 +705,64 @@ const MiraChatBot: React.FC = () => {
 		});
 	};
 
+	const streamOllamaChatResponse = async (
+		responseStream: ReadableStream<Uint8Array>,
+	) => {
+		try {
+			const reader = responseStream.getReader();
+			const decoder = new TextDecoder();
+			let accumulatedMessage = "";
+			let buffer = "";
+
+			while (true) {
+				const { done, value } = await reader.read();
+
+				if (done) {
+					completeMessage();
+					break;
+				}
+
+				const chunk = decoder.decode(value, { stream: true });
+				buffer += chunk;
+
+				// Process complete JSON objects
+				while (buffer.includes("\n")) {
+					const newlineIndex = buffer.indexOf("\n");
+					const line = buffer.slice(0, newlineIndex).trim();
+					buffer = buffer.slice(newlineIndex + 1);
+
+					if (!line) continue;
+
+					try {
+						// Clean the line of any non-JSON characters
+						const cleanLine = line.replace(/[^\x20-\x7E]/g, "");
+						const parsed = JSON.parse(cleanLine);
+						if (parsed?.response) {
+							accumulatedMessage += parsed.response;
+							updateUI(accumulatedMessage);
+						}
+					} catch (error) {
+						throw new Error(
+							`Skipping malformed JSON: ${line} and got ${error}`,
+						);
+					}
+				}
+			}
+		} finally {
+			setStreaming(false);
+			setIsLoading(false);
+		}
+	};
+
 	const completeMessage = async () => {
 		let latestmessage: Message[] = [];
 		setMessages((prev) => {
 			const updatedMessages = prev.map((msg) =>
 				msg.isStreaming ? { ...msg, isStreaming: false } : msg,
 			);
-			latestmessage = [...updatedMessages];
+
+			// latestmessage = [...updatedMessages];
+			latestmessage = updatedMessages;
 			return updatedMessages;
 		});
 
@@ -575,53 +806,47 @@ const MiraChatBot: React.FC = () => {
 		}
 	};
 
-	const streamChatResponse = async (prompt: string) => {
-		try {
-			setIsLoading(true);
-			const responseStream = (await chatApis.chat({
-				message: prompt,
-				useRAG: false,
-			})) as StreamResponse;
-
-			if (!responseStream.ok || !responseStream.body) {
-				throw new Error("Failed to get response stream");
-			}
-
-			const reader = responseStream.body.getReader();
-			const decoder = new TextDecoder();
-			let accumulatedMessage = "";
-
-			while (true) {
-				const { done, value } = await reader.read();
-
-				if (done) {
-					completeMessage();
-					break;
-				}
-
-				// Decode and append new chunk
-				const chunk = decoder.decode(value, { stream: true });
-				accumulatedMessage += chunk;
-
-				// Update UI with accumulated message
-				updateUI(accumulatedMessage);
-			}
-		} catch (error) {
-			const errorMessage =
-				error instanceof Error
-					? error.message
-					: "Unknown error occurred";
-			addBotMessage(`Error: ${errorMessage}`);
-		} finally {
-			setIsLoading(false);
-		}
+	// Custom components for markdown rendering
+	const components: Partial<Components> = {
+		h1: ({ children }) => (
+			<h1 className="text-2xl font-bold mb-4 mt-6 text-primary">{children}</h1>
+		),
+		h2: ({ children }) => (
+			<h2 className="text-xl font-semibold mb-3 mt-5 text-primary">
+				{children}
+			</h2>
+		),
+		h3: ({ children }) => (
+			<h2 className="text-lg font-semibold mb-3 mt-5 text-primary">
+				{children}
+			</h2>
+		),
+		p: ({ children }) => (
+			<p className="mb-4 text-primary leading-relaxed">{children}</p>
+		),
+		ol: ({ children }) => (
+			<ol className="space-y-2 text-primary font-semibold ">{children}</ol>
+		),
+		li: ({ children }) => (
+			<ul className="list-disc pl-6 mb-4 space-y-2 text-primary font-semibold ">
+				{children}
+			</ul>
+		),
+		ul: ({ children }) => (
+			<ul className="list-disc pl-6 mb-4 space-y-2 text-primary font-semibold ">
+				{children}
+			</ul>
+		),
+		strong: ({ children }) => (
+			<strong className="text-primary font-bold">{children}</strong>
+		),
 	};
 
 	return (
 		<div className="flex flex-col space-y-6 p-4 w-full h-full md:h-[90vh] rounded-lg shadow-lg bg-muted/50">
 			{!chatData ? (
 				<div className="flex items-center justify-center w-full h-full">
-					{/* <Spinner /> */}
+					<Spinner />
 				</div>
 			) : chatData && messages.length === 0 ? (
 				<>
@@ -649,10 +874,7 @@ const MiraChatBot: React.FC = () => {
 					</div>
 				</>
 			) : (
-				<ScrollArea
-					ref={scrollAreaRef}
-					className="flex-1 p-4 bg-gray-50 w-full"
-				>
+				<ScrollArea ref={scrollAreaRef} className="flex-1 p-4  w-full">
 					{messages.map((message) => {
 						const isPendingAction =
 							pendingAction === message.id ||
@@ -686,6 +908,7 @@ const MiraChatBot: React.FC = () => {
 								>
 									<HumanInTheLoopOptions
 										key={message.id}
+										setShowInfo={setShowInfo}
 										question={humanInTheLoopMessage || ""}
 										actionPrompts={actionPrompts || []}
 										onConfirm={confirmAction}
@@ -697,23 +920,25 @@ const MiraChatBot: React.FC = () => {
 						const isUser = message.sender === "user";
 						const messageClasses = `inline-block p-2 rounded-lg ${
 							isUser
-								? "bg-black text-white"
-								: "bg-gray-200 text-black mt-10"
+								? "bg-primary text-primary-foreground dark:bg-primary-900"
+								: "bg-muted dark:bg-muted/40 text-foreground"
 						}`;
 						const containerClasses = `mb-4 ${isUser ? "text-right" : "text-left"}`;
 
 						return (
 							<motion.div
 								key={message.id}
+								// initial={{ opacity: 0, y: 50 }}
 								className={containerClasses}
 								initial={{ opacity: 0 }}
+								// exit={{ opacity: 0, y: -50 }}
 								animate={{ opacity: 1 }}
 							>
 								<span className={`${messageClasses}`}>
 									{isUser ? (
 										message.message
 									) : (
-										<ReactMarkdown>
+										<ReactMarkdown components={components}>
 											{message.message}
 										</ReactMarkdown>
 									)}
@@ -736,30 +961,58 @@ const MiraChatBot: React.FC = () => {
 					)}
 				</ScrollArea>
 			)}
+			{isScanLoading && (
+				<div className="space-y-2">
+					<Progress value={progress} className="w-full" />
+
+					<p className="text-sm text-center text-gray-500">
+						{progress === 100
+							? "Scanning completed... Please wait"
+							: `Scan in progress: ${progress.toFixed(0)}%`}
+					</p>
+				</div>
+			)}
 			<div className="flex items-center w-full rounded-lg px-4 py-2 shadow-sm border">
 				<img src={MiraLogo} alt="Logo" className="w-7 h-7 mr-2" />
 				<Textarea
+					ref={inputRef}
 					value={input}
 					onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
 						setInput(e.target.value)
 					}
-					onKeyPress={(
-						e: React.KeyboardEvent<HTMLTextAreaElement>,
-					) => {
+					onKeyPress={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 						if (e.key === "Enter" && !e.shiftKey) {
 							e.preventDefault();
 							handleSend();
 						}
 					}}
 					className="flex-1"
-					placeholder="Type your prompt here or click on the action cards..."
+					placeholder="Type your message here..."
 					disabled={isLoading || pendingAction}
 				/>
 				<ChatActions
 					handleSend={handleSend}
-					disabled={isLoading || pendingAction}
+					disabled={isLoading || pendingAction || streaming}
 				/>
 			</div>
+			<Dialog open={showInfo} onOpenChange={setShowInfo}>
+				<DialogContent className="dialog-content">
+					<DialogHeader>
+						<DialogTitle className="dialog-title">Information</DialogTitle>
+					</DialogHeader>
+					<div className="dialog-body">
+						{info.map((item) => (
+							<div key={item.id} className="info-item">
+								<h2 className="text-lg font-semibold">{item.name}</h2>
+								<p className="info-description">
+									{item.description || "No description available."}
+								</p>
+							</div>
+						))}
+					</div>
+				</DialogContent>
+			</Dialog>
+
 			<CreateFolderDialog
 				open={isCreateDialogOpen}
 				onOpenChange={setIsCreateDialogOpen}

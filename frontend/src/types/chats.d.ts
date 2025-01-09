@@ -3,6 +3,13 @@ export interface Chats {
 	title: string;
 }
 
+export interface Info {
+	id: string;
+	name: string;
+	type: string;
+	description: string;
+}
+
 export interface ChatHistory {
 	_id: string;
 	humanInTheLoopId: string;
