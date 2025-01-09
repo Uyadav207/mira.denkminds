@@ -81,3 +81,50 @@ export const saveScan = mutation({
 		return { scanId };
 	},
 });
+
+// Delete a scan and its related vulnerabilities and vulnerabilityInfo
+export const deleteScanAndRelatedData = mutation({
+	args: {
+		scanId: v.id("scans"), // The specific scan ID
+	},
+	handler: async (ctx, { scanId }) => {
+		// Step 1: Validate scanId
+		if (!scanId) {
+			throw new Error("scanId is required.");
+		}
+
+		// Step 2: Fetch all vulnerabilities related to the scan
+		const vulnerabilities = await ctx.db
+			.query("vulnerabilities")
+			.withIndex("by_scanId", (q) => q.eq("scanId", scanId))
+			.collect();
+
+		// Step 3: Delete all related vulnerabilityInfo entries
+		for (const vulnerability of vulnerabilities) {
+			await ctx.db
+				.query("vulnerabilityInfo")
+				.withIndex("by_vulnerabilityId", (q) =>
+					q.eq("vulnerabilityId", vulnerability._id),
+				)
+				.collect()
+				.then((vulnerabilityInfos) => {
+					for (const vulnerabilityInfo of vulnerabilityInfos) {
+						ctx.db.delete(vulnerabilityInfo._id);
+					}
+				});
+		}
+
+		// Step 4: Delete the vulnerabilities
+		for (const vulnerability of vulnerabilities) {
+			await ctx.db.delete(vulnerability._id);
+		}
+
+		// Step 5: Delete the scan itself
+		await ctx.db.delete(scanId);
+
+		return {
+			success: true,
+			message: "Scan and related data deleted successfully.",
+		};
+	},
+});

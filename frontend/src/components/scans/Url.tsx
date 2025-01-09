@@ -22,6 +22,8 @@ import { api } from "../../convex/_generated/api";
 // 	vulnerabilityId: string;
 // };
 
+const REGEX = /^https?:\/\/[^\/]+\/(.*)/;
+
 const Url: React.FC = () => {
 	const { vulnerabilityId } = useParams<{ vulnerabilityId: string }>();
 	const navigate = useNavigate();
@@ -62,63 +64,52 @@ const Url: React.FC = () => {
 				← Affected URLs
 			</button>
 
-			<div className="justify-between mb-5 mr-8">
-				<div className="w-auto p-5 border bg-sidebar rounded-lg mb-5">
-					<h1 className="font-bold mb-3">Description</h1>
+			{/* Information Section */}
+			<div className="w-auto border bg-sidebar justify-between flex rounded-lg mb-5 p-5">
+				<div className="w-2/4">
+					<h1 className="font-semibold text-xl mb-3">Information</h1>
 
 					<div
+						className="flex items-center mr-3 text-wrap text-justify"
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 						dangerouslySetInnerHTML={{
 							__html: vulnerabilityInfos[0].description,
 						}}
 					/>
 				</div>
-				<div className="w-50 p-5 border rounded-lg bg-sidebar table-responsive">
-					<h1 className="font-bold text-lg mb-4">Info</h1>
-					<table className="table-auto border-collapse border w-auto">
+
+				{/* Vulnerability Assessment Information */}
+				<div className="w-2/4 p-5 border bg-popover rounded-lg">
+					<h1 className="font-semibold text-lg mb-4">
+						Vulnerability Assessment Information
+					</h1>
+					<table className="table-auto border-collapse w-full">
 						<tbody>
 							<tr className="border-b">
-								<td className="font-bold px-4 py-2">Confidence</td>
-								<td className="px-4 py-2">
-									{vulnerabilityInfos[0].confidence}
+								<td className="px-4 py-2">Confidence</td>
+								<td className="px-4 py-2 text-center rounded-md">
+									{vulnerabilityInfos[0]?.confidence}
 								</td>
 							</tr>
 							<tr className="border-b">
-								<td className="font-bold px-4 py-2">CWE ID</td>
-								<td className="px-4 py-2">{vulnerabilityInfos[0].cweId}</td>
+								<td className="px-4 py-2">CweId</td>
+								<td className="px-4 py-2 text-center rounded-md">
+									{vulnerabilityInfos[0]?.cweId}
+								</td>
 							</tr>
 							<tr className="border-b">
-								<td className="font-bold px-4 py-2">References</td>
-								<td className="px-4 py-2">
-									<ul className="list-disc pl-5">
-										{vulnerabilityInfos[0].reference
-											.split("</p>")
-											.filter((ref: string) => ref.trim())
-											.map((ref: string, index: number) => (
-												// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-												<li key={index}>
-													<a
-														href={ref.replace("<p>", "").trim()}
-														target="_blank"
-														rel="noopener noreferrer"
-														className="text-purple-500 hover:underline"
-													>
-														{ref.replace("<p>", "").trim()}
-													</a>
-												</li>
-											))}
-									</ul>
+								<td className="px-4 py-2 mt-2">Risk Level</td>
+								<td className="px-4 py-2 text-center rounded-md">
+									{vulnerabilityInfos[0]?.riskLevel}
 								</td>
 							</tr>
 							<tr>
-								<td className="font-bold px-4 py-2">Solution</td>
-								<td
-									className="px-4 py-2"
-									// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-									dangerouslySetInnerHTML={{
-										__html: vulnerabilityInfos[0].solution,
-									}}
-								/>
+								<td className="px-4 py-2">Identified At</td>
+								<td className="px-4 py-2 text-center rounded-md">
+									{new Date(
+										vulnerabilityInfos[0]?._creationTime,
+									).toDateString()}
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -149,7 +140,11 @@ const Url: React.FC = () => {
 							>
 								{affectedUri.method}
 							</Badge>
-							<span className="font-semibold">{affectedUri.uri}</span>
+							<span className="font-wrap w-auto">
+								/
+								{decodeURI(affectedUri.uri).match(REGEX)?.[1] ||
+									""}
+							</span>
 						</div>
 					),
 				)}
