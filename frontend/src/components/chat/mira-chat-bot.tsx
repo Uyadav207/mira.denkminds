@@ -10,10 +10,16 @@ import { ChatActions } from "@components/chat/chat-actions";
 import { Textarea } from "@components/ui/textarea";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { Spinner } from "@components/loader/spinner";
-// import { Progress } from "@components/ui/progress";
+import { Progress } from "@components/ui/progress";
 import { HumanInTheLoopOptions } from "./human-in-the-loop-options";
 import { HumanInTheLoopApproval } from "./human-in-the-loop-approval";
 import { CreateFolderDialog } from "../folder/CreateFolderDialog";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@components/ui/dialog";
 
 //apis
 import { useMutation, useQuery } from "convex/react";
@@ -29,7 +35,7 @@ import MiraLogo from "../../assets/MiraLogo.svg";
 import MiraAvatar from "../../assets/Mira.svg";
 
 // types
-import type { Message, ChatHistory } from "../../types/chats";
+import type { Message, ChatHistory, Info } from "../../types/chats";
 import type { Folder, FolderItem, FolderType } from "../../types/reports";
 
 //constants
@@ -39,17 +45,24 @@ import {
 	STANDARDS,
 	REPORTS,
 	CREATE_FOLDER_ACTION,
+	NEGATION_PATTERNS,
+	CLARIFICATION_PATTERNS,
+	SCANTYPES,
 } from "./constants";
+import { scanApis } from "../../api/scan";
+import useScanStore from "../../store/scanStore";
 // import { scanApis } from "../../api/scan";
 
 const MiraChatBot: React.FC = () => {
 	const [messages, setMessages] = useState<Message[]>([]);
-	const [, setTargetUrl] = useState<string | null>(null);
+	const [targetUrl, setTargetUrl] = useState<string | null>(null);
+	const [scanType, setScanType] = useState<string | null>(null);
 	const [actionType, setActionType] = useState<string | null>(null);
 	const [confirmType, setConfirmType] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
-	const [, setStreaming] = useState(false);
-	// const [isScanLoading, setIsScanLoading] = useState(false);
+	const [streaming, setStreaming] = useState(false);
+	const [info, setInfo] = useState<Info[]>([]);
+	const [isScanLoading, setIsScanLoading] = useState(false);
 	const [actionPrompts, setActionPrompts] = useState<
 		{ id: string; name: string; type: string }[] | []
 	>([]);
@@ -69,6 +82,8 @@ const MiraChatBot: React.FC = () => {
 	const [foldersList, setFoldersList] = useState(CREATE_FOLDER_ACTION);
 
 	const user = useStore((state) => state.user);
+	const { scanResponse, setScanResponse } = useScanStore();
+
 	if (!user) {
 		return null;
 	}
@@ -86,12 +101,18 @@ const MiraChatBot: React.FC = () => {
 
 	const saveReport = useMutation(api.reports.createReportFolder);
 
-	// const [progress, setProgress] = useState(0);
-
+	const [progress, setProgress] = useState(0);
+	const inputRef = useRef<HTMLInputElement>(null);
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
 		handleScrollToBottom();
 	}, [messages]);
+
+	useEffect(() => {
+		if (inputRef.current) {
+			inputRef.current.focus();
+		}
+	}, []);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
@@ -175,14 +196,43 @@ const MiraChatBot: React.FC = () => {
 
 	const processPrompt = async (userMessage: Message) => {
 		const lowerPrompt = userMessage.message.toLowerCase().trim();
-		//also check if URL is valid
-		const containsURL = URL_PATTERN.test(lowerPrompt);
-		const containsReportGeneration = REPORT_GENERATION.some((keyword) =>
-			lowerPrompt.includes(keyword),
+
+		const reportKeywords = REPORT_GENERATION.map(
+			(keyword) => `\\b${keyword}\\b`,
 		);
-		if (containsURL) {
+		const reportRegex = new RegExp(reportKeywords.join("|"), "i"); // Matches exact words only
+		const containsReportGeneration = reportRegex.test(lowerPrompt);
+
+		//handle negations
+
+		const hasNegation = NEGATION_PATTERNS.some((pattern) =>
+			pattern.test(input),
+		);
+
+		const isClarificationQuery = CLARIFICATION_PATTERNS.test(lowerPrompt);
+
+		// URL Validation
+		const containsURL = URL_PATTERN.test(lowerPrompt);
+		if (hasNegation) {
+			setIsLoading(true);
+			const responseStream = await chatApis.chatOllama({
+				prompt: userMessage.message,
+			});
+			setIsLoading(false);
+			streamOllamaChatResponse(responseStream);
+		} else if (isClarificationQuery) {
+			//handled properly
+			// streamChatResponse(userMessage.message);
+			setIsLoading(true);
+			const responseStream = await chatApis.chatOllama({
+				prompt: userMessage.message,
+			});
+			setIsLoading(false);
+			streamOllamaChatResponse(responseStream);
+		} else if (containsURL) {
 			setTargetUrl(lowerPrompt);
-			const manualMessage = "Thank you for providing the URL";
+			const manualMessage =
+				"Thank you for providing the URL. Please select type of scan you want to perform.";
 			const botMessage: Message = {
 				id: uuidv4(),
 				message: manualMessage,
@@ -222,7 +272,6 @@ const MiraChatBot: React.FC = () => {
 					message: botMessage.message,
 				});
 			}
-			setPendingAction(botMessage.id as string);
 			setPendingAction(botMessage.id as string);
 			requestHumanApproval("report", manualMessage, "none", botMessage.id);
 		} else {
@@ -275,15 +324,21 @@ const MiraChatBot: React.FC = () => {
 		let approvalMessage = "";
 		if (action === "scan") {
 			approvalMessage =
+				"Select your preferred scan type. You can choose from the following:";
+			setActionPrompts(SCANTYPES);
+			setHumanInTheLoopMessage(approvalMessage);
+		} else if (action === "standards") {
+			approvalMessage =
 				"Select your preferred standard for the scan. You can choose from the following:";
 			setActionPrompts(STANDARDS);
+			setInfo(STANDARDS);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "report") {
 			approvalMessage = "What type of report do you want to generate?";
 			setActionPrompts(REPORTS);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "approval") {
-			approvalMessage = "Do you want to generate a Report?";
+			approvalMessage = "Do you want to generate a brief summary?";
 			setActionPrompts([]);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "folder") {
@@ -304,6 +359,8 @@ const MiraChatBot: React.FC = () => {
 		setMessages((prev) => [...prev, approvalMessageObject]);
 	};
 
+	const [showInfo, setShowInfo] = useState(false);
+
 	const confirmAction = async (action: string, type: string) => {
 		if (!pendingAction) return;
 
@@ -314,6 +371,7 @@ const MiraChatBot: React.FC = () => {
 		};
 
 		if (type === "scan") {
+			setScanType(action);
 			try {
 				if (createdChatId) {
 					setMessages((prev) => [...prev, userMessage]);
@@ -325,41 +383,74 @@ const MiraChatBot: React.FC = () => {
 						message: userMessage.message,
 					});
 				}
-				//scan api call
-
-				// const payload = {
-				// 	targetUrl: targetUrl as string,
-				// 	complianceStandard: action,
-				// 	userId: Number(id),
-				// };
-				try {
-					// setIsScanLoading(true);
-					// setProgress(0);
-					// const response = await scanApis.scanWithProgress(
-					// 	payload,
-					// 	(progress) => {
-					// 		setProgress(progress);
-					// 	},
-					// );
-					// console.log("assssss", response);
-					// const { data } = response;
-					// setIsScanLoading(false);
-					// addBotMessage(
-					// 	`Scan completed. Found ${data.filteredResults.total_vulnerabilities} vulnerabilities.`,
-					// );
-					addBotMessage("Scan completed. Found 44 vulnerabilities.");
-				} catch (error) {
-					addBotMessage("An error occurred while processing your request.");
-					return error;
-				}
-
-				const manualMessage = "Do you want to generate a report?";
+				const manualMessage =
+					"Thank you for providing the scan type. Please select the standard you want to scan against.";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
 					sender: "ai",
 				};
-				//save this as well
+				setPendingAction(botMessage.id as string);
+				await saveChatMessage({
+					chatId: createdChatId
+						? (createdChatId as Id<"chats">)
+						: (chatId as Id<"chats">),
+					humanInTheLoopId: botMessage.id,
+					sender: botMessage.sender,
+					message: botMessage.message,
+				});
+
+				requestHumanApproval("standards", manualMessage, "none", botMessage.id);
+			} catch {
+				addBotMessage("An error occurred while processing your request.");
+			}
+		} else if (type === "standards") {
+			try {
+				if (createdChatId) {
+					setMessages((prev) => [...prev, userMessage]);
+				} else {
+					await saveChatMessage({
+						humanInTheLoopId: userMessage.id,
+						chatId: chatId as Id<"chats">,
+						sender: userMessage.sender,
+						message: userMessage.message,
+					});
+				}
+
+				//scan api call
+
+				try {
+					const payload = {
+						url: targetUrl as string,
+						complianceStandard: action as string,
+						scanType: scanType as string,
+						userId: Number(id),
+					};
+					setIsScanLoading(true);
+					setProgress(0);
+					const response = await scanApis.scanWithProgress(
+						payload,
+						(progress) => {
+							setProgress(progress);
+						},
+					);
+					setScanResponse(response.data);
+
+					setIsScanLoading(false);
+					addBotMessage(
+						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
+					);
+				} catch (error) {
+					addBotMessage("An error occurred while processing your request.");
+					return error;
+				}
+
+				const manualMessage = "Do you want to generate a brief summary?";
+				const botMessage: Message = {
+					id: uuidv4(),
+					message: manualMessage,
+					sender: "ai",
+				};
 
 				await saveChatMessage({
 					chatId: createdChatId
@@ -381,7 +472,63 @@ const MiraChatBot: React.FC = () => {
 				addBotMessage("An error occurred while processing your request.");
 			}
 		} else if (type === "report") {
-			addBotMessage(`${type} Generation In progress...`);
+			if (action === "Chat Summary Report") {
+				if (createdChatId) {
+					setMessages((prev) => [...prev, userMessage]);
+				} else {
+					await saveChatMessage({
+						humanInTheLoopId: userMessage.id,
+						chatId: chatId as Id<"chats">,
+						sender: userMessage.sender,
+						message: userMessage.message,
+					});
+				}
+				const manualMessage = "Thank you for providing the report type";
+				const botMessage: Message = {
+					id: uuidv4(),
+					message: manualMessage,
+					sender: "ai",
+				};
+
+				await saveChatMessage({
+					chatId: createdChatId
+						? (createdChatId as Id<"chats">)
+						: (chatId as Id<"chats">),
+					humanInTheLoopId: botMessage.id,
+					sender: botMessage.sender,
+					message: botMessage.message,
+				});
+				addBotMessage("Report generation in progress...");
+
+				// requestHumanApproval("folder", manualMessage, "report", botMessage.id);
+			} else if (action === "Vulnerability Report") {
+				if (createdChatId) {
+					setMessages((prev) => [...prev, userMessage]);
+				} else {
+					await saveChatMessage({
+						humanInTheLoopId: userMessage.id,
+						chatId: chatId as Id<"chats">,
+						sender: userMessage.sender,
+						message: userMessage.message,
+					});
+				}
+				const manualMessage = "Thank you for providing the report type";
+				const botMessage: Message = {
+					id: uuidv4(),
+					message: manualMessage,
+					sender: "ai",
+				};
+
+				await saveChatMessage({
+					chatId: createdChatId
+						? (createdChatId as Id<"chats">)
+						: (chatId as Id<"chats">),
+					humanInTheLoopId: botMessage.id,
+					sender: botMessage.sender,
+					message: botMessage.message,
+				});
+				addBotMessage("Vulnerability generation in progress...");
+			}
 		} else if (type === "folder") {
 			// Folder selection
 			if (action === "Create New Folder") {
@@ -395,10 +542,7 @@ const MiraChatBot: React.FC = () => {
 						message: userMessage.message,
 					});
 				}
-
-				// Show modal to create a new folder
 				setIsCreateDialogOpen(true);
-				// finalizeReportGeneration()
 			} else {
 				//add more functionalities for human intervention
 			}
@@ -408,6 +552,7 @@ const MiraChatBot: React.FC = () => {
 	};
 
 	const yesClicked = async (confirmType: string) => {
+		setPendingAction(null);
 		if (confirmType === "report") {
 			const userMessage: Message = {
 				id: uuidv4(),
@@ -426,380 +571,13 @@ const MiraChatBot: React.FC = () => {
 			}
 
 			try {
-				// const payload = {
-				// 	scanResults: {
-				// 		targetUrl: "https://juice-shop.herokuapp.com",
-				// 		complianceStandard: "GDPR",
-				// 		filteredResults: {
-				// 			total_vulnerabilities: 44,
-				// 			unique_urls: 10,
-				// 			total_risks: {
-				// 				Medium: 12,
-				// 				High: 0,
-				// 				Low: 25,
-				// 				Critical: 0,
-				// 				Informational: 7,
-				// 			},
-				// 			findings: [
-				// 				{
-				// 					name: "Re-examine Cache-control Directives",
-				// 					total_count: 3,
-				// 					description:
-				// 						"The cache-control header has not been set properly or is missing, allowing the browser and proxies to cache content. For static assets like css, js, or image files this might be intended, however, the resources should be reviewed to ensure that no sensitive content will be cached.",
-				// 					solution:
-				// 						'For secure content, ensure the cache-control HTTP header is set with "no-cache, no-store, must-revalidate". If an asset should be cached consider setting the directives "public, max-age, immutable".',
-				// 					cwe_id: "525",
-				// 					alert: "Re-examine Cache-control Directives",
-				// 					compliance_details: ["Article 32 - Security of Processing"],
-				// 					url_details: [
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/robots.txt",
-				// 							method: "GET",
-				// 							risk_level: "Informational",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com",
-				// 							method: "GET",
-				// 							risk_level: "Informational",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/sitemap.xml",
-				// 							method: "GET",
-				// 							risk_level: "Informational",
-				// 						},
-				// 					],
-				// 					cve_ids: [],
-				// 				},
-				// 				{
-				// 					name: "Content Security Policy (CSP) Header Not Set",
-				// 					total_count: 3,
-				// 					description:
-				// 						"Content Security Policy (CSP) is an added layer of security that helps to detect and mitigate certain types of attacks, including Cross Site Scripting (XSS) and data injection attacks. These attacks are used for everything from data theft to site defacement or distribution of malware. CSP provides a set of standard HTTP headers that allow website owners to declare approved sources of content that browsers should be allowed to load on that page — covered types are JavaScript, CSS, HTML frames, fonts, images and embeddable objects such as Java applets, ActiveX, audio and video files.",
-				// 					solution:
-				// 						"Ensure that your web server, application server, load balancer, etc. is configured to set the Content-Security-Policy header.",
-				// 					cwe_id: "693",
-				// 					alert: "Content Security Policy (CSP) Header Not Set",
-				// 					compliance_details: ["Article 32 - Security of Processing"],
-				// 					url_details: [
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/sitemap.xml",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/ftp",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 					],
-				// 					cve_ids: [],
-				// 				},
-				// 				{
-				// 					name: "Cross-Domain Misconfiguration",
-				// 					total_count: 9,
-				// 					description:
-				// 						"Web browser data loading may be possible, due to a Cross Origin Resource Sharing (CORS) misconfiguration on the web server.",
-				// 					solution:
-				// 						'Ensure that sensitive data is not available in an unauthenticated manner (using IP address white-listing, for instance).\nConfigure the "Access-Control-Allow-Origin" HTTP header to a more restrictive set of domains, or remove all CORS headers entirely, to allow the web browser to enforce the Same Origin Policy (SOP) in a more restrictive manner.',
-				// 					cwe_id: "264",
-				// 					alert: "Cross-Domain Misconfiguration",
-				// 					compliance_details: ["Article 32 - Security of Processing"],
-				// 					url_details: [
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/robots.txt",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/sitemap.xml",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/runtime.js",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/assets/public/favicon_js.ico",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/polyfills.js",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/styles.css",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/main.js",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/vendor.js",
-				// 							method: "GET",
-				// 							risk_level: "Medium",
-				// 						},
-				// 					],
-				// 					cve_ids: [],
-				// 				},
-				// 				{
-				// 					name: "Cross-Domain JavaScript Source File Inclusion",
-				// 					total_count: 4,
-				// 					description:
-				// 						"The page includes one or more script files from a third-party domain.",
-				// 					solution:
-				// 						"Ensure JavaScript source files are loaded from only trusted sources, and the sources can't be controlled by end users of the application.",
-				// 					cwe_id: "829",
-				// 					alert: "Cross-Domain JavaScript Source File Inclusion",
-				// 					compliance_details: ["Article 32 - Security of Processing"],
-				// 					url_details: [
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/sitemap.xml",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/sitemap.xml",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 					],
-				// 					cve_ids: [],
-				// 				},
-				// 				{
-				// 					name: "Strict-Transport-Security Header Not Set",
-				// 					total_count: 10,
-				// 					description:
-				// 						"HTTP Strict Transport Security (HSTS) is a web security policy mechanism whereby a web server declares that complying user agents (such as a web browser) are to interact with it using only secure HTTPS connections (i.e. HTTP layered over TLS/SSL). HSTS is an IETF standards track protocol and is specified in RFC 6797.",
-				// 					solution:
-				// 						"Ensure that your web server, application server, load balancer, etc. is configured to enforce Strict-Transport-Security.",
-				// 					cwe_id: "319",
-				// 					alert: "Strict-Transport-Security Header Not Set",
-				// 					compliance_details: ["Article 32 - Security of Processing"],
-				// 					url_details: [
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/robots.txt",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/sitemap.xml",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/ftp",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/runtime.js",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/assets/public/favicon_js.ico",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/polyfills.js",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/main.js",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/styles.css",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/vendor.js",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 					],
-				// 					cve_ids: ["CVE-2024-11946", "CVE-2021-39090"],
-				// 				},
-				// 				{
-				// 					name: "Modern Web Application",
-				// 					total_count: 2,
-				// 					description:
-				// 						"The application appears to be a modern web application. If you need to explore it automatically then the Ajax Spider may well be more effective than the standard one.",
-				// 					solution:
-				// 						"This is an informational alert and so no changes are required.",
-				// 					cwe_id: "-1",
-				// 					alert: "Modern Web Application",
-				// 					compliance_details: ["Article 32 - Security of Processing"],
-				// 					url_details: [
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/sitemap.xml",
-				// 							method: "GET",
-				// 							risk_level: "Informational",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com",
-				// 							method: "GET",
-				// 							risk_level: "Informational",
-				// 						},
-				// 					],
-				// 					cve_ids: [],
-				// 				},
-				// 				{
-				// 					name: "Timestamp Disclosure - Unix",
-				// 					total_count: 11,
-				// 					description:
-				// 						"A timestamp was disclosed by the application/web server. - Unix",
-				// 					solution:
-				// 						"Manually confirm that the timestamp data is not sensitive, and that the data cannot be aggregated to disclose exploitable patterns.",
-				// 					cwe_id: "200",
-				// 					alert: "Timestamp Disclosure - Unix",
-				// 					compliance_details: ["Article 32 - Security of Processing"],
-				// 					url_details: [
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/robots.txt",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/sitemap.xml",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/ftp",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/runtime.js",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/assets/public/favicon_js.ico",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/polyfills.js",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/main.js",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/main.js",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/styles.css",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/vendor.js",
-				// 							method: "GET",
-				// 							risk_level: "Low",
-				// 						},
-				// 					],
-				// 					cve_ids: [
-				// 						"CVE-2024-13110",
-				// 						"CVE-2024-13042",
-				// 						"CVE-2024-47923",
-				// 						"CVE-2024-47922",
-				// 						"CVE-2024-12984",
-				// 						"CVE-2017-7923",
-				// 					],
-				// 				},
-				// 				{
-				// 					name: "Information Disclosure - Suspicious Comments",
-				// 					total_count: 2,
-				// 					description:
-				// 						"The response appears to contain suspicious comments which may help an attacker. Note: Matches made within script blocks or files are against the entire content not only comments.",
-				// 					solution:
-				// 						"Remove all comments that return information that may help an attacker and fix any underlying problems they refer to.",
-				// 					cwe_id: "200",
-				// 					alert: "Information Disclosure - Suspicious Comments",
-				// 					compliance_details: ["Article 32 - Security of Processing"],
-				// 					url_details: [
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/main.js",
-				// 							method: "GET",
-				// 							risk_level: "Informational",
-				// 						},
-				// 						{
-				// 							url: "https://juice-shop.herokuapp.com/vendor.js",
-				// 							method: "GET",
-				// 							risk_level: "Informational",
-				// 						},
-				// 					],
-				// 					cve_ids: [
-				// 						"CVE-2024-13110",
-				// 						"CVE-2024-13042",
-				// 						"CVE-2024-47923",
-				// 						"CVE-2024-47922",
-				// 						"CVE-2024-12984",
-				// 						"CVE-2017-7923",
-				// 					],
-				// 				},
-				// 			],
-				// 		},
-				// 	},
-				// };
-
 				setIsLoading(true);
 				//report generation api call
-				// const responseStream = await scanApis.scanReportGeneration({
-				// 	scanResults: payload.scanResults,
-				// });
-				// setIsLoading(false);
+				const responseStream =
+					await scanApis.scanReportGeneration(scanResponse);
+				setIsLoading(false);
 
-				// await streamOllamaChatResponse(responseStream);
+				await streamOllamaChatResponse(responseStream);
 				// if (!streaming) {
 				// 	const manualMessage =
 				// 		"Create a new folder. Or select an existing folder to save the report.";
@@ -934,43 +712,42 @@ const MiraChatBot: React.FC = () => {
 			const reader = responseStream.getReader();
 			const decoder = new TextDecoder();
 			let accumulatedMessage = "";
-			setStreaming(true);
+			let buffer = "";
 
 			while (true) {
-				try {
-					const { done, value } = await reader.read();
+				const { done, value } = await reader.read();
 
-					if (done) {
-						completeMessage();
-						break;
-					}
+				if (done) {
+					completeMessage();
+					break;
+				}
 
-					// Handle the case where value is undefined or null
-					if (!value) continue;
+				const chunk = decoder.decode(value, { stream: true });
+				buffer += chunk;
 
-					const chunk = decoder.decode(value, { stream: true });
-					const lines = chunk
-						.split("\n")
-						.filter((line) => line.trim().length > 0);
+				// Process complete JSON objects
+				while (buffer.includes("\n")) {
+					const newlineIndex = buffer.indexOf("\n");
+					const line = buffer.slice(0, newlineIndex).trim();
+					buffer = buffer.slice(newlineIndex + 1);
 
-					for (const line of lines) {
-						try {
-							const parsed = JSON.parse(line);
-							if (parsed.response) {
-								accumulatedMessage += parsed.response;
-								updateUI(accumulatedMessage);
-							}
-						} catch (parseError) {
-							return parseError;
+					if (!line) continue;
+
+					try {
+						// Clean the line of any non-JSON characters
+						const cleanLine = line.replace(/[^\x20-\x7E]/g, "");
+						const parsed = JSON.parse(cleanLine);
+						if (parsed?.response) {
+							accumulatedMessage += parsed.response;
+							updateUI(accumulatedMessage);
 						}
+					} catch (error) {
+						throw new Error(
+							`Skipping malformed JSON: ${line} and got ${error}`,
+						);
 					}
-				} catch (readError) {
-					return readError;
 				}
 			}
-		} catch (error) {
-			addBotMessage("Oops! Something went wrong while streaming the response.");
-			throw error;
 		} finally {
 			setStreaming(false);
 			setIsLoading(false);
@@ -1029,46 +806,6 @@ const MiraChatBot: React.FC = () => {
 		}
 	};
 
-	// const streamChatResponse = async (prompt: string) => {
-	// 	try {
-	// 		setIsLoading(true);
-	// 		const responseStream = (await chatApis.chat({
-	// 			message: prompt,
-	// 			useRAG: false,
-	// 		})) as StreamResponse;
-
-	// 		if (!responseStream.ok || !responseStream.body) {
-	// 			throw new Error("Failed to get response stream");
-	// 		}
-
-	// 		const reader = responseStream.body.getReader();
-	// 		const decoder = new TextDecoder();
-	// 		let accumulatedMessage = "";
-
-	// 		while (true) {
-	// 			const { done, value } = await reader.read();
-
-	// 			if (done) {
-	// 				completeMessage();
-	// 				break;
-	// 			}
-
-	// 			// Decode and append new chunk
-	// 			const chunk = decoder.decode(value, { stream: true });
-	// 			accumulatedMessage += chunk;
-
-	// 			// Update UI with accumulated message
-	// 			updateUI(accumulatedMessage);
-	// 		}
-	// 	} catch (error) {
-	// 		const errorMessage =
-	// 			error instanceof Error ? error.message : "Unknown error occurred";
-	// 		addBotMessage(`Error: ${errorMessage}`);
-	// 	} finally {
-	// 		setIsLoading(false);
-	// 	}
-	// };
-
 	// Custom components for markdown rendering
 	const components: Partial<Components> = {
 		h1: ({ children }) => (
@@ -1086,6 +823,9 @@ const MiraChatBot: React.FC = () => {
 		),
 		p: ({ children }) => (
 			<p className="mb-4 text-primary leading-relaxed">{children}</p>
+		),
+		ol: ({ children }) => (
+			<ol className="space-y-2 text-primary font-semibold ">{children}</ol>
 		),
 		li: ({ children }) => (
 			<ul className="list-disc pl-6 mb-4 space-y-2 text-primary font-semibold ">
@@ -1168,6 +908,7 @@ const MiraChatBot: React.FC = () => {
 								>
 									<HumanInTheLoopOptions
 										key={message.id}
+										setShowInfo={setShowInfo}
 										question={humanInTheLoopMessage || ""}
 										actionPrompts={actionPrompts || []}
 										onConfirm={confirmAction}
@@ -1178,7 +919,9 @@ const MiraChatBot: React.FC = () => {
 
 						const isUser = message.sender === "user";
 						const messageClasses = `inline-block p-2 rounded-lg ${
-							isUser ? "bg-black text-white" : "bg-gray-200 text-black"
+							isUser
+								? "bg-primary text-primary-foreground dark:bg-primary-900"
+								: "bg-muted dark:bg-muted/40 text-foreground"
 						}`;
 						const containerClasses = `mb-4 ${isUser ? "text-right" : "text-left"}`;
 
@@ -1218,25 +961,21 @@ const MiraChatBot: React.FC = () => {
 					)}
 				</ScrollArea>
 			)}
-			{/* {isScanLoading && (
-				<div className="w-full space-y-2">
-					<Progress value={progress} className="w-full" />
-					<p className="text-sm text-center text-gray-500">
-						Scanning your website for vulnerabilities...
-					</p>
-				</div>
-			)} */}
-			{/* {isScanLoading && (
+			{isScanLoading && (
 				<div className="space-y-2">
 					<Progress value={progress} className="w-full" />
+
 					<p className="text-sm text-center text-gray-500">
-						Scan in progress: {progress.toFixed(0)}%
+						{progress === 100
+							? "Scanning completed... Please wait"
+							: `Scan in progress: ${progress.toFixed(0)}%`}
 					</p>
 				</div>
-			)} */}
+			)}
 			<div className="flex items-center w-full rounded-lg px-4 py-2 shadow-sm border">
 				<img src={MiraLogo} alt="Logo" className="w-7 h-7 mr-2" />
 				<Textarea
+					ref={inputRef}
 					value={input}
 					onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
 						setInput(e.target.value)
@@ -1248,14 +987,31 @@ const MiraChatBot: React.FC = () => {
 						}
 					}}
 					className="flex-1"
-					placeholder="Type your prompt here or click on the action cards..."
+					placeholder="Type your message here..."
 					disabled={isLoading || pendingAction}
 				/>
 				<ChatActions
 					handleSend={handleSend}
-					disabled={isLoading || pendingAction}
+					disabled={isLoading || pendingAction || streaming}
 				/>
 			</div>
+			<Dialog open={showInfo} onOpenChange={setShowInfo}>
+				<DialogContent className="dialog-content">
+					<DialogHeader>
+						<DialogTitle className="dialog-title">Information</DialogTitle>
+					</DialogHeader>
+					<div className="dialog-body">
+						{info.map((item) => (
+							<div key={item.id} className="info-item">
+								<h2 className="text-lg font-semibold">{item.name}</h2>
+								<p className="info-description">
+									{item.description || "No description available."}
+								</p>
+							</div>
+						))}
+					</div>
+				</DialogContent>
+			</Dialog>
 
 			<CreateFolderDialog
 				open={isCreateDialogOpen}

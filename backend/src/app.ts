@@ -5,6 +5,7 @@ import { cors } from "hono/cors";
 // import { rag } from "./routes/rag";
 import { logger } from "hono/logger";
 import { errorHandler } from "./middlewares/errorHandler";
+import type { Finding, FindingBasline } from "./types/scan";
 
 import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
@@ -30,7 +31,7 @@ app.route("/users", userRoutes);
 app.route("/reports", reportRoutes);
 app.route("/zap", zapRoutes);
 
-const OLLAMA_HOST = "https://588a-34-138-24-166.ngrok-free.app"; // Change this to your Ollama API URL
+const OLLAMA_HOST = "https://519d-34-126-138-6.ngrok-free.app"; // Change this to your Ollama API URL
 app.route("/reports", reportRoutes);
 
 app.post("/api/generate-title", async (c) => {
@@ -119,43 +120,135 @@ app.post("/api/summary", async (c) => {
 	console.log(scanResults);
 
 	const prompt = `
-					Analyze the following OWASP ZAP security scan results for ${scanResults.targetUrl} and provide a comprehensive security assessment:
+		Analyze the following OWASP ZAP security scan results for ${scanResults.targetUrl} and provide a comprehensive security assessment:
 
-					Target Information:
-					- URL: ${scanResults.targetUrl}
-					- Compliance Standard: ${scanResults.complianceStandard}
-					- Total Vulnerabilities: ${scanResults.filteredResults.total_vulnerabilities}
-					- Risk Distribution: ${Object.entries(
-						scanResults.filteredResults.total_risks,
-					)
-						.map(([level, count]) => `${level}: ${count}`)
-						.join(", ")}
+		Target Information:
+		- URL: ${scanResults.targetUrl}
+		- Compliance Standard: ${scanResults.complianceStandard}
+		- Total Vulnerabilities: ${scanResults.filteredResults.total_vulnerabilities}
+		- Risk Distribution: ${Object.entries(
+			scanResults.filteredResults.total_risks,
+		)
+			.map(([level, count]) => `${level}: ${count}`)
+			.join(", ")}
 
-					Detailed Findings:
-					${scanResults.filteredResults.findings
-						.map(
-							(finding, index) => `
-					${index + 1}. ${finding.name}
-					- Risk Level: ${finding.url_details[0]?.risk_level || "Unknown"}
-					- Description: ${finding.description}
-					- Impact: Based on CWE-${finding.cwe_id}
-					- CVEs: ${finding.cve_ids.length ? finding.cve_ids.join(", ") : "None identified"}
-					- Solution: ${finding.solution}
-					`,
-						)
-						.join("\n")}
+		Detailed Findings:
+		${scanResults.filteredResults.findings
+			.map(
+				(finding: Finding, index: number) => `
+		${index + 1}. ${finding.name}
+		- Risk Level: ${finding.url_details[0]?.risk_level || "Unknown"}
+		- Description: ${finding.description}
+		- Impact: Based on CWE-${finding.cwe_id}
+		- CVEs: ${finding.cve_ids.length ? finding.cve_ids.join(", ") : "None identified"}
+		- Solution: ${finding.solution}
+		`,
+			)
+			.join("\n")}
+		Format the response in markdown with clear sections and bullet points for readability.
 
-					Please provide:
-					1. Executive Summary: A brief overview of the scan results and their potential business impact
-					2. Critical Findings: Highlight the most severe vulnerabilities that require immediate attention
-					3. Risk Analysis: Break down the findings by risk level and provide context for each category
-					4. Remediation Roadmap: Prioritized list of recommendations with:
-					- Immediate actions (24-48 hours)
-					- Short-term fixes (1-2 weeks)
-					- Long-term security improvements
-					5. Technical Details: Include specific CVEs and their implications
+		Please provide:
+		1. Executive Summary: A brief overview of the scan results and their potential business impact
+		2. Critical Findings: Highlight the most severe vulnerabilities that require immediate attention
+		3. Risk Analysis: Break down the findings by risk level and provide context for each category
+		4. Remediation Roadmap: Prioritized list of recommendations with:
+		- Immediate actions (24-48 hours)
+		- Short-term fixes (1-2 weeks)
+		- Long-term security improvements
+		5. Technical Details: Include specific CVEs and their implications
+	`;
 
-					Format the response in markdown with clear sections and bullet points for readability.
+	try {
+		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				prompt: prompt,
+				model: "mistral-cyber",
+				stream: true,
+			}),
+		});
+
+		const reader = response.body?.getReader();
+		const decoder = new TextDecoder();
+		const stream = new ReadableStream({
+			start(controller) {
+				function push() {
+					reader?.read().then(({ done, value }) => {
+						if (done) {
+							controller.close();
+							return;
+						}
+						controller.enqueue(decoder.decode(value));
+						push();
+					});
+				}
+				push();
+			},
+		});
+
+		return new Response(stream, {
+			headers: { "Content-Type": "text/event-stream" },
+		});
+	} catch (e) {
+		return c.json({ message: e });
+	}
+});
+
+app.post("/api/summary/v2", async (c) => {
+	const { scanResults } = await c.req.json();
+	const totalVulnerabilities = scanResults.totals;
+
+	// Create risk distribution string
+	const riskDistribution = Object.entries({
+		Critical: scanResults.totals.critical,
+		High: scanResults.totals.high,
+		Medium: scanResults.totals.medium,
+		Low: scanResults.totals.low,
+		Informational: scanResults.totals.informational,
+	})
+		.map(([level, count]) => `${level}: ${count}`)
+		.join(", ");
+
+	// Format findings
+	const formattedFindings = scanResults.filteredAlerts
+		.map(
+			(finding: FindingBasline, index: number) => `
+	  ${index + 1}. ${finding.name}
+	  - Risk Level: ${finding.riskdesc}
+	  - Description: ${finding.desc}
+	  - Impact: Based on CWE-${finding.cweid}
+	  - CVEs: ${finding.cve_id?.length ? finding.cve_id.split(",").join(", ") : "None identified"}
+	  - Solution: ${finding.solution}
+	  `,
+		)
+		.join("\n");
+
+	const prompt = `		
+						Analyze the following OWASP ZAP security scan results for ${scanResults.targetUrl} and provide a comprehensive security assessment:
+
+						Target Information:
+						- URL: ${scanResults.targetUrl}
+						- Compliance Standard: ${scanResults.complianceStandardUrl}
+						- Total Vulnerabilities: ${totalVulnerabilities}
+						- Risk Distribution: ${riskDistribution}
+
+						Detailed Findings:
+						${formattedFindings}
+
+						Please provide:
+						1. Executive Summary: A brief overview of the scan results and their potential business impact
+						2. Critical Findings: Highlight the most severe vulnerabilities that require immediate attention
+						3. Risk Analysis: Break down the findings by risk level and provide context for each category
+						4. Remediation Roadmap: Prioritized list of recommendations with:
+						- Immediate actions (24-48 hours)
+						- Short-term fixes (1-2 weeks)
+						- Long-term security improvements
+						5. Technical Details: Include specific CVEs and their implications
+
+						Format the response in markdown with clear sections and bullet points for readability.			
 	`;
 
 	try {
