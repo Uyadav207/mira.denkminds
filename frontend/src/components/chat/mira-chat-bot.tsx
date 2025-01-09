@@ -6,8 +6,8 @@ import type { Components } from "react-markdown";
 import { v4 as uuidv4 } from "uuid";
 
 //components
-import { ChatActions } from "@components/chat/chat-actions";
-import { Textarea } from "@components/ui/textarea";
+// import { ChatActions } from "@components/chat/chat-actions";
+// import { Textarea } from "@components/ui/textarea";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { Spinner } from "@components/loader/spinner";
 import { Progress } from "@components/ui/progress";
@@ -31,7 +31,7 @@ import type { Id } from "../../convex/_generated/dataModel";
 import useStore from "../../store/store";
 
 // svgs
-import MiraLogo from "../../assets/MiraLogo.svg";
+// import MiraLogo from "../../assets/MiraLogo.svg";
 import MiraAvatar from "../../assets/Mira.svg";
 
 // types
@@ -51,7 +51,7 @@ import {
 } from "./constants";
 import { scanApis } from "../../api/scan";
 import useScanStore from "../../store/scanStore";
-// import { scanApis } from "../../api/scan";
+import { SendIcon } from "lucide-react";
 
 const MiraChatBot: React.FC = () => {
 	const [messages, setMessages] = useState<Message[]>([]);
@@ -69,7 +69,9 @@ const MiraChatBot: React.FC = () => {
 	const [humanInTheLoopMessage, setHumanInTheLoopMessage] = useState<
 		string | null
 	>(null);
-	const [createdChatId, setCreatedChatId] = useState<Id<"chats"> | null>(null);
+	const [createdChatId, setCreatedChatId] = useState<Id<"chats"> | null>(
+		null,
+	);
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const { chatId: chatIdParam } = useParams<{ chatId: string }>();
 	const chatId = chatIdParam as Id<"chats">;
@@ -102,7 +104,7 @@ const MiraChatBot: React.FC = () => {
 	const saveReport = useMutation(api.reports.createReportFolder);
 
 	const [progress, setProgress] = useState(0);
-	const inputRef = useRef<HTMLInputElement>(null);
+	const inputRef = useRef<HTMLTextAreaElement>(null);
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
 		handleScrollToBottom();
@@ -273,7 +275,12 @@ const MiraChatBot: React.FC = () => {
 				});
 			}
 			setPendingAction(botMessage.id as string);
-			requestHumanApproval("report", manualMessage, "none", botMessage.id);
+			requestHumanApproval(
+				"report",
+				manualMessage,
+				"none",
+				botMessage.id,
+			);
 		} else {
 			//handled properly
 			// streamChatResponse(userMessage.message);
@@ -342,7 +349,8 @@ const MiraChatBot: React.FC = () => {
 			setActionPrompts([]);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "folder") {
-			approvalMessage = "Select the folder where you want to save the report.";
+			approvalMessage =
+				"Select the folder where you want to save the report.";
 			setActionPrompts(foldersList);
 			setHumanInTheLoopMessage(approvalMessage);
 		}
@@ -400,9 +408,16 @@ const MiraChatBot: React.FC = () => {
 					message: botMessage.message,
 				});
 
-				requestHumanApproval("standards", manualMessage, "none", botMessage.id);
+				requestHumanApproval(
+					"standards",
+					manualMessage,
+					"none",
+					botMessage.id,
+				);
 			} catch {
-				addBotMessage("An error occurred while processing your request.");
+				addBotMessage(
+					"An error occurred while processing your request.",
+				);
 			}
 		} else if (type === "standards") {
 			try {
@@ -441,11 +456,14 @@ const MiraChatBot: React.FC = () => {
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
 					);
 				} catch (error) {
-					addBotMessage("An error occurred while processing your request.");
+					addBotMessage(
+						"An error occurred while processing your request.",
+					);
 					return error;
 				}
 
-				const manualMessage = "Do you want to generate a brief summary?";
+				const manualMessage =
+					"Do you want to generate a brief summary?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -469,7 +487,9 @@ const MiraChatBot: React.FC = () => {
 					botMessage.id,
 				);
 			} catch {
-				addBotMessage("An error occurred while processing your request.");
+				addBotMessage(
+					"An error occurred while processing your request.",
+				);
 			}
 		} else if (type === "report") {
 			if (action === "Chat Summary Report") {
@@ -690,7 +710,10 @@ const MiraChatBot: React.FC = () => {
 		setMessages((prev) => {
 			const lastMessage = prev[prev.length - 1];
 			if (lastMessage?.sender === "ai" && lastMessage.isStreaming) {
-				return [...prev.slice(0, -1), { ...lastMessage, message: message }];
+				return [
+					...prev.slice(0, -1),
+					{ ...lastMessage, message: message },
+				];
 			}
 
 			return [
@@ -809,7 +832,9 @@ const MiraChatBot: React.FC = () => {
 	// Custom components for markdown rendering
 	const components: Partial<Components> = {
 		h1: ({ children }) => (
-			<h1 className="text-2xl font-bold mb-4 mt-6 text-primary">{children}</h1>
+			<h1 className="text-2xl font-bold mb-4 mt-6 text-primary">
+				{children}
+			</h1>
 		),
 		h2: ({ children }) => (
 			<h2 className="text-xl font-semibold mb-3 mt-5 text-primary">
@@ -825,7 +850,9 @@ const MiraChatBot: React.FC = () => {
 			<p className="mb-4 text-primary leading-relaxed">{children}</p>
 		),
 		ol: ({ children }) => (
-			<ol className="space-y-2 text-primary font-semibold ">{children}</ol>
+			<ol className="space-y-2 text-primary font-semibold ">
+				{children}
+			</ol>
 		),
 		li: ({ children }) => (
 			<ul className="list-disc pl-6 mb-4 space-y-2 text-primary font-semibold ">
@@ -843,181 +870,219 @@ const MiraChatBot: React.FC = () => {
 	};
 
 	return (
-		<div className="flex flex-col space-y-6 p-4 w-full h-full md:h-[90vh] rounded-lg shadow-lg bg-muted/50">
-			{!chatData ? (
-				<div className="flex items-center justify-center w-full h-full">
-					<Spinner />
-				</div>
-			) : chatData && messages.length === 0 ? (
-				<>
-					<div className="flex flex-col items-center justify-center w-full h-full">
-						<motion.div
-							className="w-full max-w-[300px] aspect-w-1 aspect-h-1"
-							initial={{ opacity: 0, scale: 0.8 }}
-							animate={{ opacity: 1, scale: 1 }}
-							transition={{ duration: 0.25 }}
-						>
-							<img
-								src={MiraAvatar}
-								alt="Avatar"
-								className="w-full h-full object-cover"
-							/>
-						</motion.div>
-						<motion.h1
-							className="text-2xl font-semibold mt-4"
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ delay: 0.25 }}
-						>
-							Need a Security Checkup?
-						</motion.h1>
+		<div className="flex justify-center">
+			<div className="flex flex-col space-y-6 w-3/4 h-full md:h-[90vh] rounded-lg p-4">
+				{!chatData ? (
+					<div className="flex items-center justify-center w-full h-full">
+						<Spinner />
 					</div>
-				</>
-			) : (
-				<ScrollArea ref={scrollAreaRef} className="flex-1 p-4  w-full">
-					{messages.map((message) => {
-						const isPendingAction =
-							pendingAction === message.id ||
-							pendingAction === message.humanInTheLoopId;
-						const isAISender = message.sender === "ai";
+				) : chatData && messages.length === 0 ? (
+					<>
+						<div className="flex flex-col items-center justify-center w-full h-2/4">
+							<motion.div
+								className="w-full max-w-2/4 aspect-w-1 aspect-h-1 justify-center mt-20"
+								initial={{ opacity: 0, scale: 0.8 }}
+								animate={{ opacity: 1, scale: 1 }}
+								transition={{ duration: 0.25 }}
+							>
+								<img
+									src={MiraAvatar}
+									alt="Avatar"
+									className="flex w-auto h-auto object-cover justify-self-center"
+								/>
+							</motion.div>
+							<motion.h1
+								className="text-2xl font-semibold justify-center text-primary"
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ delay: 0.25 }}
+							>
+								Need a Security Checkup?
+							</motion.h1>
+						</div>
+					</>
+				) : (
+					<ScrollArea
+						ref={scrollAreaRef}
+						className="flex-1 p-4  w-full"
+					>
+						{messages.map((message) => {
+							const isPendingAction =
+								pendingAction === message.id ||
+								pendingAction === message.humanInTheLoopId;
+							const isAISender = message.sender === "ai";
 
-						if (isPendingAction && isAISender) {
-							return actionType === "approval" ? (
+							if (isPendingAction && isAISender) {
+								return actionType === "approval" ? (
+									<motion.div
+										key={message.id}
+										initial={{ opacity: 0, y: 50 }}
+										animate={{ opacity: 1, y: 0 }}
+										exit={{ opacity: 0, y: -50 }}
+										transition={{ duration: 0.3 }}
+									>
+										<HumanInTheLoopApproval
+											key={message.id}
+											message={
+												humanInTheLoopMessage || ""
+											}
+											onCancel={cancelAction}
+											confirmType={confirmType || ""}
+											onConfirm={yesClicked}
+										/>
+									</motion.div>
+								) : (
+									<motion.div
+										key={message.id}
+										initial={{ opacity: 0, y: 50 }}
+										animate={{ opacity: 1, y: 0 }}
+										exit={{ opacity: 0, y: -50 }}
+										transition={{ duration: 0.3 }}
+									>
+										<HumanInTheLoopOptions
+											key={message.id}
+											setShowInfo={setShowInfo}
+											question={
+												humanInTheLoopMessage || ""
+											}
+											actionPrompts={actionPrompts || []}
+											onConfirm={confirmAction}
+										/>
+									</motion.div>
+								);
+							}
+
+							const isUser = message.sender === "user";
+							const messageClasses = `inline-block p-2 rounded-lg ${
+								isUser
+									? "bg-primary text-primary-foreground dark:bg-primary-900"
+									: "bg-muted dark:bg-muted/40 text-foreground"
+							}`;
+							const containerClasses = `mb-4 ${isUser ? "text-right" : "text-left"}`;
+
+							return (
 								<motion.div
 									key={message.id}
-									initial={{ opacity: 0, y: 50 }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: -50 }}
-									transition={{ duration: 0.3 }}
+									// initial={{ opacity: 0, y: 50 }}
+									className={containerClasses}
+									initial={{ opacity: 0 }}
+									// exit={{ opacity: 0, y: -50 }}
+									animate={{ opacity: 1 }}
 								>
-									<HumanInTheLoopApproval
-										key={message.id}
-										message={humanInTheLoopMessage || ""}
-										onCancel={cancelAction}
-										confirmType={confirmType || ""}
-										onConfirm={yesClicked}
-									/>
-								</motion.div>
-							) : (
-								<motion.div
-									key={message.id}
-									initial={{ opacity: 0, y: 50 }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: -50 }}
-									transition={{ duration: 0.3 }}
-								>
-									<HumanInTheLoopOptions
-										key={message.id}
-										setShowInfo={setShowInfo}
-										question={humanInTheLoopMessage || ""}
-										actionPrompts={actionPrompts || []}
-										onConfirm={confirmAction}
-									/>
+									<span className={`${messageClasses}`}>
+										{isUser ? (
+											message.message
+										) : (
+											<ReactMarkdown
+												components={components}
+											>
+												{message.message}
+											</ReactMarkdown>
+										)}
+									</span>
 								</motion.div>
 							);
-						}
+						})}
 
-						const isUser = message.sender === "user";
-						const messageClasses = `inline-block p-2 rounded-lg ${
-							isUser
-								? "bg-primary text-primary-foreground dark:bg-primary-900"
-								: "bg-muted dark:bg-muted/40 text-foreground"
-						}`;
-						const containerClasses = `mb-4 ${isUser ? "text-right" : "text-left"}`;
-
-						return (
+						{isLoading && (
 							<motion.div
-								key={message.id}
-								// initial={{ opacity: 0, y: 50 }}
-								className={containerClasses}
-								initial={{ opacity: 0 }}
-								// exit={{ opacity: 0, y: -50 }}
-								animate={{ opacity: 1 }}
+								initial={{ opacity: 0, y: 50 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: -50 }}
+								transition={{ duration: 0.3 }}
+								className="flex items-center space-x-2 text-gray-500"
 							>
-								<span className={`${messageClasses}`}>
-									{isUser ? (
-										message.message
-									) : (
-										<ReactMarkdown components={components}>
-											{message.message}
-										</ReactMarkdown>
-									)}
-								</span>
+								<Spinner />
+								<span>Mira is thinking...</span>
 							</motion.div>
-						);
-					})}
+						)}
+					</ScrollArea>
+				)}
+				{isScanLoading && (
+					<div className="space-y-2">
+						<Progress value={progress} className="w-full" />
 
-					{isLoading && (
-						<motion.div
-							initial={{ opacity: 0, y: 50 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -50 }}
+						<p className="text-sm text-center text-gray-500">
+							{progress === 100
+								? "Scanning completed... Please wait"
+								: `Scan in progress: ${progress.toFixed(0)}%`}
+						</p>
+					</div>
+				)}
+				<div className="flex justify-center">
+					<motion.div
+						initial={{ width: "60%" }}
+						animate={{ width: input ? "70%" : "60%" }}
+						transition={{ duration: 0.3 }}
+						className="flex items-center rounded-full px-4 py-2 relativ bg-secondary"
+					>
+						{/* Textarea */}
+						<textarea
+							ref={inputRef}
+							value={input}
+							onChange={(
+								e: React.ChangeEvent<HTMLTextAreaElement>,
+							) => setInput(e.target.value)}
+							onKeyPress={(
+								e: React.KeyboardEvent<HTMLTextAreaElement>,
+							) => {
+								if (e.key === "Enter" && !e.shiftKey) {
+									e.preventDefault();
+									handleSend();
+								}
+							}}
+							className="flex-1 resize-none text-sm bg-secondary border-none shadow-none rounded-full focus-visible:outline-none focus:ring-0 h-15 p-2 px-4 text-gray"
+							placeholder="Ask Mira..."
+							disabled={isLoading || !!pendingAction}
+						/>
+
+						{/* Animated Send Button */}
+						<motion.button
+							initial={{ opacity: 0, x: 20 }}
+							animate={{
+								opacity: input ? 1 : 0,
+								x: input ? 0 : 20,
+							}}
 							transition={{ duration: 0.3 }}
-							className="flex items-center space-x-2 text-gray-500"
+							type="button"
+							onClick={handleSend}
+							disabled={isLoading || !!pendingAction || streaming}
+							className="ml-2 text-gray hover:text-primary bg-secondary p-4 rounded-full"
 						>
-							<Spinner />
-							<span>Mira is thinking...</span>
-						</motion.div>
-					)}
-				</ScrollArea>
-			)}
-			{isScanLoading && (
-				<div className="space-y-2">
-					<Progress value={progress} className="w-full" />
-
-					<p className="text-sm text-center text-gray-500">
-						{progress === 100
-							? "Scanning completed... Please wait"
-							: `Scan in progress: ${progress.toFixed(0)}%`}
-					</p>
+							<SendIcon size={25} />
+						</motion.button>
+					</motion.div>
 				</div>
-			)}
-			<div className="flex items-center w-full rounded-lg px-4 py-2 shadow-sm border">
-				<img src={MiraLogo} alt="Logo" className="w-7 h-7 mr-2" />
-				<Textarea
-					ref={inputRef}
-					value={input}
-					onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-						setInput(e.target.value)
-					}
-					onKeyPress={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-						if (e.key === "Enter" && !e.shiftKey) {
-							e.preventDefault();
-							handleSend();
-						}
-					}}
-					className="flex-1"
-					placeholder="Type your message here..."
-					disabled={isLoading || pendingAction}
-				/>
-				<ChatActions
-					handleSend={handleSend}
-					disabled={isLoading || pendingAction || streaming}
+
+				<Dialog open={showInfo} onOpenChange={setShowInfo}>
+					<DialogContent className="dialog-content">
+						<DialogHeader>
+							<DialogTitle className="dialog-title">
+								Information
+							</DialogTitle>
+						</DialogHeader>
+						<div className="dialog-body">
+							{info.map((item) => (
+								<div key={item.id} className="info-item">
+									<h2 className="text-lg font-semibold">
+										{item.name}
+									</h2>
+									<p className="info-description">
+										{item.description ||
+											"No description available."}
+									</p>
+								</div>
+							))}
+						</div>
+					</DialogContent>
+				</Dialog>
+
+				<CreateFolderDialog
+					open={isCreateDialogOpen}
+					onOpenChange={setIsCreateDialogOpen}
+					onCreateFolder={handleCreateFolder}
 				/>
 			</div>
-			<Dialog open={showInfo} onOpenChange={setShowInfo}>
-				<DialogContent className="dialog-content">
-					<DialogHeader>
-						<DialogTitle className="dialog-title">Information</DialogTitle>
-					</DialogHeader>
-					<div className="dialog-body">
-						{info.map((item) => (
-							<div key={item.id} className="info-item">
-								<h2 className="text-lg font-semibold">{item.name}</h2>
-								<p className="info-description">
-									{item.description || "No description available."}
-								</p>
-							</div>
-						))}
-					</div>
-				</DialogContent>
-			</Dialog>
-
-			<CreateFolderDialog
-				open={isCreateDialogOpen}
-				onOpenChange={setIsCreateDialogOpen}
-				onCreateFolder={handleCreateFolder}
-			/>
 		</div>
 	);
 };

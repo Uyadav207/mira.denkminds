@@ -66,11 +66,13 @@ const Url: React.FC = () => {
 
 			{/* Information Section */}
 			<div className="w-auto border bg-sidebar justify-between flex rounded-lg mb-5 p-5">
-				<div className="w-2/4">
-					<h1 className="font-semibold text-xl mb-3">Information</h1>
+				<div className="w-2/4 p-3">
+					<h1 className="font-semibold text-xl mb-3 text-[#7156DB]">
+						Information
+					</h1>
 
 					<div
-						className="flex items-center mr-3 text-wrap text-justify"
+						className="flex items-center mr-3 text-wrap text-justify text-gray-500"
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 						dangerouslySetInnerHTML={{
 							__html: vulnerabilityInfos[0].description,
@@ -80,31 +82,39 @@ const Url: React.FC = () => {
 
 				{/* Vulnerability Assessment Information */}
 				<div className="w-2/4 p-5 border bg-popover rounded-lg">
-					<h1 className="font-semibold text-lg mb-4">
-						Vulnerability Assessment Information
+					<h1 className="font-semibold text-lg mb-4 text-[#7156DB]">
+						Asssesment Information
 					</h1>
 					<table className="table-auto border-collapse w-full">
 						<tbody>
-							<tr className="border-b">
-								<td className="px-4 py-2">Confidence</td>
+							<tr className="border-b border-dashed">
+								<td className="px-4 py-2 text-gray-500">
+									Confidence
+								</td>
 								<td className="px-4 py-2 text-center rounded-md">
 									{vulnerabilityInfos[0]?.confidence}
 								</td>
 							</tr>
-							<tr className="border-b">
-								<td className="px-4 py-2">CweId</td>
+							<tr className="border-b border-dashed">
+								<td className="px-4 py-2 text-gray-500">
+									CweId
+								</td>
 								<td className="px-4 py-2 text-center rounded-md">
 									{vulnerabilityInfos[0]?.cweId}
 								</td>
 							</tr>
-							<tr className="border-b">
-								<td className="px-4 py-2 mt-2">Risk Level</td>
+							<tr className="border-b border-dashed">
+								<td className="px-4 py-2 mt-2 text-gray-500">
+									Risk Level
+								</td>
 								<td className="px-4 py-2 text-center rounded-md">
 									{vulnerabilityInfos[0]?.riskLevel}
 								</td>
 							</tr>
 							<tr>
-								<td className="px-4 py-2">Identified At</td>
+								<td className="px-4 py-2 text-gray-500">
+									Identified At
+								</td>
 								<td className="px-4 py-2 text-center rounded-md">
 									{new Date(
 										vulnerabilityInfos[0]?._creationTime,
