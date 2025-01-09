@@ -141,7 +141,9 @@ const Url: React.FC = () => {
 								{affectedUri.method}
 							</Badge>
 							<span className="font-wrap w-auto">
-								/{decodeURI(affectedUri.uri).match(REGEX)?.[1] || ""}
+								/
+								{decodeURI(affectedUri.uri).match(REGEX)?.[1] ||
+									""}
 							</span>
 						</div>
 					),
