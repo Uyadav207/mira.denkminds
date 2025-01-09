@@ -100,7 +100,12 @@ if (fetchedSummary) {
           {chatSummary ? (
             <>
               <h2 className="text-lg font-semibold mb-4">Title: {chatSummary.title}</h2>
-              <p className="text-sm mb-4">Content: {chatSummary.content}</p>
+              {/* Split content by newlines and map over it */}
+      {chatSummary.content.split('\n').map((paragraph, index) => (
+        <p key={index} className="text-sm mb-4">
+          {paragraph.trim()} {/* Trim to avoid any extra whitespace */}
+        </p>
+      ))}
               <p className="text-xs text-gray-500">
                 Created At: {new Date(chatSummary.createdAt).toLocaleString()}
               </p>

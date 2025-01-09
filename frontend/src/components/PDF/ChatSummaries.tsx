@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api"; // Adjust this import based on your project structure
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Id } from "../../convex/_generated/dataModel";
 
 type Summary = {
  _id: Id<"summaries">;
   title: string;
-  content: string;
+  // content: string;
   createdAt: string;
 };
 
 export function ChatSummaries() {
   const [summaries, setSummaries] = useState<Summary[]>([]);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // Fetch summaries using Convex query
   const fetchedSummaries = useQuery(api.summaries.getSummariesByUserId, {
@@ -33,9 +33,9 @@ export function ChatSummaries() {
       }
     
       
-    //   const handleCardClick = (chatId: string) => {
-    //     navigate(`/chat/${chatId}`); // Navigate to ChatTemplate with chatId
-    //   };
+      const handleCardClick = (chatId: string) => {
+        navigate(`/chat/${chatId}`); // Navigate to ChatTemplate with chatId
+      };
 
   return (
     <div className="p-8">
@@ -46,12 +46,12 @@ export function ChatSummaries() {
           summaries.map((summary) => (
             <div
               key={summary._id}
-            //   onClick={() => handleCardClick(summary._id)}
+              onClick={() => handleCardClick(summary._id)}
               className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-4 border border-gray-300 rounded-lg shadow-md"
             >
               <div className="flex flex-col">
                 <h2 className="text-xl font-semibold mb-2">{summary.title}</h2>
-                <p className="text-sm mb-2">{summary.content}</p>
+                {/* <p className="text-sm mb-2">{summary.content}</p> */}
                 <p className="text-xs text-gray-500">
                   Created At: {new Date(summary.createdAt).toLocaleString()}
                 </p>

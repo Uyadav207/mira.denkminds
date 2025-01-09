@@ -50,12 +50,13 @@ const App = () => {
 							element={<AuthCallback />}
 						/>
 						 
-						 <Route path="/printtemplate" element={<PrintableTemplate />} />
-						 <Route path="/chat/:_id" element={<ChatTemplate />} />
+						 
 						
 						 {/* <Route path="/template/:templateId" element={<TemplateContentPage />} /> */}
 						
 						<Route element={<Layout />}>
+						<Route path="/printtemplate" element={<PrintableTemplate />} />
+						 <Route path="/chat/:_id" element={<ChatTemplate />} />
 							<Route path="/chatbot/:chatId?" element={<Chatbot />} />
 							<Route path="/settings" element={<Settings />} />
 							<Route path="/recent-scan" element={<RecentScans />} />
