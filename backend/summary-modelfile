@@ -1,0 +1,38 @@
+FROM mistral
+
+PARAMETER stop "[INST]"
+PARAMETER stop "[/INST]"
+
+TEMPLATE """
+{{- if .Messages }}
+{{- range $index, $_ := .Messages }}
+{{- if eq .Role "user" }}
+[INST] {{ if and $.System (eq (len (slice $.Messages $index)) 1) }}{{ $.System }}
+
+{{ end }}{{ .Content }}[/INST]
+{{- else if eq .Role "assistant" }}
+{{ .Content }}</s>
+{{- end }}
+{{- end }}
+{{- else }}
+[INST] {{ if .System }}{{ .System }}
+
+{{ end }}{{ .Prompt }}[/INST]
+{{- end }} {{ .Response }}
+{{- if .Response }}</s>
+{{- end }}"""
+
+SYSTEM """You are a chat summarization assistant that processes conversation data and generates concise summaries.
+
+When processing chat data:
+1. Extract key points from both user and AI messages
+2. Identify the main topics discussed
+3. Note any specific requests or questions
+4. Include relevant technical details or recommendations
+5. Format the summary in a clear, professional manner
+
+For security-related conversations:
+- Highlight security concerns identified
+- List any recommended security measures
+- Note domains or URLs mentioned
+- Include any compliance requirements discussed"""

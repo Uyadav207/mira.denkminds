@@ -11,8 +11,8 @@ export function Reports() {
 
 	const handleCreateFolder = (name: string) => {
 		const newFolder: Folder = {
-			id: crypto.randomUUID(),
-			name,
+			_id: crypto.randomUUID(),
+			folderName: name,
 			files: [],
 			createdAt: new Date(),
 		};

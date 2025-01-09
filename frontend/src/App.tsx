@@ -18,6 +18,7 @@ import Urls from "./pages/scans/VulnerableUrls/Urls";
 import { PrintableTemplate } from "./components/PDF/PrintableTemplate";
 import { FolderView } from "./components/folder/FolderView";
 import { ChatTemplate } from "./components/PDF/Chattemplate";
+import { ChatSummaries } from "./components/PDF/ChatSummaries";
 // import TemplateContentPage from "./components/PDF/TemplateContentPage";
 
 // const mockFolder = {
@@ -50,20 +51,14 @@ const App = () => {
 						/>
 						 
 						 <Route path="/printtemplate" element={<PrintableTemplate />} />
-						 <Route path="/ChatTemplate" element={<ChatTemplate />} />
+						 <Route path="/chat/:_id" element={<ChatTemplate />} />
 						
 						 {/* <Route path="/template/:templateId" element={<TemplateContentPage />} /> */}
 						
 						<Route element={<Layout />}>
-							<Route
-								path="/chatbot/:chatId?"
-								element={<Chatbot />}
-							/>
+							<Route path="/chatbot/:chatId?" element={<Chatbot />} />
 							<Route path="/settings" element={<Settings />} />
-							<Route
-								path="/recent-scan"
-								element={<RecentScans />}
-							/>
+							<Route path="/recent-scan" element={<RecentScans />} />
 							<Route
 								path="/recent-scan/:scanId/"
 								element={<Vulnerabilities />}
@@ -74,10 +69,8 @@ const App = () => {
 							/>
 							<Route path="/api-scan" element={<ApiScans />} />
 							<Route path="/reports" element={<Reports />} />
-							<Route
-								path="/accounts"
-								element={<ProfileSettings />}
-							/>
+							<Route path="/accounts" element={<ProfileSettings />} />
+							<Route path="chat-summaries" element={<ChatSummaries />} />
 						</Route>
 					</Routes>
 				</Router>

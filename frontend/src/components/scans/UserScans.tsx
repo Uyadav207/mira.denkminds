@@ -1,65 +1,67 @@
+import { useMutation, useQuery } from "convex/react";
 import { useEffect, useState } from "react";
+import { api } from "../../convex/_generated/api";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "../ui/badge";
+import { Card } from "../ui/card";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import useStore from "../../store/store";
+import { EllipsisVertical, NutOffIcon, Trash2 } from "lucide-react";
+import calculateTimeDifference from "../../utils/timeCalc";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { showSuccessToast } from "../toaster";
 
-type Scan = {
+type UserScan = {
+	_id: string;
 	targetUrl: string;
 	status: "yellow" | "red";
-	CompilanceStandard: string;
+	complianceStandard: string;
 	scanedAt: string;
-	totalVulnerabilities?: number;
-	scanId: string;
+	totalIssues?: number;
+	scanType: string;
+	_creationTime: string;
 };
 
 const UserScans: React.FC = () => {
-	const navigate = useNavigate();
-	const [scans, setScans] = useState<Scan[]>([]);
+	const user = useStore((state) => state.user);
+	const [scans, setScans] = useState<UserScan[]>([]);
 	const [loading, setLoading] = useState(true);
+	const navigate = useNavigate();
+	const deleteScanMutation = useMutation(api.scans.deleteScanAndRelatedData);
 
-	// Mimic API call on component mount
+	const deleteScan = async (scanId: string, e: React.MouseEvent) => {
+		e.stopPropagation();
+		const responseAfterDelete = await deleteScanMutation({ scanId });
+		if (!responseAfterDelete) {
+			return;
+		}
+		showSuccessToast(responseAfterDelete.message);
+		const updatedScans = scans.filter((scan) => scan._id !== scanId);
+		setScans(updatedScans);
+	};
+
+	if (!user) {
+		return null;
+	}
+	const { id } = user;
+
+	const recentScans = useQuery(api.scans.fetchScansByUserIdWithoutRisks, {
+		userId: String(id),
+	});
+
 	useEffect(() => {
-		const fetchScans = async () => {
-			setLoading(true);
+		if (recentScans) {
+			setScans(recentScans);
+			setLoading(false);
+		}
+	}, [recentScans]);
 
-			// Simulate an API call with mock data
-			const mockScans: Scan[] = [
-				{
-					scanId: "1",
-					targetUrl: "https://denkminds.vercel.app",
-					status: "yellow",
-					CompilanceStandard: "GDPR",
-					scanedAt: "a month ago",
-					totalVulnerabilities: 100,
-				},
-				{
-					scanId: "2",
-					targetUrl: "https://vulnerable.zerothreat.ai",
-					status: "red",
-					CompilanceStandard: "NIST",
-					scanedAt: "8 months ago",
-					totalVulnerabilities: 33,
-				},
-				{
-					scanId: "3",
-					targetUrl: "https://aspdotnet.vulnerable.zerothreat.ai",
-					status: "red",
-					CompilanceStandard: "ISO",
-					scanedAt: "8 months ago",
-					totalVulnerabilities: 22,
-				},
-			];
-
-			// Simulate API delay
-			setTimeout(() => {
-				setScans(mockScans);
-				setLoading(false);
-			}, 1500);
-		};
-
-		fetchScans();
-	}, []);
-
-	if (loading) {
+	if (loading && !scans.length) {
 		return (
 			<div className="rounded-lg border p-6">
 				<div className="flex items-center justify-between space-x-4 mb-4">
@@ -87,20 +89,41 @@ const UserScans: React.FC = () => {
 		);
 	}
 
+	if (!loading && !scans.length) {
+		return (
+			<Card className="w-full max-w-md mx-auto mt-8 p-8 my-auto shadow-none border-2 border-secondary">
+				<Alert variant="default" className="border-none">
+					<div className="flex px--5">
+						<NutOffIcon className="w-10 h-10 mr-5" />
+						<AlertTitle className="text-3xl font-semibold mb-5">
+							No Scans Found
+						</AlertTitle>
+					</div>
+					<AlertDescription className="text-muted-foreground text-base">
+						We couldn't find any scans in your history. Ask Mira to
+						scan a website for you, and come back later. Ciao! 👋
+					</AlertDescription>
+				</Alert>
+			</Card>
+		);
+	}
+
 	return (
-		<div className="rounded-lg border p-6">
-			<h2 className="text-xl font-semibold mb-4 p-4">Recent Scans</h2>
-			{scans.map((scan) => (
+		<div className="rounded-lg border p-6 bg-sidebar">
+			<h2 className="text-xl font-semibold mb-4 p-4 flex">
+				Recent Scans ({scans.length})
+			</h2>
+			{scans.map((scan: UserScan) => (
 				// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 				<div
-					key={scan.scanId}
-					onClick={() => navigate(`/recent-scan/${scan.scanId}`)}
+					key={scan._id}
+					onClick={() => navigate(`/recent-scan/${scan._id}`)}
 					className="flex items-center justify-between border-b pb-4 pt-4 px-3 rounded-sm last:border-none hover:bg-secondary-combi cursor-pointer"
 				>
 					<div className="flex items-center space-x-3">
 						<span
 							className={`w-4 h-4 rounded-full ${
-								scan.status === "yellow"
+								scan.complianceStandard === "yellow"
 									? "bg-yellow-500"
 									: "bg-red-500"
 							}`}
@@ -109,16 +132,44 @@ const UserScans: React.FC = () => {
 							{scan.targetUrl}
 						</span>
 						<Badge variant="secondary">
-							{scan.CompilanceStandard}
+							{scan.complianceStandard}
+						</Badge>
+						<Badge
+							className={`${
+								scan.scanType === "passive"
+									? "bg-yellow-500"
+									: "bg-green-500"
+							}`}
+						>
+							{scan.scanType}
 						</Badge>
 					</div>
 					<div className="flex justify-evenly gap-4">
-						<Badge variant="destructive">
-							{scan.totalVulnerabilities}
-						</Badge>
+						<Badge variant="destructive">{scan.totalIssues}</Badge>
 						<span className="text-sm text-gray-400">
-							{scan.scanedAt}
+							{calculateTimeDifference({
+								_creationTime: scan._creationTime,
+							})}
 						</span>
+						<DropdownMenu>
+							<DropdownMenuTrigger>
+								<EllipsisVertical className="h-5 w-5 text-sidebar-foreground" />
+							</DropdownMenuTrigger>
+							<DropdownMenuContent
+								align="end"
+								className="w-48 bg-sidebar shadow-lg rounded-md py-1"
+							>
+								<DropdownMenuItem
+									onClick={(e: React.MouseEvent) => {
+										deleteScan(scan._id, e);
+									}}
+									className="flex items-center space-x-2 text-red-600"
+								>
+									<Trash2 className="h-4 w-4" />
+									<span>Delete</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
 					</div>
 				</div>
 			))}

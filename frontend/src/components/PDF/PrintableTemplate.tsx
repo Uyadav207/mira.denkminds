@@ -2,16 +2,21 @@ import { useRef, useState, useEffect } from "react";
 import { useLocation,useNavigate } from "react-router-dom";
 import { Button } from "@components/ui/button";
 import { useReactToPrint } from "react-to-print";
-import { Vulnerability } from "../scans/Vulnerability";
+// import { Vulnerability } from "../scans/Vulnerability";
 import MiraLogo from "../../assets/MiraLogo.svg";
 import useStore from "../../store/store"; 
 import "../PDF/printtemplate.css";
+import { useQuery, useMutation } from "convex/react";
+
+import { api } from "../../convex/_generated/api";
+import Vulnerability from "../scans/Vulnerability";
 
 
 export function PrintableTemplate() {
   const location = useLocation();
   const templateRef = useRef<HTMLDivElement>(null);
   const [templateId, setTemplateId] = useState<string | null>(null);
+  const [scanId, setScanId] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [isPrinting, setIsPrinting] = useState(false);
   const navigate = useNavigate();
@@ -24,7 +29,9 @@ const user = userData.user as any;
     // Extract the template ID from the query string
     const params = new URLSearchParams(location.search);
     const template = params.get("template");
+    const scan = params.get("scanId"); // Extract scanId from query string
     setTemplateId(template);
+    setScanId(scan);
   }, [location.search]);
 
   const handlePrint = useReactToPrint({
@@ -36,7 +43,7 @@ const user = userData.user as any;
     },
     onAfterPrint: () => {
       setIsPrinting(false);
-      setSelectedTemplate(null); // Reset after printing
+      // setSelectedTemplate(null); // Reset after printing
     },
   });
 
@@ -104,14 +111,15 @@ the security posture of the web application.  </li>
       {/* Template Content (Vulnerability Data) */}
       <div className="diagram avoid-break">
         {templateId ? (
-          <Vulnerability templateId={templateId} />
+        //   <Vulnerability templateId={templateId} />
+        <p>hii</p>
         ) : (
           <p>Loading template data...</p>
         )}
       </div>
       {/* Footer Section */}
     <div className="print-footer">
-      <p className="text-sm">© 2025 denkMinds. All rights reserved.</p>
+      <p className="text-sm">DenkMinds</p>
      
     </div>
     </div>

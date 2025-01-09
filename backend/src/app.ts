@@ -30,7 +30,7 @@ app.route("/users", userRoutes);
 app.route("/reports", reportRoutes);
 app.route("/zap", zapRoutes);
 
-const OLLAMA_HOST = "https://a1cf-34-141-214-142.ngrok-free.app"; // Change this to your Ollama API URL
+const OLLAMA_HOST = "https://1471-35-236-242-36.ngrok-free.app"; // Change this to your Ollama API URL
 // app.route("/chat", chatRoute);
 app.route("/reports", reportRoutes);
 

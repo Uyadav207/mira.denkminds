@@ -24,15 +24,15 @@ export function FolderGrid({
 				<Button onClick={onCreateFolder}>Create Folder</Button>
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-				{folders.map((folder) => (
+				{folders.map((folder, index) => (
 					<Button
-						key={folder.id}
+						key={`${folder._id}-${index}`}
 						variant="outline"
 						className="h-32 w-full flex flex-col items-center justify-center gap-2"
-						onClick={() => onFolderClick(folder.id)}
+						onClick={() => onFolderClick(folder._id)}
 					>
 						<FolderIcon className="h-8 w-8" />
-						<span>{folder.name}</span>
+						<span>{folder.folderName}</span>
 						<span className="text-xs text-muted-foreground">
 							{folder.files.length} files
 						</span>

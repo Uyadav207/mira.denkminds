@@ -4,10 +4,22 @@ import { useReactToPrint } from "react-to-print";
 import MiraLogo from "../../assets/MiraLogo.svg";
 import useStore from "../../store/store"; 
 import "../PDF/printtemplate.css";
+import { useQuery, useMutation } from "convex/react";
+import { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../convex/_generated/api";
+import { useParams } from "react-router-dom";
+
+type Summary = {
+    _id: Id<"summaries">;
+    title: string;
+    content: string;
+    createdAt: string;
+  };
 
 export function ChatTemplate() {
+    const { _id } = useParams<{ _id: string }>();
   const templateRef = useRef<HTMLDivElement>(null);
-  const [chatSummary, setChatSummary] = useState<string[]>([]); // Example chat messages
+  const [chatSummary, setChatSummary] = useState<Summary | null>(null); // Example chat messages
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [isPrinting, setIsPrinting] = useState(false);
 
@@ -15,25 +27,41 @@ export function ChatTemplate() {
   const userData = useStore();
   const user = userData.user as any;
 
+  // Fetch summaries using the Convex query
+  const fetchedSummary = useQuery(api.summaries.getSummariesByUserId, {
+    userId: "20", // Replace with the correct user ID
+  })as Summary[];
+//   console.log("Summaries fetched:", summaries)
+
   useEffect(() => {
     
     // Fetch or generate chat summary
-    setChatSummary([
-      "1.Excecutive Summary:Another critical area that requires immediate attention is the absence of Content Security Policy (CSP) implementation.",
-      "2. Technical Summary: The application is vulnerable to Cross-Site Scripting (XSS) attacks due to the absence of CSP headers.",
-    ]);
-  }, []);
+//     setChatSummary([
+//       "1.Excecutive Summary:Another critical area that requires immediate attention is the absence of Content Security Policy (CSP) implementation.",
+//       "2. Technical Summary: The application is vulnerable to Cross-Site Scripting (XSS) attacks due to the absence of CSP headers.",
+//     ]);
+//   }, []);
+
+// Update chatSummary state when summaries data is fetched
+
+if (fetchedSummary) {
+    const foundSummary = fetchedSummary.find(
+        (summary) => summary._id === _id
+    );
+    setChatSummary(foundSummary || null);
+  }
+}, [fetchedSummary,_id]);
 
   const handlePrint = useReactToPrint({
     contentRef: templateRef,
-    documentTitle: selectedTemplate || "Template",
+    documentTitle: chatSummary?.title || "Chat Summary",
     onBeforePrint: () => {
       setIsPrinting(true);
       return Promise.resolve();
     },
     onAfterPrint: () => {
       setIsPrinting(false);
-      setSelectedTemplate(null); // Reset after printing
+    //   setSelectedTemplate(null); // Reset after printing
     },
   });
 
@@ -69,12 +97,19 @@ export function ChatTemplate() {
         {/* Chat Summary Section */}
         <div className="mt-8 print-content">
           <h2 className="text-lg font-semibold mb-4">Conversation:</h2>
-          <div>
-            {chatSummary.map((message, index) => (
-              <p key={index} className="mb-2 text-sm">{message}</p>
-            ))}
+          {chatSummary ? (
+            <>
+              <h2 className="text-lg font-semibold mb-4">Title: {chatSummary.title}</h2>
+              <p className="text-sm mb-4">Content: {chatSummary.content}</p>
+              <p className="text-xs text-gray-500">
+                Created At: {new Date(chatSummary.createdAt).toLocaleString()}
+              </p>
+            </>
+          ) : (
+            <p>Loading chat summary...</p>
+          )}
           </div>
-        </div>
+        
 
         {/* Footer */}
         <div className="print-footer">

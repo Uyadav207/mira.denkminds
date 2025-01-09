@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@components/ui
 import { useReactToPrint } from "react-to-print";
 import type { Folder } from "../../types/reports";
 import { TemplateCard } from "../PDF/templatecard";
-import { Vulnerability } from "../scans/Vulnerability";
+// import { Vulnerability } from "../scans/Vulnerability";
 import { useParams, useNavigate } from "react-router-dom";
 
 interface FolderViewProps {
@@ -53,7 +53,7 @@ export function FolderView({ folder, onBack }: FolderViewProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">{folder.name}</h2>
+        <h2 className="text-2xl font-bold">{folder.folderName}</h2>
         <Button variant="outline" onClick={onBack}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Folders
