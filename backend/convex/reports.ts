@@ -40,8 +40,9 @@ export const addReport = mutation({
 		folderId: v.id("reportFolders"), // ID of the report folder
 		fileName: v.string(),
 		fileUrl: v.string(),
+		markdownContent: v.any(),
 	},
-	handler: async (ctx, { folderId, fileName, fileUrl }) => {
+	handler: async (ctx, { folderId, fileName, fileUrl, markdownContent }) => {
 		const now = Date.now();
 
 		// Insert a new report into the reports table
@@ -49,6 +50,7 @@ export const addReport = mutation({
 			folderId,
 			fileName,
 			fileUrl,
+			markdownContent, // Empty content for now
 			createdAt: now,
 		});
 
@@ -58,15 +60,31 @@ export const addReport = mutation({
 
 export const getReportsByFolder = query({
 	args: {
-		folderId: v.id("reportFolders"),
+		folderId: v.optional(v.id("reportFolders")),
 	},
 	handler: async (ctx, { folderId }) => {
 		// Query reports table by folderId
-		const reports = await ctx.db
-			.query("reports")
-			.withIndex("by_folderId", (q) => q.eq("folderId", folderId))
-			.collect();
+		if (folderId) {
+			const reports = await ctx.db
+				.query("reports")
+				.withIndex("by_folderId", (q) => q.eq("folderId", folderId))
+				.collect();
 
-		return reports;
+			return reports;
+		}
+		return [];
+	},
+});
+
+export const getFileById = query({
+	args: {
+		fileId: v.id("reports"),
+	},
+	handler: async (ctx, { fileId }) => {
+		const file = await ctx.db.get(fileId);
+		if (!file) {
+			return null;
+		}
+		return file;
 	},
 });
