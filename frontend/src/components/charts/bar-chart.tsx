@@ -1,105 +1,105 @@
-import type React from "react";
+import { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import { useParams } from "react-router-dom";
+import { categorizeData } from "../../utils/url-categories";
 import type { ApexOptions } from "apexcharts";
 
-const StackedColumnChart: React.FC = () => {
+type CategorizedData = {
+	[category: string]: {
+		[riskLevel: string]: { url: string; riskLevel: string }[];
+	};
+};
+
+const ChartComponent: React.FC = () => {
+	const { scanId } = useParams<{ scanId: string }>();
+	const [categorizedData, setCategorizedData] =
+		useState<CategorizedData | null>(null);
+	const [loading, setLoading] = useState(true);
+
+	const listurls = useQuery(api.vulnerabilityInfo.fetchUrlsAndRiskByScanId, {
+		scanId,
+	});
+
+	useEffect(() => {
+		if (listurls) {
+			const categorized = categorizeData(listurls);
+			setCategorizedData(categorized);
+			setLoading(false);
+		}
+	}, [listurls]);
+
+	if (loading || !categorizedData) {
+		return <div style={{ color: "#fff" }}>Loading...</div>;
+	}
+
+	const riskLevels = ["Critical", "High", "Medium", "Low", "Info"];
+	const categories = ["AUTH", "UNAUTH", "API", "JS", "CSS", "OTHERS"];
+
+	const series = riskLevels.map((riskLevel) => ({
+		name: riskLevel,
+		data: categories.map((category) => {
+			const normalizedCategory = category.toLowerCase();
+			return categorizedData[normalizedCategory]?.[riskLevel]?.length || 0;
+		}),
+	}));
+
 	const options: ApexOptions = {
 		chart: {
 			type: "bar",
 			stacked: true,
-			toolbar: {
-				show: false,
-			},
+			toolbar: { show: false },
+			zoom: { enabled: false },
 		},
 		plotOptions: {
-			bar: {
-				horizontal: false,
-				columnWidth: "70%",
-			},
+			bar: { horizontal: false, columnWidth: "50%" },
 		},
-		dataLabels: {
-			enabled: true,
-			style: {
-				fontSize: "14px",
-				colors: ["#000"],
-			},
-		},
-		grid: {
-			show: false,
-			padding: {
-				left: 0,
-				right: 0,
-				bottom: 0,
-			},
-		},
-		colors: ["#FF4C4C", "#FFB24C", "#4C4CFF", "#4CCAFF"],
 		xaxis: {
-			categories: ["AUTH", "UNAUTH", "API", "JS", "CSS", "OTHERS"],
+			categories,
+			title: {
+				text: "Request Type",
+				style: { fontSize: "14px", fontWeight: "bold", color: "#000" },
+			},
 			labels: {
-				style: {
-					fontSize: "14px",
-				},
-				rotate: 0,
+				style: { fontSize: "14px", colors: "#000" },
 			},
 		},
 		yaxis: {
-			labels: {
-				style: {
-					fontSize: "14px",
-				},
-				offsetX: -5,
-			},
 			title: {
-				text: "Count",
-				style: {
-					fontSize: "16px",
-					color: "#333",
-				},
+				text: "Number of Vulnerabilities",
+				style: { fontSize: "14px", fontWeight: "bold", color: "#000" },
 			},
+			labels: { style: { fontSize: "14px", colors: "#000" } },
 		},
 		legend: {
-			position: "top",
-			horizontalAlign: "right",
-			labels: {
-				useSeriesColors: true,
-			},
+			position: "bottom",
+			horizontalAlign: "center",
+			offsetY: 10,
+			labels: { colors: "#000" },
 		},
+		fill: { opacity: 1 },
+		colors: ["#FF4560", "#FF7F50", "#FEB019", "#008FFB", "#00E396"],
 		tooltip: {
-			shared: true,
-			intersect: false,
+			y: { formatter: (val: number) => `${val} vulnerabilities` },
+		},
+		dataLabels: {
+			enabled: true,
+			style: { colors: ["#000"] },
 		},
 	};
 
-	const series = [
-		{
-			name: "Critical",
-			data: [0, 0, 0, 0, 0, 0],
-		},
-		{
-			name: "Medium",
-			data: [0, 65, 0, 39, 0, 65],
-		},
-		{
-			name: "Low",
-			data: [0, 0, 0, 0, 3, 0],
-		},
-		{
-			name: "Info",
-			data: [0, 0, 0, 0, 0, 0],
-		},
-	];
-
 	return (
-		<div className="w-full h-full p-6">
+		<div className="flex flex-col justify-center w-full p-6">
 			<Chart
 				options={options}
 				series={series}
 				type="bar"
-				height="100%"
+				height="550"
 				width="100%"
 			/>
 		</div>
 	);
 };
 
-export default StackedColumnChart;
+export default ChartComponent;

@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, type PieProps } from "recharts";
-import zapResponse from "../../data/response.json";
+import { useParams } from "react-router-dom";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
 
 type ChartData = {
 	name: string;
@@ -8,34 +10,42 @@ type ChartData = {
 	color: string;
 };
 
-const transformData = (): ChartData[] => {
-	const riskColors: Record<string, string> = {
-		Critical: "#800000",
-		High: "#FF4C4C",
-		Medium: "#FFB24C",
-		Low: "#4C4CFF",
-		Informational: "#4CCAFF",
-	};
-
-	const risks = zapResponse.filteredResults?.total_risks || {};
-	return Object.entries(risks)
-		.map(([risk, count]) => ({
-			name: risk,
-			value: count,
-			color: riskColors[risk] || "#CCCCCC",
-		}))
-		.filter((entry) => entry.value > 0);
-};
-
 const DonutChart: React.FC = () => {
+	const { scanId } = useParams<{ scanId: string }>();
+	const scanData = useQuery(api.scans.fetchTotalRisksByScanId, {
+		scanId: scanId,
+	});
+
+	const [chartData, setChartData] = useState<ChartData[]>([]);
 	const [hoveredSegment, setHoveredSegment] = useState<string | null>(null);
 
-	const data = transformData();
+	useEffect(() => {
+		if (scanData) {
+			const riskColors: Record<string, string> = {
+				Critical: "#800000",
+				High: "#FF4C4C",
+				Medium: "#FFB24C",
+				Low: "#4C4CFF",
+				Informational: "#4CCAFF",
+			};
 
-	const total = data.reduce((sum, entry) => sum + entry.value, 0);
+			const transformedData = Object.entries(scanData)
+				.filter(([key]) => key !== "totalVulnerabilities")
+				.map(([risk, count]) => ({
+					name: risk,
+					value: count as number,
+					color: riskColors[risk] || "#CCCCCC",
+				}))
+				.filter((entry) => entry.value > 0);
+
+			setChartData(transformedData);
+		}
+	}, [scanData]);
+
+	const total = chartData.reduce((sum, entry) => sum + entry.value, 0);
 
 	const onPieEnter: PieProps["onMouseEnter"] = (_, index: number) => {
-		setHoveredSegment(data[index].name);
+		setHoveredSegment(chartData[index].name);
 	};
 
 	const onPieLeave: PieProps["onMouseLeave"] = () => {
@@ -47,7 +57,7 @@ const DonutChart: React.FC = () => {
 			<div className="relative">
 				<PieChart width={500} height={500}>
 					<Pie
-						data={data}
+						data={chartData}
 						dataKey="value"
 						nameKey="name"
 						cx="50%"
@@ -59,22 +69,17 @@ const DonutChart: React.FC = () => {
 						onMouseEnter={onPieEnter}
 						onMouseLeave={onPieLeave}
 					>
-						{data.map((entry) => (
+						{chartData.map((entry) => (
 							<Cell
 								key={`cell-${entry.name}`}
 								fill={entry.color}
 								stroke="#fff"
-								strokeWidth={
-									hoveredSegment === entry.name ? 2 : 1
-								}
+								strokeWidth={hoveredSegment === entry.name ? 2 : 1}
 							/>
 						))}
 					</Pie>
 					<Tooltip
-						formatter={(value, name) => [
-							`${value}`,
-							`Risk Level: ${name}`,
-						]}
+						formatter={(value, name) => [`${value}`, `Risk Level: ${name}`]}
 					/>
 				</PieChart>
 
@@ -92,20 +97,15 @@ const DonutChart: React.FC = () => {
 					</p>
 					<p className="text-3xl font-bold">
 						{hoveredSegment !== null
-							? data.find(
-									(entry) => entry.name === hoveredSegment,
-								)?.value
+							? chartData.find((entry) => entry.name === hoveredSegment)?.value
 							: total}
 					</p>
 				</div>
 			</div>
 
 			<div className="flex mt-4 space-x-4">
-				{data.map((entry) => (
-					<div
-						key={entry.name}
-						className="flex items-center space-x-2"
-					>
+				{chartData.map((entry) => (
+					<div key={entry.name} className="flex items-center space-x-2">
 						<div
 							style={{
 								width: 12,
