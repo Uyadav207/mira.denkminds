@@ -3,7 +3,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api"; // Adjust this import based on your project structure
 import { useNavigate } from "react-router-dom";
 import { Id } from "../../convex/_generated/dataModel";
-
+//for showing the chat summaries
 type Summary = {
  _id: Id<"summaries">;
   title: string;

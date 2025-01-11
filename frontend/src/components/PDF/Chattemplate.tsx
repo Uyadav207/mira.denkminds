@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { Button } from "@components/ui/button";
 import { useReactToPrint } from "react-to-print";
-import MiraLogo from "../../assets/MiraLogo.svg";
+import Logo from "/logo.jpg";
 import useStore from "../../store/store"; 
 import "../PDF/printtemplate.css";
 import { useQuery, useMutation } from "convex/react";
@@ -80,8 +80,8 @@ if (fetchedSummary) {
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <img
-                src={MiraLogo}
-                alt="Mira Logo"
+                src={Logo}
+                alt="Logo"
                 className="h-12 w-12 rounded-full object-cover"
               />
             </div>
