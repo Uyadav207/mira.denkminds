@@ -11,5 +11,6 @@ chatRoutes.post("/title", (c) => chatController.chatTitle(c));
 chatRoutes.post("/message/stream", (c) => chatController.chatStream(c));
 chatRoutes.post("/scan/summary", (c) => scanController.chatStream(c));
 chatRoutes.post("/detailed/summary", (c) => scanController.detailedSummary(c));
+chatRoutes.post("/chat-summary", (c) => chatController.chatSummary(c));
 
 export { chatRoutes };

@@ -117,8 +117,6 @@ app.post("/api/chat", async (c) => {
 
 app.post("/api/summary", async (c) => {
 	const { scanResults } = await c.req.json();
-	console.log(scanResults);
-
 	const prompt = `
 		Analyze the following OWASP ZAP security scan results for ${scanResults.targetUrl} and provide a comprehensive security assessment:
 
@@ -462,6 +460,50 @@ app.post("/api/detailed-vulnerability-report", async (c) => {
 		console.log(result);
 
 		return c.json(result);
+	} catch (e) {
+		return c.json({ message: e });
+	}
+});
+
+app.post("/api/chat/summary", async (c) => {
+	const { messages } = await c.req.json();
+
+	const prompt = messages.join("\n");
+
+	try {
+		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				prompt: prompt,
+				model: "summary-model",
+				stream: true,
+			}),
+		});
+
+		const reader = response.body?.getReader();
+		const decoder = new TextDecoder();
+		const stream = new ReadableStream({
+			start(controller) {
+				function push() {
+					reader?.read().then(({ done, value }) => {
+						if (done) {
+							controller.close();
+							return;
+						}
+						controller.enqueue(decoder.decode(value));
+						push();
+					});
+				}
+				push();
+			},
+		});
+
+		return new Response(stream, {
+			headers: { "Content-Type": "text/event-stream" },
+		});
 	} catch (e) {
 		return c.json({ message: e });
 	}
