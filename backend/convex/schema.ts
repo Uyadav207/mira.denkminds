@@ -34,6 +34,7 @@ export default defineSchema({
 		folderId: v.id("reportFolders"),
 		fileName: v.string(),
 		fileUrl: v.string(),
+		markdownContent: v.string(),
 		createdAt: v.number(),
 	}).index("by_folderId", ["folderId"]),
 

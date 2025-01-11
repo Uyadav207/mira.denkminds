@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 
-import { MessageSquareCode } from "lucide-react";
+import { ChevronRight, MessageSquareCode, User2 } from "lucide-react";
 import {
 	Folder,
 	Home,
 	MessageCircle,
 	MoreHorizontal,
-	Settings2,
 	Trash2,
-	Copy,
 	ScanText,
 } from "lucide-react";
 import {
@@ -21,18 +19,16 @@ import {
 	SidebarContent,
 	SidebarGroupContent,
 } from "@components/ui/sidebar";
-import { Button } from "@components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@components/ui/dropdown-menu";
 import { SidebarMenuBadge } from "@components/ui/sidebar";
 import { useNavigate } from "react-router-dom";
 import useStore from "../../store/store";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Chats } from "../../types/chats";
 import { SidebarMenuSub, useSidebar } from "../ui/sidebar";
@@ -41,6 +37,7 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "../ui/collapsible";
+import { showSuccessToast } from "../toaster";
 
 const ChatSkeleton = () => {
 	return (
@@ -58,7 +55,7 @@ const ChatSkeleton = () => {
 	);
 };
 
-export default function NavContent() {
+export default function ChatHistory() {
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(true);
 	const { state } = useSidebar();
@@ -71,6 +68,20 @@ export default function NavContent() {
 	const recentChats = useQuery(api.chats.getChatsByUserId, {
 		userId: String(id),
 	});
+
+	const deleteChatById = useMutation(api.chats.deleteChatById);
+
+	const handleDelete = async (chatId: string) => {
+		try {
+			const result = await deleteChatById({ chatId });
+			showSuccessToast(result.message);
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new Error(`An error occurred: ${error.message}`);
+			}
+		}
+	};
+
 	useEffect(() => {
 		if (recentChats) {
 			setIsLoading(false);
@@ -87,6 +98,7 @@ export default function NavContent() {
 								<SidebarMenuButton tooltip="Dashboard">
 									<Home className="h-4 w-4" />
 									<span>Dashboard</span>
+									<ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
 								</SidebarMenuButton>
 							</CollapsibleTrigger>
 							<CollapsibleContent>
@@ -104,10 +116,10 @@ export default function NavContent() {
 					</Collapsible>
 					<SidebarMenuItem>
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
-						<a onClick={() => navigate("/settings")}>
-							<SidebarMenuButton tooltip="Settings">
-								<Settings2 className="h-4 w-4" />
-								<span>Settings</span>
+						<a onClick={() => navigate("/accounts")}>
+							<SidebarMenuButton tooltip="Accounts">
+								<User2 className="h-4 w-4" />
+								<span>Accounts</span>
 							</SidebarMenuButton>
 						</a>
 					</SidebarMenuItem>
@@ -163,41 +175,20 @@ export default function NavContent() {
 													<DropdownMenuTrigger
 														asChild
 													>
-														<Button
-															variant="ghost"
-															size="sm"
-															className="ml-auto h-8 w-8 p-0"
-														>
-															<MoreHorizontal className="h-4 w-4 ml-auto" />
-															<span className="sr-only">
-																Open menu
-															</span>
-														</Button>
+														<MoreHorizontal className="h-4 w-4 ml-auto right-0 cursor-pointer" />
 													</DropdownMenuTrigger>
 													<DropdownMenuContent
 														align="end"
-														className="w-[160px]"
+														sideOffset={4}
+														className="w-[160px] bg-white shadow-lg rounded-md border border-gray-200"
 													>
 														<DropdownMenuItem
-														// onClick={() =>
-														// 	handleCopy(chat.id)
-														// }
-														>
-															<Copy className="mr-2 h-4 w-4" />
-															<span>Copy</span>
-														</DropdownMenuItem>
-														{/* <DropdownMenuItem
-								// onClick={() =>
-								// 	handleShare(chat.id)
-								// }
-								>
-									<Share2 className="mr-2 h-4 w-4" />
-									<span>Share</span>
-								</DropdownMenuItem> */}
-														<DropdownMenuSeparator />
-														<DropdownMenuItem
-															// onClick={() => handleDelete(chat.id)}
-															className="text-red-600"
+															onClick={() =>
+																handleDelete(
+																	chat._id,
+																)
+															}
+															className="text-red-600 flex items-center gap-2 hover:bg-red-50 cursor-pointer"
 														>
 															<Trash2 className="mr-2 h-4 w-4" />
 															<span>Delete</span>

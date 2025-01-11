@@ -1,9 +1,11 @@
-import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
-const MarkdownViewer = ({ content }) => {
+interface MarkdownViewerProps {
+	content: string;
+}
+
+const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 	return (
 		<ReactMarkdown
 			remarkPlugins={[remarkGfm]}
@@ -65,20 +67,10 @@ const MarkdownViewer = ({ content }) => {
 						{...props}
 					/>
 				),
-				code: ({ node, inline, className, children, ...props }) => {
-					const match = /language-(\w+)/.exec(className || "");
-					return !inline && match ? (
-						<SyntaxHighlighter
-							language={match[1]}
-							PreTag="div"
-							className="rounded-md"
-							{...props}
-						>
-							{String(children).replace(/\n$/, "")}
-						</SyntaxHighlighter>
-					) : (
+				code: ({ node, className, children, ...props }) => {
+					return (
 						<code
-							className="px-1 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-sm"
+							className="px-1 py-0.5 rounded-md bg-secondary text-sm"
 							{...props}
 						>
 							{children}
@@ -93,7 +85,7 @@ const MarkdownViewer = ({ content }) => {
 				),
 				blockquote: ({ node, ...props }) => (
 					<blockquote
-						className="border-l-4 border-gray-200 dark:border-gray-700 pl-4 italic my-4"
+						className="border-l-4  pl-4 italic my-4"
 						{...props}
 					/>
 				),
@@ -145,7 +137,7 @@ const MarkdownViewer = ({ content }) => {
 				),
 				pre: ({ children, ...props }) => (
 					<pre
-						className="p-4 overflow-auto rounded-md bg-gray-100 dark:bg-gray-800"
+						className="p-4 overflow-auto rounded-md bg-secondary"
 						{...props}
 					>
 						{children}

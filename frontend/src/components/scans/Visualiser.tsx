@@ -1,4 +1,4 @@
-import StackedColumnChart from "../charts/bar-chart";
+import BarChart from "../charts/bar-chart";
 import DonutChart from "../charts/donut-charts";
 import RadialSemiCircleChart from "../charts/radial-charts";
 import ScanInfo from "../zapScan/scan-info";
@@ -35,7 +35,7 @@ export const Visualiser = () => {
 						<h3 className="text-xl font-semibold mb-4">
 							Vulnerabilities by request type
 						</h3>
-						<StackedColumnChart />
+						<BarChart />
 					</div>
 				</div>
 			</div>

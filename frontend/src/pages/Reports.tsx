@@ -3,13 +3,7 @@ import { EmptyState } from "../components/folder/EmptyState";
 import { CreateFolderDialog } from "../components/folder/CreateFolderDialog";
 import { FolderGrid } from "../components/folder/FolderGrid";
 import { FolderView } from "../components/folder/FolderView";
-import type {
-	Folder,
-	File,
-	FolderItem,
-	FolderType,
-	ConvexFolderType,
-} from "../types/reports";
+import type { Folder, ConvexFolderType } from "../types/reports";
 
 import { api } from "../convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
@@ -33,7 +27,7 @@ export function Reports() {
 	const folderData = useQuery(api.reports.getReportFoldersByUser, {
 		userId: String(id),
 	});
-	console.log("reportttIDD", reportId);
+
 	const filesByFolder = useQuery(
 		api.reports.getReportsByFolder,
 		reportId && {
@@ -70,37 +64,13 @@ export function Reports() {
 				}),
 			);
 
-			// const updatedFoldersList: Folder[] = [
-			// 	...folders,
-			// 	...newFolders.filter(
-			// 		(newFolder: Folder) =>
-			// 			!folders.some((folder: FolderItem) => folder.id === newFolder.id),
-			// 	),
-			// ];
-
 			setFolders(newFolders);
-			if (filesByFolder) {
-				console.log("filesByFolder", filesByFolder);
-			}
 		}
 	}, [folderData]);
-
-	const handleUploadFile = (folderId: string, file: File) => {
-		setFolders(
-			folders.map((folder) => {
-				if (folder.id === folderId) {
-					return { ...folder, files: [...folder.files, file] };
-				}
-				return folder;
-			}),
-		);
-	};
 
 	const currentFolder = folders.find(
 		(folder) => folder.id === currentFolderId,
 	);
-
-	console.log("folderrssss", folders);
 
 	return (
 		<div className="flex flex-1 flex-col gap-4 p-4">
@@ -135,24 +105,6 @@ export function Reports() {
 					)}
 				</div>
 			)}
-			{/* {folders.length === 0 ? (
-				<EmptyState onCreateFolder={() => setIsCreateDialogOpen(true)} />
-			) : currentFolder ? (
-				<FolderView
-					folder={currentFolder}
-					onUploadFile={handleUploadFile}
-					onBack={() => setCurrentFolderId(null)}
-				/>
-			) : (
-				folderData &&
-				folders && (
-					<FolderGrid
-						folders={folders}
-						onCreateFolder={() => setIsCreateDialogOpen(true)}
-						onFolderClick={(folderId) => setCurrentFolderId(folderId)}
-					/>
-				)
-			)} */}
 
 			<CreateFolderDialog
 				open={isCreateDialogOpen}
