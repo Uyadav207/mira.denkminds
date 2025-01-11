@@ -13,7 +13,7 @@ import Auth from "./pages/Auth";
 import AuthCallback from "./pages/AuthCallback";
 import ProfileSettings from "./pages/ProfileSettings";
 import ForgotPassword from "./pages/ForgotPassword";
-import PrivacyPolicy from "./pages/privacy";
+import PrivacyPolicy from "./pages/Privacy";
 
 const App = () => {
 	return (
@@ -29,10 +29,7 @@ const App = () => {
 							path="/forgot-password"
 							element={<ForgotPassword />}
 						/>
-						<Route
-						    path="/privacy"
-						    element={<PrivacyPolicy />}
-						/>
+						<Route path="/Privacy" element={<PrivacyPolicy />} />
 						<Route
 							path="/auth/callback"
 							element={<AuthCallback />}
@@ -49,8 +46,7 @@ const App = () => {
 								path="/accounts"
 								element={<ProfileSettings />}
 							/>
-							
-							</Route>
+						</Route>
 					</Routes>
 				</Router>
 			</ThemeProvider>
