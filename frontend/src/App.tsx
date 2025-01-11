@@ -15,6 +15,7 @@ import { RecentScans } from "./pages/scans/RecentScans";
 import { ApiScans } from "./pages/scans/ApiScans";
 import Vulnerabilities from "./pages/scans/vulnerabilities/vulnerabilities";
 import Urls from "./pages/scans/VulnerableUrls/Urls";
+import { FileView } from "./components/file";
 
 const App = () => {
 	return (
@@ -53,10 +54,17 @@ const App = () => {
 								element={<Urls />}
 							/>
 							<Route path="/api-scan" element={<ApiScans />} />
-							<Route path="/reports" element={<Reports />} />
+							<Route
+								path="/reports/:reportId?"
+								element={<Reports />}
+							/>
 							<Route
 								path="/accounts"
 								element={<ProfileSettings />}
+							/>
+							<Route
+								path="/file/:fileId"
+								element={<FileView />}
 							/>
 						</Route>
 					</Routes>

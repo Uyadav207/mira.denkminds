@@ -100,8 +100,8 @@ const UserScans: React.FC = () => {
 						</AlertTitle>
 					</div>
 					<AlertDescription className="text-muted-foreground text-base">
-						We couldn't find any scans in your history. Ask Mira to scan a
-						website for you, and come back later. Ciao! 👋
+						We couldn't find any scans in your history. Ask Mira to
+						scan a website for you, and come back later. Ciao! 👋
 					</AlertDescription>
 				</Alert>
 			</Card>
@@ -131,10 +131,14 @@ const UserScans: React.FC = () => {
 						<span className="text-purple-600 hover:underline">
 							{scan.targetUrl}
 						</span>
-						<Badge variant="secondary">{scan.complianceStandard}</Badge>
+						<Badge variant="secondary">
+							{scan.complianceStandard}
+						</Badge>
 						<Badge
 							className={`${
-								scan.scanType === "passive" ? "bg-yellow-500" : "bg-green-500"
+								scan.scanType === "passive"
+									? "bg-yellow-500"
+									: "bg-green-500"
 							}`}
 						>
 							{scan.scanType}

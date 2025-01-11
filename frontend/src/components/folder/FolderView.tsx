@@ -1,124 +1,160 @@
-import { useState } from "react";
-import {
-	FileIcon,
-	UploadIcon,
-	DownloadIcon,
-	Eye,
-	ArrowLeft,
-} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { FileText, Trash } from "lucide-react";
 import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@components/ui/dialog";
-import type { Folder, File } from "../../types/reports";
 
-interface FolderViewProps {
-	folder: Folder;
-	onUploadFile: (folderId: string, file: File) => void;
-	onBack: () => void;
-}
+export function FolderView({ onBack, files }: { onBack: () => void }) {
+	const navigate = useNavigate();
 
-export function FolderView({ folder, onUploadFile, onBack }: FolderViewProps) {
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		if (file) {
-			const newFile: File = {
-				id: crypto.randomUUID(),
-				name: file.name,
-				url: URL.createObjectURL(file),
-				createdAt: new Date(),
-				type: "pdf",
-				size: file.size,
-			};
-			onUploadFile(folder.id, newFile);
-		}
-	};
+	// const files = [
+	// 	{
+	// 		id: "1",
+	// 		name: "Vulnerability Report -1",
+	// 		type: "markdown",
+	// 		content: generateVulnerabilityReportMarkdown({
+	// 			applicationName: "MyApp",
+	// 			reportDate: "January 9, 2025",
+	// 			keyFindings: [
+	// 				{ severity: "Critical", description: "Cross-Site Scripting (XSS)" },
+	// 				{ severity: "High", description: "SQL Injection" },
+	// 			],
+	// 			vulnerabilities: [
+	// 				{
+	// 					name: "Cross-Site Scripting (XSS)",
+	// 					severity: "Critical",
+	// 					description: "Unsanitized user input in the Markdown Viewer.",
+	// 					impact:
+	// 						"Attackers can execute malicious JavaScript in the browser of other users.",
+	// 					recommendation: "Sanitize user-generated markdown using DOMPurify.",
+	// 				},
+	// 				{
+	// 					name: "SQL Injection",
+	// 					severity: "High",
+	// 					description: "Login endpoint vulnerable to SQL Injection.",
+	// 					impact:
+	// 						"Attackers can bypass authentication or extract sensitive data.",
+	// 					recommendation:
+	// 						"Use parameterized queries or ORM frameworks for database access.",
+	// 				},
+	// 			],
+	// 			recommendations: [
+	// 				"Sanitize all user inputs.",
+	// 				"Implement parameterized queries.",
+	// 				"Conduct regular security assessments.",
+	// 			],
+	// 		}),
+	// 		modified: "Jan 9, 2025",
+	// 	},
+	// 	{
+	// 		id: "2",
+	// 		name: "Chat Summary Report",
+	// 		type: "markdown",
+	// 		content: "# Chat Summary\n\nThis is a placeholder for a chat summary.",
+	// 		modified: "Jan 5, 2025",
+	// 	},
+	// ];
 
 	return (
-		<div className="space-y-4">
-			<div className="flex items-center justify-between">
-				<h2 className="text-2xl font-bold">{folder.name}</h2>
-				<Button variant="outline" onClick={onBack}>
-					<ArrowLeft className="mr-2 h-4 w-4" />
-					Back to Folders
-				</Button>
-			</div>
-			<div className="flex items-center gap-4">
-				<Input
-					type="file"
-					accept=".pdf"
-					onChange={handleFileUpload}
-					className="hidden"
-					id="file-upload"
-				/>
-				<label htmlFor="file-upload">
-					<Button asChild>
-						<span>
-							<UploadIcon className="mr-2 h-4 w-4" />
-							Upload PDF
-						</span>
-					</Button>
-				</label>
-			</div>
-			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-				{folder.files.map((file) => (
-					<div
-						key={file.id}
-						className="flex flex-col border rounded-lg p-4"
-					>
-						<FileIcon className="h-16 w-16 text-blue-500 mx-auto" />
-						<h3 className="mt-2 font-semibold text-center">
-							{file.name}
-						</h3>
-						<p className="text-sm text-muted-foreground text-center">
-							{(file.size / 1024 / 1024).toFixed(2)} MB
-						</p>
-						<div className="flex mt-4 space-x-2 justify-center">
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={() => window.open(file.url, "_blank")}
-							>
-								<DownloadIcon className="mr-2 h-4 w-4" />
-								Download
-							</Button>
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={() => setSelectedFile(file)}
-							>
-								<Eye className="mr-2 h-4 w-4" />
-								View
-							</Button>
-						</div>
-					</div>
-				))}
-			</div>
-			<Dialog
-				open={!!selectedFile}
-				onOpenChange={() => setSelectedFile(null)}
+		<div className="p-4">
+			<Button
+				variant="outline"
+				onClick={() => navigate("/reports")}
+				className="mb-4"
 			>
-				<DialogContent className="max-w-4xl">
-					<DialogHeader>
-						<DialogTitle>{selectedFile?.name}</DialogTitle>
-					</DialogHeader>
-					<div className="aspect-video">
-						<iframe
-							src={selectedFile?.url}
-							title={selectedFile?.name}
-							width="100%"
-							height="100%"
-							style={{ border: "none" }}
-						/>
-					</div>
-				</DialogContent>
-			</Dialog>
+				Back to Folders
+			</Button>
+
+			<div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+				<div className="overflow-x-auto">
+					<table className="table-auto w-full text-left">
+						<thead>
+							<tr className="bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+								<th className="p-3">Name</th>
+								<th className="p-3">Created on</th>
+								<th className="p-3 text-right">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{files &&
+								files.map((file) => (
+									<tr
+										key={file._id}
+										className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+										onClick={() =>
+											navigate(`/file/${file._id}`, {
+												state: { file },
+											})
+										}
+									>
+										<td className="p-3 flex items-center gap-3">
+											<FileText className="h-6 w-6 text-blue-500" />
+											<span className="truncate dark:text-gray-100">
+												{file.fileName}
+											</span>
+										</td>
+										<td className="p-3 text-gray-600 dark:text-gray-400">
+											{/* {new Date(file.createdAt)} */}
+										</td>
+										<td className="p-3 text-right">
+											<Button size="sm" variant="ghost">
+												<Trash className="h-5 w-5" />
+											</Button>
+										</td>
+									</tr>
+								))}
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	);
 }
+
+// Dynamic Markdown Report Generator Function
+const generateVulnerabilityReportMarkdown = ({
+	applicationName,
+	reportDate,
+	keyFindings,
+	vulnerabilities,
+	recommendations,
+}) => `
+# Vulnerability Report
+
+## Website Name: ${applicationName}
+### Report Date: ${reportDate}
+
+---
+
+## Summary
+This report details vulnerabilities identified during a recent security assessment.
+
+### Key Findings:
+${keyFindings.map((finding) => `- **${finding.severity}**: ${finding.description}`).join("\n")}
+
+---
+
+## Vulnerabilities
+
+${vulnerabilities
+	.map(
+		(vulnerability, index) => `
+### ${index + 1}. ${vulnerability.name}
+**Severity**: ${vulnerability.severity}  
+**Description**: ${vulnerability.description}  
+
+**Impact**:  
+${vulnerability.impact}
+
+**Recommendation**:  
+${vulnerability.recommendation}
+`,
+	)
+	.join("\n")}
+
+---
+
+## Recommendations
+${recommendations.map((rec) => `- ${rec}`).join("\n")}
+
+
+
+`;

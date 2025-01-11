@@ -4,7 +4,7 @@ import { Info } from "lucide-react";
 interface VulnerabilityStandardsProps {
 	question?: string;
 	actionPrompts: { id: string; name: string; type: string }[];
-	onConfirm: (selectedStandard: string, type: string) => void;
+	onConfirm: (selectedAction: string, type: string, actionId: string) => void;
 	setShowInfo: (value: boolean) => void;
 }
 
@@ -35,7 +35,9 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 						variant="secondary"
 						size="lg"
 						className="border"
-						onClick={() => onConfirm(action.name, action.type)}
+						onClick={() =>
+							onConfirm(action.name, action.type, action.id)
+						}
 					>
 						{action.name}
 					</Button>

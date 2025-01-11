@@ -23,6 +23,17 @@ export class ChatController {
 			return c.json({ status: "error", message: errorMessage }, 500);
 		}
 	}
+	async chatTitle(c: Context) {
+		try {
+			const { botMessage } = await c.req.json();
+			const response = await this.chatService.generateTitle(botMessage);
+			return c.json({ response });
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : "Unknown error";
+			return c.json({ status: "error", message: errorMessage }, 500);
+		}
+	}
 
 	async chatStream(c: Context) {
 		try {

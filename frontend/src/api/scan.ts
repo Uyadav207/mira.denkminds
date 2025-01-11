@@ -29,7 +29,7 @@ const scanWithProgress = async (
 };
 
 const scanReportGeneration = async (payload: ScanResult) => {
-	const response = await fetch("http://localhost:8000/api/summary/v2", {
+	const response = await fetch("http://localhost:8000/chat/scan/summary", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -41,11 +41,29 @@ const scanReportGeneration = async (payload: ScanResult) => {
 		throw new Error("No response body");
 	}
 
-	return response.body; // Return the readable stream for processing
+	return response; // Return the readable stream for processing
+};
+
+const detailedReportGeneration = async (
+	payload: ScanResult,
+	onProgress: (progress: number) => void,
+) => {
+	let progress = 0;
+	const totalSteps = 20; // Simulate 20 steps in the API process
+	const resultsResponse = axiosInstance.post("/chat/detailed/summary", {
+		scanResults: payload,
+	});
+	for (let i = 0; i < totalSteps; i++) {
+		await new Promise((resolve) => setTimeout(resolve, 500));
+		progress += 100 / totalSteps;
+		onProgress(Math.min(progress, 100));
+	}
+	return resultsResponse;
 };
 
 export const scanApis = {
 	scan,
 	scanWithProgress,
 	scanReportGeneration,
+	detailedReportGeneration,
 };

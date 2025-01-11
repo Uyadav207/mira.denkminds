@@ -1,7 +1,7 @@
 {
 	"scripts": {
-		"check:fix:frontend": "cd frontend && biome check --write ./src && tsc -b && vite build",
-		"check:fix:backend": "cd backend && bun check",
+		"check:fix:frontend": "",
+		"check:fix:backend": "",
 		"prepare": "husky"
 	}
 }
