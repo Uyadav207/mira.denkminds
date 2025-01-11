@@ -9,5 +9,6 @@ const scanController = new ScanController();
 chatRoutes.post("/message", (c) => chatController.chat(c));
 chatRoutes.post("/message/stream", (c) => chatController.chatStream(c));
 chatRoutes.post("/scan/summary", (c) => scanController.chat(c));
+chatRoutes.post("/chat-summary", (c) => chatController.chatSummary(c));
 
 export { chatRoutes };

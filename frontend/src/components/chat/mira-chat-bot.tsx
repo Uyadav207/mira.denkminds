@@ -82,6 +82,7 @@ const MiraChatBot: React.FC = () => {
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
 	const [foldersList, setFoldersList] = useState(CREATE_FOLDER_ACTION);
+	// const [chatTitle, setChatTitle] = useState<string>("");
 
 	const user = useStore((state) => state.user);
 	const { scanResponse, setScanResponse } = useScanStore();
@@ -102,6 +103,7 @@ const MiraChatBot: React.FC = () => {
 	//reports apis convex APIs
 
 	const saveReport = useMutation(api.reports.createReportFolder);
+	const saveSummary = useMutation(api.summaries.saveSummary);
 
 	const [progress, setProgress] = useState(0);
 	const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -519,6 +521,10 @@ const MiraChatBot: React.FC = () => {
 					message: botMessage.message,
 				});
 				addBotMessage("Report generation in progress...");
+				await handleGenerateSummary(messages, true); // Use Ollama
+				// or
+				// await handleGenerateSummary(messages, false); // Use OpenAI
+
 
 				// requestHumanApproval("folder", manualMessage, "report", botMessage.id);
 			} else if (action === "Vulnerability Report") {
@@ -869,6 +875,192 @@ const MiraChatBot: React.FC = () => {
 		),
 	};
 
+		const streamChatResponse = async (prompt: string) => {
+			try {
+				setIsLoading(true);
+				const responseStream = (await chatApis.chat({
+					message: prompt,
+					useRAG: false,
+				})) as StreamResponse;
+
+				if (!responseStream.ok || !responseStream.body) {
+					throw new Error("Failed to get response stream");
+				}
+
+				const reader = responseStream.body.getReader();
+				const decoder = new TextDecoder();
+				let accumulatedMessage = "";
+
+				while (true) {
+					const { done, value } = await reader.read();
+
+					if (done) {
+						completeMessage();
+						break;
+					}
+
+					// Decode and append new chunk
+					const chunk = decoder.decode(value, { stream: true });
+					accumulatedMessage += chunk;
+
+					// Update UI with accumulated message
+					updateUI(accumulatedMessage);
+				}
+			} catch (error) {
+				const errorMessage =
+					error instanceof Error ? error.message : "Unknown error occurred";
+				addBotMessage(`Error: ${errorMessage}`);
+			} finally {
+				setIsLoading(false);
+			}
+		};
+
+	
+
+	const streamChatSummaryResponse = async (
+		responseStream: ReadableStream<Uint8Array>,
+	) => {
+		try {
+			const reader = responseStream.getReader();
+			const decoder = new TextDecoder();
+			let accumulatedMessage = "";
+			let buffer = "";
+
+			while (true) {
+				const { done, value } = await reader.read();
+
+				if (done) {
+					// Save the summary to Convex after streaming is complete
+					try {
+						await saveSummary({
+							userId: String(id),
+							title: `Chat Summary - ${new Date().toLocaleDateString()}`,
+							content: accumulatedMessage
+						});
+					} catch (error) {
+						console.error("Error saving summary:", error);
+						addBotMessage(
+							"Summary generated but there was an error saving it.",
+						);
+					}
+					completeMessage();
+					break;
+				}
+
+				const chunk = decoder.decode(value, { stream: true });
+				buffer += chunk;
+
+				// Process complete JSON objects
+				while (buffer.includes("\n")) {
+					const newlineIndex = buffer.indexOf("\n");
+					const line = buffer.slice(0, newlineIndex).trim();
+					buffer = buffer.slice(newlineIndex + 1);
+
+					if (!line) continue;
+
+					try {
+						const parsed = JSON.parse(line);
+						if (parsed?.response) {
+							accumulatedMessage += parsed.response;
+							updateUI(accumulatedMessage);
+						}
+					} catch (error) {
+						console.error("Skipping malformed JSON:", line, error);
+					}
+				}
+			}
+		} finally {
+			setStreaming(false);
+			setIsLoading(false);
+		}
+	};
+
+	const handleGenerateSummary = async (
+		messages: Message[],
+		useOllama: boolean,
+	) => {
+		setIsLoading(true);
+		try {
+			 // If we don't have a chat title, try to fetch it
+			// if (!chatTitle && chatData?.[0]?.title) {
+			// 	setChatTitle(chatData[0].title);
+			// }
+			const payload = { messages: messages.map((msg) => msg.message) };
+			if (useOllama) {
+				const responseStream = await chatApis.chatSummaryOllama(payload);
+				await streamChatSummaryResponse(responseStream);
+			} else {
+				// For OpenAI
+				const response = await chatApis.chatSummaryOpenAI(payload);
+				await streamChatSummaryOpenAIResponse(response);
+			}
+
+		} catch (error) {
+			console.error("Error generating chat summary:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+const streamChatSummaryOpenAIResponse = async (response: Response) => {
+	try {
+		const reader = response.body?.getReader();
+		if (!reader) throw new Error("No reader available");
+
+		const decoder = new TextDecoder();
+		let accumulatedMessage = "";
+
+		while (true) {
+			const { done, value } = await reader.read();
+			if (done) {
+				// Save the summary to Convex after streaming is complete
+				try {
+					await saveSummary({
+						userId: String(id),
+						title: `Chat Summary - ${new Date().toLocaleDateString()}`,
+						content: accumulatedMessage
+					});
+				} catch (error) {
+					console.error("Error saving summary:", error);
+					addBotMessage(
+						"Summary generated but there was an error saving it.",
+					);
+				}
+				completeMessage();
+				break;
+			}
+
+			// Decode the chunk
+			const chunk = decoder.decode(value);
+
+			// Split by newlines and process each line
+			const lines = chunk.split("\n");
+
+			for (const line of lines) {
+				if (!line.trim()) continue;
+
+				try {
+					// Parse the JSON from the line
+					const data = JSON.parse(line);
+
+					// Extract the content from the parsed data
+					if (data.choices?.[0]?.delta?.content) {
+						accumulatedMessage += data.choices[0].delta.content;
+						updateUI(accumulatedMessage);
+					}
+				} catch (error) {
+					console.warn("Failed to parse line:", line, error);
+				}
+			}
+		}
+	} catch (error) {
+		console.error("Error processing summary stream:", error);
+		addBotMessage("Error processing summary stream");
+	} finally {
+		setStreaming(false);
+		setIsLoading(false);
+	}
+};
+	
 	return (
 		<div className="flex justify-center">
 			<div className="flex flex-col space-y-6 w-3/4 h-full md:h-[90vh] rounded-lg p-4">

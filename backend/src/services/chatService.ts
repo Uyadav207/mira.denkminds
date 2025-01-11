@@ -3,26 +3,26 @@ import { PineconeService } from "./pineconeStore";
 import type { ChatCompletionMessageParam } from "openai/resources/chat";
 
 export class ChatService {
-	private static instance: ChatService;
-	private openai: OpenAIService;
-	private pinecone: PineconeService;
+		private static instance: ChatService;
+		private openai: OpenAIService;
+		private pinecone: PineconeService;
 
-	constructor(openai: OpenAIService, pinecone: PineconeService) {
-		this.openai = openai;
-		this.pinecone = pinecone;
-	}
-
-	public static async getInstance(): Promise<ChatService> {
-		if (!ChatService.instance) {
-			const openai = OpenAIService.getInstance();
-			const pinecone = await PineconeService.getInstance();
-			ChatService.instance = new ChatService(openai, pinecone);
+		constructor(openai: OpenAIService, pinecone: PineconeService) {
+			this.openai = openai;
+			this.pinecone = pinecone;
 		}
-		return ChatService.instance;
-	}
 
-	private createSummaryPrompt(scanResults: ScanResults): string {
-		return `
+		public static async getInstance(): Promise<ChatService> {
+			if (!ChatService.instance) {
+				const openai = OpenAIService.getInstance();
+				const pinecone = await PineconeService.getInstance();
+				ChatService.instance = new ChatService(openai, pinecone);
+			}
+			return ChatService.instance;
+		}
+
+		private createSummaryPrompt(scanResults: ScanResults): string {
+			return `
 				Analyze the following OWASP ZAP security scan results for ${scanResults.targetUrl} and provide a comprehensive security assessment:
 
 				Target Information:
@@ -61,11 +61,11 @@ export class ChatService {
 
 				Format the response in markdown with clear sections and bullet points for readability.
 				`;
-	}
+		}
 
-	async processMessage(message: string, useRAG: boolean): Promise<string> {
-		if (!useRAG) {
-			const systemMessage = `
+		async processMessage(message: string, useRAG: boolean): Promise<string> {
+			if (!useRAG) {
+				const systemMessage = `
 			You are a cybersecurity assistant specialized in analyzing website vulnerabilities. 
 				Your key responsibilities are:
 				1. Prompt users for a domain name or URL when they inquire about website security assessments.
@@ -75,44 +75,57 @@ export class ChatService {
 				Format the response in markdown with clear sections and bullet points for readability.
 			`;
 
-			const messages: ChatCompletionMessageParam[] = [
-				{ role: "system", content: systemMessage },
-				{ role: "user", content: message },
-			];
+				const messages: ChatCompletionMessageParam[] = [
+					{ role: "system", content: systemMessage },
+					{ role: "user", content: message },
+				];
 
-			return this.openai.chat(messages);
+				return this.openai.chat(messages);
+			}
+
+			const docs = await this.pinecone.similaritySearch(message);
+			const context = docs.map((doc) => doc.pageContent).join("\n\n");
+			return this.openai.generateAnswer(context, message);
 		}
 
-		const docs = await this.pinecone.similaritySearch(message);
-		const context = docs.map((doc) => doc.pageContent).join("\n\n");
-		return this.openai.generateAnswer(context, message);
-	}
+		async processScanSummary(scanResults: ScanResults): Promise<string> {
+			const prompt = this.createSummaryPrompt(scanResults);
+			return this.openai.generateSummary(prompt);
+		}
 
-	async processScanSummary(scanResults: ScanResults): Promise<string> {
-		const prompt = this.createSummaryPrompt(scanResults);
-		return this.openai.generateSummary(prompt);
-	}
-
-	async processMessageStream(message: string, useRAG: boolean) {
-		if (!useRAG) {
-			const systemMessage = `
+		async processMessageStream(message: string, useRAG: boolean) {
+			if (!useRAG) {
+				const systemMessage = `
 		  You are a cybersecurity assistant specialized in analyzing website vulnerabilities. 
 		  // ...existing system message...
 		  `;
 
-			const messages: ChatCompletionMessageParam[] = [
-				{ role: "system", content: systemMessage },
-				{ role: "user", content: message },
-			];
+				const messages: ChatCompletionMessageParam[] = [
+					{ role: "system", content: systemMessage },
+					{ role: "user", content: message },
+				];
 
-			return this.openai.chatStream(messages);
+				return this.openai.chatStream(messages);
+			}
+
+			const docs = await this.pinecone.similaritySearch(message);
+			const context = docs.map((doc) => doc.pageContent).join("\n\n");
+			return this.openai.chatStream([
+				{ role: "system", content: `Use this context to answer: ${context}` },
+				{ role: "user", content: message },
+			]);
 		}
 
-		const docs = await this.pinecone.similaritySearch(message);
-		const context = docs.map((doc) => doc.pageContent).join("\n\n");
-		return this.openai.chatStream([
-			{ role: "system", content: `Use this context to answer: ${context}` },
-			{ role: "user", content: message },
-		]);
+		async processChatSummary(messages: string[]) {
+			const prompt = messages.join("\n");
+			const chatMessages: ChatCompletionMessageParam[] = [
+				{
+					role: "system",
+					content: "Generate a summary of the following chat messages in markdown format:",
+				},
+				{ role: "user", content: prompt },
+			];
+
+			return this.openai.chatStream(chatMessages);
+		}
 	}
-}
