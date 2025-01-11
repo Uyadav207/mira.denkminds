@@ -1,6 +1,6 @@
 export interface Folder {
-	_id: string;
-	folderName: string;
+	id: string;
+	name: string;
 	files: File[];
 	createdAt: Date;
 }
@@ -24,4 +24,11 @@ export interface FolderItem {
 	id: string;
 	name: string;
 	type: string;
+}
+
+export interface ConvexFolderType {
+	_id: string;
+	folderName: string;
+	type: "folder";
+	userId?: string;
 }

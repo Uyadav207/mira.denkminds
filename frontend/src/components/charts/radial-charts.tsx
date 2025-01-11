@@ -1,13 +1,8 @@
 import { Separator } from "../../components/ui/separator";
 import Chart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
-import zapResponse from "../../data/response.json";
 
 const RadialSemiCircleChart: React.FC = () => {
-	const metrics = {
-		uniqueUrls: zapResponse.filteredResults.unique_urls,
-	};
-
 	const series = [100];
 
 	const options: ApexOptions = {
@@ -75,9 +70,7 @@ const RadialSemiCircleChart: React.FC = () => {
 			{/* Metrics Section */}
 			<div className="grid grid-cols-3 gap-6 w-full max-w-md mt-6">
 				<div className="text-center">
-					<p className="text-sm font-semibold">
-						{metrics.uniqueUrls}
-					</p>
+					<p className="text-sm font-semibold">100</p>
 					<p className="text-lg font-bold">Unique URLs</p>
 				</div>
 				<div className="text-center">

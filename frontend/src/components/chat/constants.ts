@@ -15,13 +15,7 @@ const NEGATION_PATTERNS = [
 const CLARIFICATION_PATTERNS =
 	/\b(difference|compare|how|why|explain|what is|vs|versus)\b/i;
 
-const CREATE_FOLDER_ACTION = [
-	{
-		id: "1",
-		name: "Create New Folder",
-		type: "folder",
-	},
-];
+const CREATE_FOLDER_ACTION = [];
 const STANDARDS = [
 	{
 		id: "1",
