@@ -4,23 +4,23 @@ import type { ChatCompletionMessageParam } from "openai/resources/chat";
 import type { ScanResults, FilteredAlert } from "../types/scan";
 
 export class ChatService {
-		private static instance: ChatService;
-		private openai: OpenAIService;
-		private pinecone: PineconeService;
+	private static instance: ChatService;
+	private openai: OpenAIService;
+	private pinecone: PineconeService;
 
-		constructor(openai: OpenAIService, pinecone: PineconeService) {
-			this.openai = openai;
-			this.pinecone = pinecone;
-		}
+	constructor(openai: OpenAIService, pinecone: PineconeService) {
+		this.openai = openai;
+		this.pinecone = pinecone;
+	}
 
-		public static async getInstance(): Promise<ChatService> {
-			if (!ChatService.instance) {
-				const openai = OpenAIService.getInstance();
-				const pinecone = await PineconeService.getInstance();
-				ChatService.instance = new ChatService(openai, pinecone);
-			}
-			return ChatService.instance;
+	public static async getInstance(): Promise<ChatService> {
+		if (!ChatService.instance) {
+			const openai = OpenAIService.getInstance();
+			const pinecone = await PineconeService.getInstance();
+			ChatService.instance = new ChatService(openai, pinecone);
 		}
+		return ChatService.instance;
+	}
 
 	private createSummaryPrompt(scanResults: ScanResults, type?: string): string {
 		const totalVulnerabilities = scanResults.totals;
@@ -118,9 +118,9 @@ export class ChatService {
 	`;
 	}
 
-		async processMessage(message: string, useRAG: boolean): Promise<string> {
-			if (!useRAG) {
-				const systemMessage = `
+	async processMessage(message: string, useRAG: boolean): Promise<string> {
+		if (!useRAG) {
+			const systemMessage = `
 			You are a cybersecurity assistant specialized in analyzing website vulnerabilities. 
 				Your key responsibilities are:
 				1. Prompt users for a domain name or URL when they inquire about website security assessments.
@@ -130,18 +130,18 @@ export class ChatService {
 				Format the response in markdown with clear sections and bullet points for readability.
 			`;
 
-				const messages: ChatCompletionMessageParam[] = [
-					{ role: "system", content: systemMessage },
-					{ role: "user", content: message },
-				];
+			const messages: ChatCompletionMessageParam[] = [
+				{ role: "system", content: systemMessage },
+				{ role: "user", content: message },
+			];
 
-				return this.openai.chat(messages);
-			}
-
-			const docs = await this.pinecone.similaritySearch(message);
-			const context = docs.map((doc) => doc.pageContent).join("\n\n");
-			return this.openai.generateAnswer(context, message);
+			return this.openai.chat(messages);
 		}
+
+		const docs = await this.pinecone.similaritySearch(message);
+		const context = docs.map((doc) => doc.pageContent).join("\n\n");
+		return this.openai.generateAnswer(context, message);
+	}
 
 	async processScanSummary(scanResults: ScanResults) {
 		const prompt = this.createSummaryPrompt(scanResults);
@@ -175,21 +175,21 @@ export class ChatService {
 				Format the response in markdown with clear sections and bullet points for readability.
 			`;
 
-				const messages: ChatCompletionMessageParam[] = [
-					{ role: "system", content: systemMessage },
-					{ role: "user", content: message },
-				];
-
-				return this.openai.chatStream(messages);
-			}
-
-			const docs = await this.pinecone.similaritySearch(message);
-			const context = docs.map((doc) => doc.pageContent).join("\n\n");
-			return this.openai.chatStream([
-				{ role: "system", content: `Use this context to answer: ${context}` },
+			const messages: ChatCompletionMessageParam[] = [
+				{ role: "system", content: systemMessage },
 				{ role: "user", content: message },
-			]);
+			];
+
+			return this.openai.chatStream(messages);
 		}
+
+		const docs = await this.pinecone.similaritySearch(message);
+		const context = docs.map((doc) => doc.pageContent).join("\n\n");
+		return this.openai.chatStream([
+			{ role: "system", content: `Use this context to answer: ${context}` },
+			{ role: "user", content: message },
+		]);
+	}
 
 	async generateDetailedSummary(scanResult: ScanResults): Promise<string> {
 		const prompt = this.createSummaryPrompt(scanResult, "detailed");
@@ -199,16 +199,17 @@ export class ChatService {
 		return this.openai.chat(messages);
 	}
 
-		async processChatSummary(messages: string[]) {
-			const prompt = messages.join("\n");
-			const chatMessages: ChatCompletionMessageParam[] = [
-				{
-					role: "system",
-					content: "Generate a summary of the following chat messages in markdown format:",
-				},
-				{ role: "user", content: prompt },
-			];
+	async processChatSummary(messages: string[]) {
+		const prompt = messages.join("\n");
+		const chatMessages: ChatCompletionMessageParam[] = [
+			{
+				role: "system",
+				content:
+					"Generate a summary of the following chat messages in markdown format:",
+			},
+			{ role: "user", content: prompt },
+		];
 
-			return this.openai.chatStream(chatMessages);
-		}
+		return this.openai.chatStream(chatMessages);
 	}
+}
