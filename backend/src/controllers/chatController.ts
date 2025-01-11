@@ -80,7 +80,8 @@ export class ChatController {
 									}
 								}
 							} catch (error) {
-								console.error("Stream processing error:", error);
+								const errorMessage = error instanceof Error ? error.message : "Unknown error";
+								return c.json({ status: "error", message: errorMessage }, 500);
 							} finally {
 								controller.close();
 							}
