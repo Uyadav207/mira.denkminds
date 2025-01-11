@@ -48,11 +48,11 @@ const chatOllama = async (payload: ChatOllamaPayload) => {
 const scan = (payload: ScanPayload) => axiosInstance.post("/api/scan", payload);
 
 interface GenerateTitlePayload {
-	initialMessage: string;
+	botMessage: string;
 }
 
 const generateTitle = (payload: GenerateTitlePayload) =>
-	axiosInstance.post("/api/generate-title", payload);
+	axiosInstance.post("/chat/title", payload);
 
 export const chatApis = {
 	chatOllama,

@@ -28,7 +28,9 @@ export const categorizeData = (
 					subAcc[level] = [];
 					return subAcc;
 				},
-				{} as { [riskLevel: string]: { url: string; riskLevel: string }[] },
+				{} as {
+					[riskLevel: string]: { url: string; riskLevel: string }[];
+				},
 			);
 			return acc;
 		},
@@ -43,11 +45,16 @@ export const categorizeData = (
 		for (const [category, predicate] of Object.entries(categories)) {
 			if (predicate(url)) {
 				const normalizedRisk = riskLevels.find((level) =>
-					normalizedRiskLevel.toLowerCase().includes(level.toLowerCase()),
+					normalizedRiskLevel
+						.toLowerCase()
+						.includes(level.toLowerCase()),
 				);
 
 				if (normalizedRisk) {
-					categorizedData[category][normalizedRisk].push({ url, riskLevel });
+					categorizedData[category][normalizedRisk].push({
+						url,
+						riskLevel,
+					});
 				}
 				break;
 			}

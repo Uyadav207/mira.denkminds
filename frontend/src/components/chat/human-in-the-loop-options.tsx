@@ -4,7 +4,7 @@ import { BadgeInfo } from "lucide-react";
 interface VulnerabilityStandardsProps {
 	question?: string;
 	actionPrompts: { id: string; name: string; type: string }[];
-	onConfirm: (selectedStandard: string, type: string) => void;
+	onConfirm: (selectedAction: string, type: string, actionId: string) => void;
 	setShowInfo: (value: boolean) => void;
 }
 
@@ -31,8 +31,10 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 						key={action.id}
 						variant="secondary"
 						size="lg"
+						onClick={() =>
+							onConfirm(action.name, action.type, action.id)
+						}
 						className="bg-[#7156DB] text-white hover:bg-[#5c4baf]"
-						onClick={() => onConfirm(action.name, action.type)}
 					>
 						{action.name}
 					</Button>

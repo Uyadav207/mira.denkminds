@@ -41,7 +41,9 @@ const ChartComponent: React.FC = () => {
 		name: riskLevel,
 		data: categories.map((category) => {
 			const normalizedCategory = category.toLowerCase();
-			return categorizedData[normalizedCategory]?.[riskLevel]?.length || 0;
+			return (
+				categorizedData[normalizedCategory]?.[riskLevel]?.length || 0
+			);
 		}),
 	}));
 

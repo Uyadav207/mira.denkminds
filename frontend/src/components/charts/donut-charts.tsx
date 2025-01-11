@@ -74,12 +74,17 @@ const DonutChart: React.FC = () => {
 								key={`cell-${entry.name}`}
 								fill={entry.color}
 								stroke="#fff"
-								strokeWidth={hoveredSegment === entry.name ? 2 : 1}
+								strokeWidth={
+									hoveredSegment === entry.name ? 2 : 1
+								}
 							/>
 						))}
 					</Pie>
 					<Tooltip
-						formatter={(value, name) => [`${value}`, `Risk Level: ${name}`]}
+						formatter={(value, name) => [
+							`${value}`,
+							`Risk Level: ${name}`,
+						]}
 					/>
 				</PieChart>
 
@@ -97,7 +102,9 @@ const DonutChart: React.FC = () => {
 					</p>
 					<p className="text-3xl font-bold">
 						{hoveredSegment !== null
-							? chartData.find((entry) => entry.name === hoveredSegment)?.value
+							? chartData.find(
+									(entry) => entry.name === hoveredSegment,
+								)?.value
 							: total}
 					</p>
 				</div>
@@ -105,7 +112,10 @@ const DonutChart: React.FC = () => {
 
 			<div className="flex mt-4 space-x-4">
 				{chartData.map((entry) => (
-					<div key={entry.name} className="flex items-center space-x-2">
+					<div
+						key={entry.name}
+						className="flex items-center space-x-2"
+					>
 						<div
 							style={{
 								width: 12,

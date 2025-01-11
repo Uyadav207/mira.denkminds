@@ -23,7 +23,7 @@ export class OpenAIService {
 
 	async chat(messages: ChatCompletionMessageParam[]): Promise<string> {
 		const response = await this.client.chat.completions.create({
-			model: "gpt-4",
+			model: "gpt-3.5-turbo",
 			messages: messages,
 		});
 		return response.choices[0].message.content || "";
@@ -61,7 +61,7 @@ export class OpenAIService {
 		messages: ChatCompletionMessageParam[],
 	): Promise<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>> {
 		const stream = await this.client.chat.completions.create({
-			model: "gpt-4",
+			model: "gpt-3.5-turbo",
 			messages: messages,
 			stream: true,
 		});
