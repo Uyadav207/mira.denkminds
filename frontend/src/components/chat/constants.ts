@@ -3,7 +3,6 @@ import GetStarted from "../../assets/GetStarted.svg";
 import SummaryIcon from "../../assets/SummaryIcon.svg";
 import AnalyseIcon from "../../assets/AnalyseIcon.svg";
 
-// const URL_PATTERN = /(https?:\/\/[^\s]+)/g; // Detect URLs
 const URL_PATTERN =
 	/(?:https?:\/\/|www\.|(?<!@)\b)[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})(:[0-9]{1,5})?(\/\S*)?/g;
 const REPORT_GENERATION = ["summary", "generation", "report", "analysis"];
@@ -14,7 +13,7 @@ const NEGATION_PATTERNS = [
 	/n't\b/i,
 ];
 
-const SPECIFIC_REPORT_PATTERN = /^i want to generate a report$/i; // Exact match for "I want to generate a report"
+const SPECIFIC_REPORT_PATTERN = /^generate a report$/i; // Exact match for "I want to generate a report"
 
 const CLARIFICATION_PATTERNS =
 	/\b(difference|compare|how|why|explain|what is|vs|versus)\b/i;

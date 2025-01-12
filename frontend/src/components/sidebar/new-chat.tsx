@@ -6,21 +6,10 @@ import useChatActionStore from "../../store/chatActions";
 
 export function NewChat() {
 	const navigate = useNavigate();
-	const {
-		setCreatedChatId,
-		setMessages,
-		setPendingAction,
-		setFetchChatsRegurlarly,
-		setTargetUrl,
-	} = useChatActionStore();
+	const { clearStore } = useChatActionStore();
 
 	const handleNewChat = () => {
-		setCreatedChatId(null);
-		setMessages([]);
-		setPendingAction(null);
-		setTargetUrl("");
-		setFetchChatsRegurlarly(false);
-
+		clearStore();
 		navigate("/chatbot");
 	};
 

@@ -45,8 +45,8 @@ import {
 	NEGATION_PATTERNS,
 	CLARIFICATION_PATTERNS,
 	SCANTYPES,
-	SPECIFIC_REPORT_PATTERN,
 } from "./constants";
+import { isReportRequest } from "./helpers";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -54,6 +54,7 @@ const MiraChatBot: React.FC = () => {
 	const [confirmType, setConfirmType] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [streaming, setStreaming] = useState(false);
+	const [chatsLoader, setChatsLoader] = useState(false);
 	const [info, setInfo] = useState<Info[]>([]);
 	const [isScanLoading, setIsScanLoading] = useState(false);
 	const [progress, setProgress] = useState(0);
@@ -105,24 +106,27 @@ const MiraChatBot: React.FC = () => {
 		api.chats.getChatHistory,
 		fetchChatsRegurlarly && isValidChatId ? { chatId: chatId } : "skip",
 	);
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
-		// const fetchData = async () => {
 		if (chatIdParam) {
+			setChatsLoader(true);
 			setFetchChatsRegurlarly(true);
 			if (isValidChatId !== undefined) {
+				setFetchChatsRegurlarly(false);
 				if (isValidChatId) {
 					setFetchChatsRegurlarly(true);
 				} else {
 					setMessages([]);
 					setFetchChatsRegurlarly(false);
 					navigate("/chatbot");
+					setChatsLoader(false);
 				}
 			}
+		} else {
+			setMessages([]);
 		}
-		// };
-		// fetchData();
-	}, [chatIdParam, setFetchChatsRegurlarly, isValidChatId]);
+	}, [chatIdParam, isValidChatId]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
@@ -131,9 +135,8 @@ const MiraChatBot: React.FC = () => {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
-		let mounted = true;
-
-		if (chatData && mounted) {
+		// setMessages(null);
+		if (chatData) {
 			const chatHistory: Message[] = chatData.map(
 				(chat: ChatHistory): Message => ({
 					id: chat._id,
@@ -143,10 +146,11 @@ const MiraChatBot: React.FC = () => {
 					sender: chat.sender as "user" | "ai",
 				}),
 			);
-
 			setMessages(chatHistory);
+
+			setChatsLoader(false);
 		}
-		if (folderData && mounted) {
+		if (folderData) {
 			const newFolders: FolderItem[] = folderData.map(
 				(item: FolderType): FolderItem => ({
 					id: item._id,
@@ -157,10 +161,6 @@ const MiraChatBot: React.FC = () => {
 
 			setFoldersList(newFolders);
 		}
-
-		return () => {
-			mounted = false;
-		};
 	}, [chatData, folderData]);
 
 	const handleTitleGeneration = async (messages: string) => {
@@ -196,12 +196,7 @@ const MiraChatBot: React.FC = () => {
 			pattern.test(lowerPrompt),
 		);
 		const isClarification = CLARIFICATION_PATTERNS.test(lowerPrompt);
-		// const isReportRequest = new RegExp(
-		// 	REPORT_GENERATION.map((keyword) => `\\b${keyword}\\b`).join("|"),
-		// 	"i",
-		// ).test(lowerPrompt);
-
-		const isSpecificReportRequest = SPECIFIC_REPORT_PATTERN.test(lowerPrompt);
+		const reportRequest = isReportRequest(lowerPrompt);
 
 		if (hasNegation) {
 			setIsLoading(true);
@@ -245,7 +240,7 @@ const MiraChatBot: React.FC = () => {
 			}
 			setPendingAction(botMessage.id as string);
 			requestHumanApproval("scan", manualMessage, "none", botMessage.id);
-		} else if (isSpecificReportRequest) {
+		} else if (reportRequest) {
 			const manualMessage = "Thank you for your request.";
 			const botMessage: Message = {
 				id: uuidv4(),
@@ -913,7 +908,6 @@ const MiraChatBot: React.FC = () => {
 		<div className="flex justify-center">
 			<div className="flex flex-col space-y-6 w-3/4 h-full md:h-[90vh] rounded-lg p-4">
 				{messages?.length === 0 ? (
-					// Handle the case where `messages` is an empty array
 					<>
 						<div className="flex flex-col items-center justify-center w-full h-2/4">
 							<motion.div
@@ -938,8 +932,11 @@ const MiraChatBot: React.FC = () => {
 							</motion.h1>
 						</div>
 					</>
-				) : messages && messages.length > 0 ? (
-					// Render messages if the array contains items
+				) : chatsLoader ? (
+					<div className="flex items-center justify-center w-full h-full">
+						<Spinner />
+					</div>
+				) : (
 					<ScrollArea ref={scrollAreaRef} className="flex-1 p-4 w-full">
 						{messages.map((message) => {
 							const isPendingAction =
@@ -1022,10 +1019,6 @@ const MiraChatBot: React.FC = () => {
 							</motion.div>
 						)}
 					</ScrollArea>
-				) : (
-					<div className="flex items-center justify-center w-full h-full">
-						<Spinner />
-					</div>
 				)}
 				{isScanLoading && (
 					<div className="space-y-2">

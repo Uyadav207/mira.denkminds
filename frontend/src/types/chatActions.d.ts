@@ -20,4 +20,5 @@ export interface ChatActionStore {
 	setActionType: (type: string | null) => void;
 	setHumanInTheLoopMessage: (message: string | null) => void;
 	addMessage: (message: Message) => void;
+	clearStore: () => void;
 }
