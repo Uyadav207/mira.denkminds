@@ -21,7 +21,7 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 
 				<BadgeInfo
 					onClick={() => setShowInfo(true)}
-					className="h-4 w-4 cursor-aut text-black"
+					className="h-4 w-4 cursor-pointer text-black"
 				/>
 			</div>
 
@@ -30,7 +30,7 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 					<Button
 						key={action.id}
 						variant="secondary"
-						size="lg"
+						size="sm"
 						onClick={() =>
 							onConfirm(action.name, action.type, action.id)
 						}

@@ -1,6 +1,7 @@
 import type { ScanResult } from "../types/zap-scan";
 import axiosInstance from "./axios";
 
+// import data from "../components/chat/testData.json";
 interface scanPayload {
 	url: string;
 	complianceStandard: string;
@@ -16,7 +17,7 @@ const scanWithProgress = async (
 	onProgress: (progress: number) => void,
 ) => {
 	let progress = 0;
-	const totalSteps = 20; // Simulate 20 steps in the API process
+	const totalSteps = 30; // Simulate 20 steps in the API process
 	// const resultsResponse = axiosInstance.post("/zap/spider-scan", payload);
 	const resultsResponse = axiosInstance.post("/zap/baseline-scan", payload);
 
@@ -25,6 +26,7 @@ const scanWithProgress = async (
 		progress += 100 / totalSteps;
 		onProgress(Math.min(progress, 100));
 	}
+
 	return resultsResponse;
 };
 
@@ -49,7 +51,7 @@ const detailedReportGeneration = async (
 	onProgress: (progress: number) => void,
 ) => {
 	let progress = 0;
-	const totalSteps = 20; // Simulate 20 steps in the API process
+	const totalSteps = 10; // Simulate 20 steps in the API process
 	const resultsResponse = axiosInstance.post("/chat/detailed/summary", {
 		scanResults: payload,
 	});
