@@ -14,8 +14,8 @@ const HumanInTheLoopApproval: React.FC<HumanInTheLoopProps> = ({
 	confirmType,
 }) => {
 	return (
-		<div className="flex flex-col mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-primary">
-			<p className="mb-4 font-semibold">{message}</p>
+		<div className="flex flex-col mt-4 p-4 bg-[#eeedff] border-l-4 border-[#7156DB] mb-4 rounded-lg rounded-l-none">
+			<p className="text-gray-950 mb-4">{message}</p>
 			<div className="flex space-x-4">
 				<Button
 					variant="secondary"

@@ -153,8 +153,7 @@ export class ChatService {
 	}
 
 	async generateTitle(botMessage: string): Promise<string> {
-		const systemMessage = `Generate a short, concise title maximum 6 words without quotes for the following paragraph: ${botMessage}`;
-		console.log(systemMessage);
+		const systemMessage = `Generate a short, concise title maximum 6 words without any quotatations for the following paragraph: ${botMessage}`;
 
 		const messages: ChatCompletionMessageParam[] = [
 			{ role: "system", content: systemMessage },
