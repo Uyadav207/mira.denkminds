@@ -11,13 +11,13 @@ const useStore = create<UserState>()(
 			setUser: (user) => set((state) => ({ ...state, user })),
 			setToken: (token) => set({ token }),
 			logout: () => {
-				sessionStorage.clear();
+				localStorage.clear();
 				set({ user: null, token: null });
 			},
 		}),
 		{
 			name: "userData",
-			storage: createJSONStorage(() => sessionStorage),
+			storage: createJSONStorage(() => localStorage),
 		},
 	),
 );

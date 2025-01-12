@@ -33,9 +33,6 @@ export function FolderGrid({
 					>
 						<FolderIcon className="h-8 w-8" />
 						<span>{folder.name}</span>
-						<span className="text-xs text-muted-foreground">
-							{folder.files.length} files
-						</span>
 					</Button>
 				))}
 			</div>
