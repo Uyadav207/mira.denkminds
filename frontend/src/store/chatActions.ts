@@ -32,7 +32,8 @@ const useChatActionStore = create<ChatActionStore>()(
 			setActionPrompts: (
 				action: { id: string; name: string; type: string }[],
 			) => set(() => ({ actionPrompts: action })),
-			setActionType: (type: string | null) => set(() => ({ actionType: type })),
+			setActionType: (type: string | null) =>
+				set(() => ({ actionType: type })),
 			setHumanInTheLoopMessage: (message: string | null) =>
 				set(() => ({ humanInTheLoopMessage: message })),
 			addMessage: (message: Message) =>

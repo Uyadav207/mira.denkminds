@@ -18,7 +18,7 @@ export function NewChat() {
 			<SidebarMenuItem>
 				<SidebarMenuButton
 					tooltip="New Chat"
-					className="flex bg-secondary justify-center cursor-pointer"
+					className="flex bg-secondary justify-center border border-sidebar"
 					onClick={handleNewChat}
 				>
 					<Plus />

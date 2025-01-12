@@ -32,7 +32,7 @@ const ScanInfo: React.FC = () => {
 			id: "last-scan",
 			label: "Last Scan",
 			value: scanData._creationTime
-				? new Date(scanData._creationTime).toLocaleString()
+				? new Date(scanData._creationTime).toLocaleDateString()
 				: "Not available",
 		},
 		{
@@ -48,18 +48,18 @@ const ScanInfo: React.FC = () => {
 				{scanDetails.map((item) => (
 					<div key={item.id}>
 						<div className="flex justify-between items-center">
-							<span className="text-sm font-medium mb-6">
+							<span className="text-sm text-[#7156DB] font-bold mb-6">
 								{item.label}
 							</span>
 
 							<div className="flex items-center w-3/4 gap-x-2">
-								<span className="text-sm  mb-6 break-all">
+								<span className="text-sm mb-6 break-all">
 									{item.value}
 								</span>
 								{/* Copy Icon */}
 								{item.copyable && (
 									<Button
-										className="mb-6"
+										className="mb-6 bg-white hover:bg-gray-100"
 										variant="default"
 										onClick={() =>
 											navigator.clipboard.writeText(

@@ -22,11 +22,11 @@ const DonutChart: React.FC = () => {
 	useEffect(() => {
 		if (scanData) {
 			const riskColors: Record<string, string> = {
-				Critical: "#800000",
-				High: "#FF4C4C",
-				Medium: "#FFB24C",
-				Low: "#4C4CFF",
-				Informational: "#4CCAFF",
+				Critical: "#DC2625",
+				High: "#EA590A",
+				Medium: "#A754F8",
+				Low: "#EAB305",
+				Informational: "#3c82f6",
 			};
 
 			const transformedData = Object.entries(scanData)
@@ -73,7 +73,7 @@ const DonutChart: React.FC = () => {
 							<Cell
 								key={`cell-${entry.name}`}
 								fill={entry.color}
-								stroke="#fff"
+								stroke="bg-secondary"
 								strokeWidth={
 									hoveredSegment === entry.name ? 2 : 1
 								}
@@ -123,7 +123,7 @@ const DonutChart: React.FC = () => {
 								backgroundColor: entry.color,
 							}}
 						/>
-						<p className="text-sm text-gray-700">{entry.name}</p>
+						<p className="text-sm px-1">{entry.name}</p>
 					</div>
 				))}
 			</div>

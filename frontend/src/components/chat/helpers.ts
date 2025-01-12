@@ -10,7 +10,9 @@ const REPORT_PATTERNS = {
 
 const isReportRequest = (lowerPrompt: string): boolean => {
 	if (
-		REPORT_PATTERNS.EXACT_COMMANDS.some((pattern) => pattern.test(lowerPrompt))
+		REPORT_PATTERNS.EXACT_COMMANDS.some((pattern) =>
+			pattern.test(lowerPrompt),
+		)
 	) {
 		return true;
 	}
