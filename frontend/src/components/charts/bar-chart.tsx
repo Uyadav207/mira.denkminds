@@ -13,6 +13,10 @@ type CategorizedData = {
 };
 
 const ChartComponent: React.FC = () => {
+	const THEME =
+		typeof window !== "undefined"
+			? localStorage.getItem("vite-ui-theme")
+			: null;
 	const { scanId } = useParams<{ scanId: string }>();
 	const [categorizedData, setCategorizedData] =
 		useState<CategorizedData | null>(null);
@@ -31,7 +35,11 @@ const ChartComponent: React.FC = () => {
 	}, [listurls]);
 
 	if (loading || !categorizedData) {
-		return <div style={{ color: "#fff" }}>Loading...</div>;
+		return (
+			<div style={{ color: THEME === "dark" ? "#FFF" : "#000" }}>
+				Loading...
+			</div>
+		);
 	}
 
 	const riskLevels = ["Critical", "High", "Medium", "Low", "Info"];
@@ -61,38 +69,54 @@ const ChartComponent: React.FC = () => {
 			categories,
 			title: {
 				text: "Request Type",
-				style: { fontSize: "14px", fontWeight: "bold", color: "#000" },
+				style: {
+					fontSize: "14px",
+					fontWeight: "bold",
+					color: THEME === "dark" ? "#FFF" : "#000",
+				},
 			},
 			labels: {
-				style: { fontSize: "14px", colors: "#000" },
+				style: {
+					fontSize: "14px",
+					colors: THEME === "dark" ? "#FFF" : "#000",
+				},
 			},
 		},
 		yaxis: {
 			title: {
 				text: "Number of Vulnerabilities",
-				style: { fontSize: "14px", fontWeight: "bold", color: "#000" },
+				style: {
+					fontSize: "20px",
+					fontWeight: "bold",
+					color: THEME === "dark" ? "#FFF" : "#000",
+				},
 			},
-			labels: { style: { fontSize: "14px", colors: "#000" } },
+			labels: {
+				style: {
+					fontSize: "15px",
+					colors: THEME === "dark" ? "#FFF" : "#000",
+				},
+			},
 		},
 		legend: {
 			position: "bottom",
 			horizontalAlign: "center",
 			offsetY: 10,
-			labels: { colors: "#000" },
+			labels: { colors: THEME === "dark" ? "#FFF" : "#000" },
 		},
 		fill: { opacity: 1 },
-		colors: ["#FF4560", "#FF7F50", "#FEB019", "#008FFB", "#00E396"],
+		colors: ["#DC2625", "#EA590A", "#A754F8", "#EAB305", "#3c82f6"],
 		tooltip: {
 			y: { formatter: (val: number) => `${val} vulnerabilities` },
 		},
 		dataLabels: {
 			enabled: true,
-			style: { colors: ["#000"] },
+			style: { colors: [THEME === "dark" ? "#FFF" : "#000"] },
 		},
 	};
 
 	return (
-		<div className="flex flex-col justify-center w-full p-6">
+		<div className="flex flex-col justify-center w-full p-3">
 			<Chart
 				options={options}
 				series={series}
