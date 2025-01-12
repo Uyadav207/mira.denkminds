@@ -9,6 +9,7 @@ import { useQuery, useMutation } from "convex/react";
 
 import { api } from "../../convex/_generated/api";
 import Vulnerability from "../scans/Vulnerability";
+import vulnerabilities from "../../pages/scans/vulnerabilities/vulnerabilities";
 
 
 export function PrintableTemplate() {
