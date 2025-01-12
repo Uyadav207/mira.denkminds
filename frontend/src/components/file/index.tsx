@@ -29,9 +29,7 @@ export function FileView() {
 			) : (
 				<div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
 					<div className="flex justify-between items-center mb-4">
-						<h1 className="text-xl font-bold dark:text-white">
-							{file.name}
-						</h1>
+						<h1 className="text-xl font-bold dark:text-white">{file.name}</h1>
 						<Button
 						// onClick={downloadAsPDF}
 						>

@@ -68,9 +68,7 @@ export function Reports() {
 		}
 	}, [folderData]);
 
-	const currentFolder = folders.find(
-		(folder) => folder.id === currentFolderId,
-	);
+	const currentFolder = folders.find((folder) => folder.id === currentFolderId);
 
 	return (
 		<div className="flex flex-1 flex-col gap-4 p-4">
@@ -79,9 +77,7 @@ export function Reports() {
 			) : (
 				<div>
 					{folders.length === 0 ? (
-						<EmptyState
-							onCreateFolder={() => setIsCreateDialogOpen(true)}
-						/>
+						<EmptyState onCreateFolder={() => setIsCreateDialogOpen(true)} />
 					) : reportId ? (
 						<FolderView
 							folder={currentFolder as Folder}
@@ -93,9 +89,7 @@ export function Reports() {
 						folders && (
 							<FolderGrid
 								folders={folders}
-								onCreateFolder={() =>
-									setIsCreateDialogOpen(true)
-								}
+								onCreateFolder={() => setIsCreateDialogOpen(true)}
 								onFolderClick={(folderId) => {
 									navigate(`/reports/${folderId}`);
 									setCurrentFolderId(folderId);
