@@ -25,3 +25,10 @@ export interface FolderItem {
 	name: string;
 	type: string;
 }
+
+export interface ConvexFolderType {
+	_id: string;
+	folderName: string;
+	type: "folder";
+	userId?: string;
+}

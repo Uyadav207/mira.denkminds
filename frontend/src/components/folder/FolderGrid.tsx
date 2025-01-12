@@ -32,10 +32,7 @@ export function FolderGrid({
 						onClick={() => onFolderClick(folder._id)}
 					>
 						<FolderIcon className="h-8 w-8" />
-						<span>{folder.folderName}</span>
-						<span className="text-xs text-muted-foreground">
-							{folder.files.length} files
-						</span>
+						<span>{folder.name}</span>
 					</Button>
 				))}
 			</div>

@@ -1,141 +1,103 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EmptyState } from "../components/folder/EmptyState";
 import { CreateFolderDialog } from "../components/folder/CreateFolderDialog";
 import { FolderGrid } from "../components/folder/FolderGrid";
 import { FolderView } from "../components/folder/FolderView";
-import { Loader2 } from "lucide-react";
+import type { Folder, ConvexFolderType } from "../types/reports";
 
-import useStore from "../store/store";
-
-import type { File, Folder } from "../types/reports";
-
-import { useQuery, useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { showErrorToast } from "../components/toaster";
-
-// Validation helper
-const validateFolderName = (name: string, existingFolders: Folder[]) => {
-	if (!name || name.trim().length === 0) {
-		return "Folder name cannot be empty";
-	}
-	if (name.length > 50) {
-		return "Folder name must be less than 50 characters";
-	}
-	if (
-		existingFolders.some(
-			(folder) => folder.folderName.toLowerCase() === name.toLowerCase(),
-		)
-	) {
-		return "A folder with this name already exists";
-	}
-	return null;
-};
+import { useMutation, useQuery } from "convex/react";
+import useStore from "../store/store";
+import { v4 as uuidv4 } from "uuid";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function Reports() {
+	const navigate = useNavigate();
+	const [folders, setFolders] = useState<Folder[]>([]);
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 	const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
-
-	// Get user from store
 	const user = useStore((state) => state.user);
-	if (!user) return null;
-	const { id } = user;
+	const { reportId: folderIdParams } = useParams<{ reportId: string }>();
+	const reportId = folderIdParams as string;
 
-	// Convex queries and mutations
-	const folders = useQuery(api.reports.getReportFoldersByUser, {
+	if (!user) {
+		return null;
+	}
+	const { id } = user;
+	const folderData = useQuery(api.reports.getReportFoldersByUser, {
 		userId: String(id),
 	});
-	const reports = useQuery(
+
+	const filesByFolder = useQuery(
 		api.reports.getReportsByFolder,
-		currentFolderId ? { folderId: currentFolderId } : "skip",
+		reportId && {
+			folderId: String(reportId),
+		},
 	);
 
-	const createFolder = useMutation(api.reports.createReportFolder);
-	const addReport = useMutation(api.reports.addReport);
-
-	// Handlers
+	const saveReport = useMutation(api.reports.createReportFolder);
 	const handleCreateFolder = async (name: string) => {
-		try {
-			const validationError = validateFolderName(name, folders || []);
-			if (validationError) {
-				showErrorToast(validationError);
-				return;
-			}
+		const newFolder: Folder = {
+			id: uuidv4(),
+			name: name,
+			files: [],
+			createdAt: new Date(),
+		};
 
-			await createFolder({
-				userId: String(id),
-				folderName: name.trim(),
-			});
-			setIsCreateDialogOpen(false);
-		} catch (err) {
-			if (err instanceof Error) {
-				showErrorToast(err.message || "Failed to create folder");
-			} else {
-				showErrorToast("Failed to create folder");
-			}
+		const response = await saveReport({
+			folderName: newFolder.name,
+			userId: String(id),
+		});
+		if (response) {
+			//success
 		}
 	};
 
-	const handleUploadFile = async (folderId: string, file: File) => {
-		try {
-			// Here you would typically upload the file to your storage service first
-			// For this example, we'll assume it returns a URL
-			const fileUrl = "your-file-url"; // Replace with actual file upload logic
+	useEffect(() => {
+		if (folderData) {
+			const newFolders: Folder[] = folderData.map(
+				(item: ConvexFolderType): Folder => ({
+					id: item._id,
+					name: item.folderName,
+					files: [],
+					createdAt: new Date(),
+				}),
+			);
 
-			await addReport({
-				folderId,
-				fileName: file.name,
-				fileUrl,
-			});
-		} catch (err) {
-			if (err instanceof Error) {
-				showErrorToast(err.message || "Failed to upload file");
-			} else {
-				showErrorToast("Failed to upload file");
-			}
+			setFolders(newFolders);
 		}
-	};
+	}, [folderData]);
 
-	// Loading state
-	if (folders === undefined) {
-		return (
-			<div className="flex h-96 items-center justify-center">
-				<Loader2 className="h-8 w-8 animate-spin" />
-			</div>
-		);
-	}
-
-	const currentFolder: Folder | undefined = folders?.find(
-		(folder: Folder) => folder._id === currentFolderId,
-	);
+	const currentFolder = folders.find((folder) => folder.id === currentFolderId);
 
 	return (
 		<div className="flex flex-1 flex-col gap-4 p-4">
-			{folders.length === 0 ? (
-				<EmptyState
-					onCreateFolder={() => setIsCreateDialogOpen(true)}
-				/>
-			) : currentFolder ? (
-				<FolderView
-					folder={{
-						_id: currentFolder._id,
-						folderName: currentFolder.folderName,
-						files: reports || [],
-						createdAt: new Date(currentFolder.createdAt),
-					}}
-					onUploadFile={handleUploadFile}
-					onBack={() => setCurrentFolderId(null)}
-				/>
+			{!folderData ? (
+				<div>Loading...</div>
 			) : (
-				<FolderGrid
-					folders={folders.map((f: Folder) => ({
-						_id: f._id,
-						folderName: f.folderName,
-						files: [],
-						createdAt: new Date(f.createdAt),
-					}))}
-					onCreateFolder={() => setIsCreateDialogOpen(true)}
-					onFolderClick={(folderId) => setCurrentFolderId(folderId)}
-				/>
+				<div>
+					{folders.length === 0 ? (
+						<EmptyState onCreateFolder={() => setIsCreateDialogOpen(true)} />
+					) : reportId ? (
+						<FolderView
+							folder={currentFolder as Folder}
+							reportId={reportId}
+							files={filesByFolder}
+							onBack={() => setCurrentFolderId(null)}
+						/>
+					) : (
+						folders && (
+							<FolderGrid
+								folders={folders}
+								onCreateFolder={() => setIsCreateDialogOpen(true)}
+								onFolderClick={(folderId) => {
+									navigate(`/reports/${folderId}`);
+									setCurrentFolderId(folderId);
+								}}
+							/>
+						)
+					)}
+				</div>
 			)}
 
 			<CreateFolderDialog

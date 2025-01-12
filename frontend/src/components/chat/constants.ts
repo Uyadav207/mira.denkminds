@@ -7,29 +7,48 @@ const URL_PATTERN = /(https?:\/\/[^\s]+)/g; // Detect URLs
 const REPORT_GENERATION = ["summary", "generation", "report", "analysis"];
 const NEGATION_PATTERN = /\b(do not|don't|no need to|stop|avoid)\b/i;
 const REPORT_KEYWORDS = ["report", "generate report", "summary", "summarize"];
-const GREETING_KEYWORDS = ["hello", "hi", "hey", "greetings", "howdy", "hallo"];
-
-const CREATE_FOLDER_ACTION = [
-	{
-		id: "1",
-		name: "Create New Folder",
-		type: "folder",
-	},
+const NEGATION_PATTERNS = [
+	/\b(?:not|no|never|none|neither|nor|without|won't|wouldn't|shouldn't|can't|cannot|couldn't|doesn't|didn't|isn't|aren't)\b/i,
+	/n't\b/i,
 ];
+
+const CLARIFICATION_PATTERNS =
+	/\b(difference|compare|how|why|explain|what is|vs|versus)\b/i;
+
+const CREATE_FOLDER_ACTION = [];
 const STANDARDS = [
 	{
 		id: "1",
 		name: "NIST",
-		type: "scan",
+		type: "standards",
+		description:
+			"The National Institute of Standards and Technology (NIST) develops and promotes standards to ensure innovation, security, and industrial competitiveness. It is widely used in cybersecurity frameworks.",
 	},
 	{
 		id: "2",
 		name: "ISO",
-		type: "scan",
+		type: "standards",
+		description:
+			"The International Organization for Standardization (ISO) creates globally recognized standards to ensure quality, safety, and efficiency across various industries and sectors.",
 	},
 	{
 		id: "3",
 		name: "GDPR",
+		type: "standards",
+		description:
+			"The General Data Protection Regulation (GDPR) is a European Union regulation that governs data privacy and security, ensuring individuals have greater control over their personal data.",
+	},
+];
+
+const SCANTYPES = [
+	{
+		id: "1",
+		name: "Passive Scan",
+		type: "scan",
+	},
+	{
+		id: "2",
+		name: "Active Scan",
 		type: "scan",
 	},
 ];
@@ -84,6 +103,7 @@ const UPDATED_ACTION_CARDS = [
 ];
 
 export {
+	SCANTYPES,
 	CREATE_FOLDER_ACTION,
 	STANDARDS,
 	REPORTS,
@@ -93,5 +113,6 @@ export {
 	INITIAL_ACTION_CARDS,
 	UPDATED_ACTION_CARDS,
 	REPORT_KEYWORDS,
-	GREETING_KEYWORDS,
+	NEGATION_PATTERNS,
+	CLARIFICATION_PATTERNS,
 };

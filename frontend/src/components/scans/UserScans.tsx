@@ -128,7 +128,7 @@ const UserScans: React.FC = () => {
 									: "bg-red-500"
 							}`}
 						/>
-						<span className="text-purple-600 hover:underline">
+						<span className="text-[#7156DB] hover:underline">
 							{scan.targetUrl}
 						</span>
 						<Badge variant="secondary">

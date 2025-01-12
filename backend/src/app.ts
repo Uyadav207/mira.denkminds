@@ -5,12 +5,13 @@ import { cors } from "hono/cors";
 // import { rag } from "./routes/rag";
 import { logger } from "hono/logger";
 import { errorHandler } from "./middlewares/errorHandler";
+import type { Finding, FindingBaseline } from "./types/scan";
 
 import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
 import { reportRoutes } from "./routes/reportRoutes";
 import zapRoutes from "./routes/zapRoutes";
-// import { chatRoutes } from "./routes/chatRoute";
+import { chatRoutes } from "./routes/chatRoute";
 
 const app = new Hono();
 
@@ -25,20 +26,19 @@ app.use("*", errorHandler);
 // Routes
 app.route("/auth", authRoutes);
 app.route("/users", userRoutes);
-// app.route("/chat", chatRoutes);
+app.route("/chat", chatRoutes);
 // app.route("/rag", rag);
 app.route("/reports", reportRoutes);
 app.route("/zap", zapRoutes);
 
-const OLLAMA_HOST = "https://1471-35-236-242-36.ngrok-free.app"; // Change this to your Ollama API URL
-// app.route("/chat", chatRoute);
+const OLLAMA_HOST = "https://40c6-34-73-164-157.ngrok-free.app"; // Change this to your Ollama API URL
 app.route("/reports", reportRoutes);
 
 app.post("/api/generate-title", async (c) => {
 	try {
-		const { initialMessage } = await c.req.json();
+		const { botMessage } = await c.req.json();
 
-		if (!initialMessage) {
+		if (!botMessage) {
 			return c.json({ error: "Initial message is required" }, 400);
 		}
 
@@ -48,7 +48,7 @@ app.post("/api/generate-title", async (c) => {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				prompt: `Generate a short, concise title (max 6 words) for the following conversation: ${initialMessage}`,
+				prompt: `Generate a short, concise title for the following answer: ${botMessage}`,
 				model: "mistral",
 				max_tokens: 30,
 				stream: false,
@@ -114,53 +114,399 @@ app.post("/api/chat", async (c) => {
 		return c.json({ message: e });
 	}
 });
-app.post("/api/chat/summary", async (c) => {
-	const { messages } = await c.req.json();
-	console.log("Messages:", messages);
-	try {
-		// Format the chat history into a single string for processing
-		const chatHistory = messages
-			.map((msg) => {
-				const role = msg.sender === "user" ? "User" : "Assistant";
-				return `${role}: ${msg.message}`;
-			})
-			.join("\n");
 
-		// Create the prompt for summarization
-		const prompt = `Please provide a summary of the following chat conversation:\n\n${chatHistory}`;
-		console.log("Prompt:", prompt);
+app.post("/api/summary", async (c) => {
+	const { scanResults } = await c.req.json();
+	const prompt = `
+		Analyze the following OWASP ZAP security scan results for ${scanResults.targetUrl} and provide a comprehensive security assessment:
+
+		Target Information:
+		- URL: ${scanResults.targetUrl}
+		- Compliance Standard: ${scanResults.complianceStandard}
+		- Total Vulnerabilities: ${scanResults.filteredResults.total_vulnerabilities}
+		- Risk Distribution: ${Object.entries(
+			scanResults.filteredResults.total_risks,
+		)
+			.map(([level, count]) => `${level}: ${count}`)
+			.join(", ")}
+
+		Detailed Findings:
+		${scanResults.filteredResults.findings
+			.map(
+				(finding: Finding, index: number) => `
+		${index + 1}. ${finding.name}
+		- Risk Level: ${finding.url_details[0]?.risk_level || "Unknown"}
+		- Description: ${finding.description}
+		- Impact: Based on CWE-${finding.cwe_id}
+		- CVEs: ${finding.cve_ids.length ? finding.cve_ids.join(", ") : "None identified"}
+		- Solution: ${finding.solution}
+		`,
+			)
+			.join("\n")}
+		Format the response in markdown with clear sections and bullet points for readability.
+
+		Please provide:
+		1. Executive Summary: A brief overview of the scan results and their potential business impact
+		2. Critical Findings: Highlight the most severe vulnerabilities that require immediate attention
+		3. Risk Analysis: Break down the findings by risk level and provide context for each category
+		4. Remediation Roadmap: Prioritized list of recommendations with:
+		- Immediate actions (24-48 hours)
+		- Short-term fixes (1-2 weeks)
+		- Long-term security improvements
+		5. Technical Details: Include specific CVEs and their implications
+	`;
+
+	try {
 		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
-			
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
 				prompt: prompt,
-				model: "summary-model", // Use the custom model we defined
-				stream: false,
-				
+				model: "mistral-cyber",
+				stream: true,
 			}),
 		});
 
-		const output = await response.json();
-
-		// Format the response
-		return c.json({
-			summary: output.response,
-			originalMessageCount: messages.length,
-			timestamp: new Date().toISOString(),
-		});
-	}
-	catch (e) {
-		console.error("Error generating summary:", e);
-		return c.json(
-			{
-				error: "Failed to generate summary",
-				details: e.message,
+		const reader = response.body?.getReader();
+		const decoder = new TextDecoder();
+		const stream = new ReadableStream({
+			start(controller) {
+				function push() {
+					reader?.read().then(({ done, value }) => {
+						if (done) {
+							controller.close();
+							return;
+						}
+						controller.enqueue(decoder.decode(value));
+						push();
+					});
+				}
+				push();
 			},
-			500,
-		);
+		});
+
+		return new Response(stream, {
+			headers: { "Content-Type": "text/event-stream" },
+		});
+	} catch (e) {
+		return c.json({ message: e });
 	}
 });
+
+app.post("/api/summary/v2", async (c) => {
+	const { scanResults } = await c.req.json();
+	const totalVulnerabilities = scanResults.totals;
+
+	// Create risk distribution string
+	const riskDistribution = Object.entries({
+		Critical: scanResults.totals.critical,
+		High: scanResults.totals.high,
+		Medium: scanResults.totals.medium,
+		Low: scanResults.totals.low,
+		Informational: scanResults.totals.informational,
+	})
+		.map(([level, count]) => `${level}: ${count}`)
+		.join(", ");
+
+	// Format findings
+	const formattedFindings = scanResults.filteredAlerts
+		.map(
+			(finding: FindingBasline, index: number) => `
+	  ${index + 1}. ${finding.name}
+	  - Risk Level: ${finding.riskdesc}
+	  - Description: ${finding.desc}
+	  - Impact: Based on CWE-${finding.cweid}
+  	  - CVEs: ${
+				Array.isArray(finding.cve_id) && finding.cve_id.length > 0
+					? finding.cve_id.join(", ")
+					: "None identified"
+			}
+	  - Solution: ${finding.solution}
+	  `,
+		)
+		.join("\n");
+
+	const prompt = `		
+						Analyze the following OWASP ZAP security scan results for ${scanResults.targetUrl} and provide a comprehensive security assessment:
+
+						Target Information:
+						- URL: ${scanResults.targetUrl}
+						- Compliance Standard: ${scanResults.complianceStandardUrl}
+						- Total Vulnerabilities: ${totalVulnerabilities}
+						- Risk Distribution: ${riskDistribution}
+
+						Detailed Findings:
+						${formattedFindings}
+
+						Please provide:
+						1. Executive Summary: A brief overview of the scan results and their potential business impact
+						2. Critical Findings: Highlight the most severe vulnerabilities that require immediate attention
+						3. Risk Analysis: Break down the findings by risk level and provide context for each category
+						4. Remediation Roadmap: Prioritized list of recommendations with:
+						- Immediate actions (24-48 hours)
+						- Short-term fixes (1-2 weeks)
+						- Long-term security improvements
+						5. Technical Details: Include specific CVEs and their implications
+
+						Format the response in markdown with clear sections and bullet points for readability.			
+	`;
+
+	try {
+		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				prompt: prompt,
+				model: "mistral-cyber",
+				stream: true,
+			}),
+		});
+
+		const reader = response.body?.getReader();
+		const decoder = new TextDecoder();
+		const stream = new ReadableStream({
+			start(controller) {
+				function push() {
+					reader?.read().then(({ done, value }) => {
+						if (done) {
+							controller.close();
+							return;
+						}
+						controller.enqueue(decoder.decode(value));
+						push();
+					});
+				}
+				push();
+			},
+		});
+
+		return new Response(stream, {
+			headers: { "Content-Type": "text/event-stream" },
+		});
+	} catch (e) {
+		return c.json({ message: e });
+	}
+});
+app.post("/api/detailed-vulnerability-report", async (c) => {
+	// const { scanResults } = await c.req.json();
+	// const totalVulnerabilities = scanResults.totals;
+
+	// Create risk distribution string
+	// const riskDistribution = Object.entries({
+	// 	Critical: scanResults.totals.critical,
+	// 	High: scanResults.totals.high,
+	// 	Medium: scanResults.totals.medium,
+	// 	Low: scanResults.totals.low,
+	// 	Informational: scanResults.totals.informational,
+	// })
+	// 	.map(([level, count]) => `${level}: ${count}`)
+	// 	.join(", ");
+
+	// Format findings
+
+	// const prompt = `
+	// 					Generate a vulnerability report based on the following data in Markdown format:
+
+	// 						- Application Name: ${scanResults.targetUrl}
+	// 						- Report Date: ${new Date().toLocaleDateString()}
+	// 						- Compliance Standard: ${scanResults.complianceStandard}
+	// 						- Total Vulnerabilities: ${totalVulnerabilities}
+	// 						- Risks:
+	// 						${Object.entries(scanResults.filteredResults.total_risks)
+	// 							.map(([severity, count]) => `  - ${severity}: ${count}`)
+	// 							.join("\n")}
+
+	// 						Findings:
+	// 						${scanResults.filteredResults.findings
+	// 							.map(
+	// 								(finding, index) => `
+	// 						${index + 1}. ${finding.name}
+	// 						- Severity: ${finding.url_details[0]?.risk_level || "Unknown"}
+	// 						- Description: ${finding.description}
+	// 						- Impact: ${finding.compliance_details.join(", ")}
+	// 						- Recommendation: ${finding.solution}`,
+	// 							)
+	// 							.join("\n")}
+	// 						---
+
+	// 						Output format in Markdown:
+	// 						# Vulnerability Report
+
+	// 						## Website Name: {applicationName}
+	// 						### Report Date: {reportDate}
+
+	// 						---
+
+	// 						## Summary
+	// 						This report details vulnerabilities identified during a recent security assessment.
+
+	// 						### Key Findings:
+	// 						{keyFindings}
+
+	// 						---
+
+	// 						## Vulnerabilities
+
+	// 						{vulnerabilities}
+
+	// 						---
+
+	// 						## Recommendations
+	// 						{recommendations}
+	// `;
+
+	const { scanResults } = await c.req.json();
+	console.log(scanResults);
+	const totalVulnerabilities = scanResults.totals;
+
+	// Create risk distribution string
+	const riskDistribution = Object.entries({
+		Critical: scanResults.totals.critical,
+		High: scanResults.totals.high,
+		Medium: scanResults.totals.medium,
+		Low: scanResults.totals.low,
+		Informational: scanResults.totals.informational,
+	})
+		.map(([level, count]) => `${level}: ${count}`)
+		.join(", ");
+
+	// Format findings
+	const formattedFindings = scanResults.filteredAlerts
+		.map(
+			(finding: FindingBasline, index: number) => `
+	  ${index + 1}. ${finding.name}
+	  - Risk Level: ${finding.riskdesc}
+	  - Description: ${finding.desc}
+	  - Impact: Based on CWE-${finding.cweid}
+  	  - CVEs: ${
+				Array.isArray(finding.cve_id) && finding.cve_id.length > 0
+					? finding.cve_id.join(", ")
+					: "None identified"
+			}
+	  - Solution: ${finding.solution}
+	  `,
+		)
+		.join("\n");
+
+	const prompt = `		
+						Generate a detailed Vulnerability report in markdown form for ${scanResults.targetUrl} and provide a comprehensive security assessment:
+
+						Target Information:
+						- URL: ${scanResults.targetUrl}
+						- Compliance Standard: ${scanResults.complianceStandardUrl}
+						- Total Vulnerabilities: ${totalVulnerabilities}
+						- Risk Distribution: ${riskDistribution}
+
+						Detailed Findings:
+						${formattedFindings}
+
+						Please provide:
+						1. Executive Summary: A brief overview of the scan results and their potential business impact
+						2. Critical Findings: Highlight the most severe vulnerabilities that require immediate attention
+						3. Risk Analysis: Break down the findings by risk level and provide context for each category
+						4. Remediation Roadmap: Prioritized list of recommendations with:
+						- Immediate actions (24-48 hours)
+						- Short-term fixes (1-2 weeks)
+						- Long-term security improvements
+						5. Technical Details: Include specific CVEs and their implications
+
+						Format the response in markdown with clear sections and bullet points for readability.
+												Output format in Markdown:
+	 						# Vulnerability Report
+
+	 						## Website Name: {applicationName}
+							### Report Date: {reportDate}
+
+							---
+
+							## Summary
+	 						This report details vulnerabilities identified during a recent security assessment.
+
+	 						### Key Findings:
+							{keyFindings}
+
+	 						---
+
+	 						## Vulnerabilities
+
+							{vulnerabilities}
+
+	 						---
+
+	 						## Recommendations
+	 						{recommendations}	
+	 
+						
+	`;
+
+	try {
+		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				prompt: prompt,
+				model: "mistral-cyber",
+				stream: false,
+			}),
+		});
+		const result = await response.json();
+
+		console.log(result);
+
+		return c.json(result);
+	} catch (e) {
+		return c.json({ message: e });
+	}
+});
+
+app.post("/api/chat/summary", async (c) => {
+	const { messages } = await c.req.json();
+
+	const prompt = messages.join("\n");
+
+	try {
+		const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				prompt: prompt,
+				model: "summary-model",
+				stream: true,
+			}),
+		});
+
+		const reader = response.body?.getReader();
+		const decoder = new TextDecoder();
+		const stream = new ReadableStream({
+			start(controller) {
+				function push() {
+					reader?.read().then(({ done, value }) => {
+						if (done) {
+							controller.close();
+							return;
+						}
+						controller.enqueue(decoder.decode(value));
+						push();
+					});
+				}
+				push();
+			},
+		});
+
+		return new Response(stream, {
+			headers: { "Content-Type": "text/event-stream" },
+		});
+	} catch (e) {
+		return c.json({ message: e });
+	}
+});
+
 export default app;

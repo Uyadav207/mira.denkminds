@@ -30,6 +30,7 @@ import { ChatSummaries } from "./components/PDF/ChatSummaries";
 //   const handleBack = () => {
 // 	console.log("Back to previous view");
 //   };
+import { FileView } from "./components/file";
 
 const App = () => {
 	return (
@@ -69,9 +70,18 @@ const App = () => {
 								element={<Urls />}
 							/>
 							<Route path="/api-scan" element={<ApiScans />} />
-							<Route path="/reports" element={<Reports />} />
-							<Route path="/accounts" element={<ProfileSettings />} />
-							<Route path="chat-summaries" element={<ChatSummaries />} />
+							<Route
+								path="/reports/:reportId?"
+								element={<Reports />}
+							/>
+							<Route
+								path="/accounts"
+								element={<ProfileSettings />}
+							/>
+							<Route
+								path="/file/:fileId"
+								element={<FileView />}
+							/>
 						</Route>
 					</Routes>
 				</Router>

@@ -128,3 +128,16 @@ export const deleteScanAndRelatedData = mutation({
 		};
 	},
 });
+
+export const fetchScanDetailsByScanId = query({
+	args: {
+		scanId: v.id("scans"),
+	},
+	handler: async (ctx, { scanId }) => {
+		const scan = await ctx.db.get(scanId);
+		if (!scan) {
+			throw new Error(`No scan found for scanId: ${scanId}`);
+		}
+		return scan;
+	},
+});
