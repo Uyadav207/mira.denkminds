@@ -26,7 +26,7 @@ export function FolderGrid({
 			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
 				{folders.map((folder, index) => (
 					<Button
-						key={`${folder._id}-${index}`}
+						key={`${folder.id}-${index}`}
 						variant="outline"
 						className="h-32 w-full flex flex-col items-center justify-center gap-2 hover:bg-sidebar"
 						onClick={() => onFolderClick(folder.id)}
