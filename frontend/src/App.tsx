@@ -29,8 +29,14 @@ const App = () => {
 						{/* <Route path="/" element={<Home />} /> */}
 						<Route path="/login" element={<Auth />} />
 						<Route path="/register" element={<Auth />} />
-						<Route path="/forgot-password" element={<ForgotPassword />} />
-						<Route path="/auth/callback" element={<AuthCallback />} />
+						<Route
+							path="/forgot-password"
+							element={<ForgotPassword />}
+						/>
+						<Route
+							path="/auth/callback"
+							element={<AuthCallback />}
+						/>
 						<Route
 							element={
 								<PrivateRoute>
@@ -38,9 +44,15 @@ const App = () => {
 								</PrivateRoute>
 							}
 						>
-							<Route path="/chatbot/:chatId?" element={<Chatbot />} />
+							<Route
+								path="/chatbot/:chatId?"
+								element={<Chatbot />}
+							/>
 							<Route path="/settings" element={<Settings />} />
-							<Route path="/recent-scan" element={<RecentScans />} />
+							<Route
+								path="/recent-scan"
+								element={<RecentScans />}
+							/>
 							<Route
 								path="/recent-scan/:scanId/"
 								element={<Vulnerabilities />}
@@ -50,9 +62,18 @@ const App = () => {
 								element={<Urls />}
 							/>
 							<Route path="/api-scan" element={<ApiScans />} />
-							<Route path="/reports/:reportId?" element={<Reports />} />
-							<Route path="/accounts" element={<ProfileSettings />} />
-							<Route path="/file/:fileId" element={<FileView />} />
+							<Route
+								path="/reports/:reportId?"
+								element={<Reports />}
+							/>
+							<Route
+								path="/accounts"
+								element={<ProfileSettings />}
+							/>
+							<Route
+								path="/file/:fileId"
+								element={<FileView />}
+							/>
 						</Route>
 						<Route path="*" element={<NotFound />} />
 					</Routes>
