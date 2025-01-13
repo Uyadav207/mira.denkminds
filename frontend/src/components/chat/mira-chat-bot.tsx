@@ -451,19 +451,23 @@ const MiraChatBot: React.FC = () => {
 					setPendingAction(null);
 					setIsScanLoading(true);
 					setProgress(0);
-					const response = await scanApis.scanWithProgress(
-						payload,
-						(progress) => {
-							setProgress(progress);
-						},
-					);
-					setScanResponse(response.data);
 
-					setIsScanLoading(false);
+					const response = await scanApis.scanWithProgress(payload);
+					let progress = 0;
+					const totalSteps = 10; // Simulate 20 steps in the API process
+					for (let i = 0; i < totalSteps; i++) {
+						await new Promise((resolve) =>
+							setTimeout(resolve, 500),
+						);
+						progress += 100 / totalSteps;
+						setProgress(Math.min(progress, 100));
+					}
+					setScanResponse(response.data);
 					addBotMessage(
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
 					);
 				} catch (error) {
+					setIsScanLoading(false);
 					addBotMessage(
 						"An error occurred while processing your request.",
 					);

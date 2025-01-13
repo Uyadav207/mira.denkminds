@@ -4,7 +4,7 @@ import SummaryIcon from "../../assets/SummaryIcon.svg";
 import AnalyseIcon from "../../assets/AnalyseIcon.svg";
 
 const URL_PATTERN =
-	/(?:https?:\/\/|www\.|(?<!@)\b)[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})(:[0-9]{1,5})?(\/\S*)?/g;
+	/(?:(?:https?:\/\/)|(?:www\.))?(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(?:[a-zA-Z]{2,}|[a-zA-Z0-9-]+\.[a-zA-Z]{2,})(?::\d{1,5})?(?:\/[^\s]*)?/g;
 const REPORT_GENERATION = ["summary", "generation", "report", "analysis"];
 const NEGATION_PATTERN = /\b(do not|don't|no need to|stop|avoid)\b/i;
 const REPORT_KEYWORDS = ["report", "generate report", "summary", "summarize"];
