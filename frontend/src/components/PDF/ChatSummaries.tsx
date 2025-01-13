@@ -88,10 +88,10 @@ export function ChatSummaries() {
     <div className="p-4">
       <Button
         variant="outline"
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/reports")}
         className="mb-4"
       >
-        Back to Home
+        Back to Folder
       </Button>
 
       <div className="rounded-lg">
