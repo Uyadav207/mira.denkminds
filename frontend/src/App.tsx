@@ -17,6 +17,7 @@ import Vulnerabilities from "./pages/scans/vulnerabilities/vulnerabilities";
 import Urls from "./pages/scans/VulnerableUrls/Urls";
 import { FileView } from "./components/file";
 import PrivateRoute from "./components/privateRoutes";
+import { NotFound } from "./pages/NotFound";
 
 const App = () => {
 	return (
@@ -53,6 +54,7 @@ const App = () => {
 							<Route path="/accounts" element={<ProfileSettings />} />
 							<Route path="/file/:fileId" element={<FileView />} />
 						</Route>
+						<Route path="*" element={<NotFound />} />
 					</Routes>
 				</Router>
 			</ThemeProvider>
