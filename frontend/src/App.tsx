@@ -16,6 +16,8 @@ import { ApiScans } from "./pages/scans/ApiScans";
 import Vulnerabilities from "./pages/scans/vulnerabilities/vulnerabilities";
 import Urls from "./pages/scans/VulnerableUrls/Urls";
 import { FileView } from "./components/file";
+import PrivateRoute from "./components/privateRoutes";
+import { NotFound } from "./pages/NotFound";
 
 const App = () => {
 	return (
@@ -35,7 +37,13 @@ const App = () => {
 							path="/auth/callback"
 							element={<AuthCallback />}
 						/>
-						<Route element={<Layout />}>
+						<Route
+							element={
+								<PrivateRoute>
+									<Layout />
+								</PrivateRoute>
+							}
+						>
 							<Route
 								path="/chatbot/:chatId?"
 								element={<Chatbot />}
@@ -67,6 +75,7 @@ const App = () => {
 								element={<FileView />}
 							/>
 						</Route>
+						<Route path="*" element={<NotFound />} />
 					</Routes>
 				</Router>
 			</ThemeProvider>
