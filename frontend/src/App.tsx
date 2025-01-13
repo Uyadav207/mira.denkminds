@@ -26,7 +26,7 @@ import { ChatSummaries } from "./components/PDF/ChatSummaries";
 // 	name: "Sample Folder",
 // 	files: [], // Add your mock files here
 //   };
-  
+
 //   const handleBack = () => {
 // 	console.log("Back to previous view");
 //   };
@@ -54,27 +54,26 @@ const App = () => {
 							path="/auth/callback"
 							element={<AuthCallback />}
 						/>
-						<Route
-							element={
-								<PrivateRoute>
-									<Layout />
-								</PrivateRoute>
-							}
-						/>
-							{/* <Route
+						{/* <Route
 								path="/chatbot/:chatId?"
 								element={<Chatbot />}
 							/> */}
-						 
-						 
-						
-						 {/* <Route path="/template/:templateId" element={<TemplateContentPage />} /> */}
-						
-						<Route element={<Layout />}>
-						<Route path="/printtemplate" element={<PrintableTemplate />} />
-						 <Route path="/chat/:_id" element={<ChatTemplate />} />
+
+
+
+						{/* <Route path="/template/:templateId" element={<TemplateContentPage />} /> */}
+
+						<Route element={
+							<PrivateRoute>
+
+								<Layout />
+							</PrivateRoute>
+						}
+						>
+							<Route path="/printtemplate" element={<PrintableTemplate />} />
+							<Route path="/chat/:_id" element={<ChatTemplate />} />
 							<Route path="/chatbot/:chatId?" element={<Chatbot />} />
-							<Route path="chat-summaries" element={<ChatSummaries/>} />
+							<Route path="chat-summaries" element={<ChatSummaries />} />
 
 							<Route path="/settings" element={<Settings />} />
 							<Route path="/recent-scan" element={<RecentScans />} />
