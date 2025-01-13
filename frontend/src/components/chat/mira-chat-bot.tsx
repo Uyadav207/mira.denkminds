@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 
 //components
-// import { ChatActions } from "@components/chat/chat-actions";
-// import { Textarea } from "@components/ui/textarea";
 import { ScrollArea } from "@components/ui/scroll-area";
 import { Spinner } from "@components/loader/spinner";
 import { Progress } from "@components/ui/progress";
@@ -26,6 +24,7 @@ import type { Id } from "../../convex/_generated/dataModel";
 
 //store
 import useStore from "../../store/store";
+import useChatActionStore from "../../store/chatActions";
 
 // svgs
 import MiraAvatar from "../../assets/Mira.svg";
@@ -36,14 +35,10 @@ import type { Message, ChatHistory, Info } from "../../types/chats";
 import type { FolderItem, FolderType } from "../../types/reports";
 
 //constants
-//mock data for scans
-// import data from "./testData.json";
-
 import { scanApis } from "../../api/scan";
 import useScanStore from "../../store/scanStore";
 import MarkdownViewer from "../file/MarkdownViewer";
 import {
-	REPORT_GENERATION,
 	URL_PATTERN,
 	STANDARDS,
 	REPORTS,
@@ -51,62 +46,97 @@ import {
 	CLARIFICATION_PATTERNS,
 	SCANTYPES,
 } from "./constants";
+import { isReportRequest } from "./helpers";
 
 const MiraChatBot: React.FC = () => {
-	const [messages, setMessages] = useState<Message[]>([]);
-	const [targetUrl, setTargetUrl] = useState<string | null>(null);
+	const navigate = useNavigate();
 	const [scanType, setScanType] = useState<string | null>(null);
-	const [actionType, setActionType] = useState<string | null>(null);
 	const [confirmType, setConfirmType] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [streaming, setStreaming] = useState(false);
+	const [chatsLoader, setChatsLoader] = useState(false);
 	const [info, setInfo] = useState<Info[]>([]);
 	const [isScanLoading, setIsScanLoading] = useState(false);
-	const [actionPrompts, setActionPrompts] = useState<
-		{ id: string; name: string; type: string }[] | []
-	>([]);
-	const [humanInTheLoopMessage, setHumanInTheLoopMessage] = useState<
-		string | null
-	>(null);
-	const [createdChatId, setCreatedChatId] = useState<Id<"chats"> | null>(null);
+	const [progress, setProgress] = useState(0);
+	const [input, setInput] = useState("");
+	const [foldersList, setFoldersList] = useState([] as FolderItem[]);
+
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const { chatId: chatIdParam } = useParams<{ chatId: string }>();
-	const chatId = chatIdParam as Id<"chats">;
+	const chatId = chatIdParam;
 
-	const [input, setInput] = useState("");
+	//store actions
 
-	const [pendingAction, setPendingAction] = useState<string | null>(null);
-	const [foldersList, setFoldersList] = useState([] as FolderItem[]);
-	// const [chatTitle, setChatTitle] = useState<string>("");
-
-	const user = useStore((state) => state.user);
+	const { user } = useStore();
 	const { scanResponse, setScanResponse } = useScanStore();
+	const {
+		targetUrl,
+		fetchChatsRegurlarly,
+		messages,
+		createdChatId,
+		pendingAction,
+		actionPrompts,
+		actionType,
+		humanInTheLoopMessage,
+		setTargetUrl,
+		setFetchChatsRegurlarly,
+		setMessages,
+		setCreatedChatId,
+		setPendingAction,
+		setActionPrompts,
+		setActionType,
+		setHumanInTheLoopMessage,
+	} = useChatActionStore();
 
-	if (!user) {
-		return null;
-	}
-	const { id } = user;
-
-	const [progress, setProgress] = useState(0);
-
-	//chat apis convex APIs
-	const chatData = useQuery(api.chats.getChatHistory, { chatId: chatId });
 	const saveChatMessage = useMutation(api.chats.saveChatMessage);
 	const saveChat = useMutation(api.chats.saveChat);
 	const saveFile = useMutation(api.reports.addReport);
-	const folderData = useQuery(api.reports.getReportFoldersByUser, {
-		userId: String(id),
-	});
 	const saveSummary = useMutation(api.summaries.saveSummary);
+	const isValidChatId = useQuery(api.chats.validateChatId, {
+		chatId: chatIdParam ? chatIdParam : "",
+		userId: String(user?.id),
+	});
+	const folderData = useQuery(
+		api.reports.getReportFoldersByUser,
+		user?.id && {
+			userId: String(user?.id),
+		},
+	);
+	const chatData = useQuery(
+		api.chats.getChatHistory,
+		fetchChatsRegurlarly && isValidChatId ? { chatId: chatId } : "skip",
+	);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
+	useEffect(() => {
+		if (chatIdParam) {
+			setChatsLoader(true);
+			setFetchChatsRegurlarly(true);
+			if (isValidChatId !== undefined) {
+				setFetchChatsRegurlarly(false);
+				if (isValidChatId) {
+					setFetchChatsRegurlarly(true);
+				} else {
+					setMessages([]);
+					setFetchChatsRegurlarly(false);
+					navigate("/chatbot");
+					setChatsLoader(false);
+				}
+			}
+		} else {
+			setMessages([]);
+		}
+	}, [chatIdParam, isValidChatId]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
 		handleScrollToBottom();
 	}, [messages]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
-		let mounted = true;
-		if (chatData && mounted) {
+		// setMessages(null);
+		if (chatData) {
 			const chatHistory: Message[] = chatData.map(
 				(chat: ChatHistory): Message => ({
 					id: chat._id,
@@ -117,8 +147,10 @@ const MiraChatBot: React.FC = () => {
 				}),
 			);
 			setMessages(chatHistory);
+
+			setChatsLoader(false);
 		}
-		if (folderData && mounted) {
+		if (folderData) {
 			const newFolders: FolderItem[] = folderData.map(
 				(item: FolderType): FolderItem => ({
 					id: item._id,
@@ -129,9 +161,6 @@ const MiraChatBot: React.FC = () => {
 
 			setFoldersList(newFolders);
 		}
-		return () => {
-			mounted = false;
-		};
 	}, [chatData, folderData]);
 
 	const handleTitleGeneration = async (messages: string) => {
@@ -160,18 +189,14 @@ const MiraChatBot: React.FC = () => {
 	const processPrompt = async (userMessage: Message) => {
 		const lowerPrompt = userMessage.message.toLowerCase().trim();
 		const extractURLs = (text: string): string[] => {
-			const urlRegex = /(https?:\/\/[^\s]+)/g;
-			return text.match(urlRegex) || [];
+			return text.match(URL_PATTERN) || [];
 		};
 		const hasURL = URL_PATTERN.test(lowerPrompt);
 		const hasNegation = NEGATION_PATTERNS.some((pattern) =>
 			pattern.test(lowerPrompt),
 		);
 		const isClarification = CLARIFICATION_PATTERNS.test(lowerPrompt);
-		const isReportRequest = new RegExp(
-			REPORT_GENERATION.map((keyword) => `\\b${keyword}\\b`).join("|"),
-			"i",
-		).test(lowerPrompt);
+		const reportRequest = isReportRequest(lowerPrompt);
 
 		if (hasNegation) {
 			setIsLoading(true);
@@ -188,8 +213,8 @@ const MiraChatBot: React.FC = () => {
 				message: userMessage.message,
 				useRAG: false,
 			})) as StreamResponse;
-			streamChatResponse(userMessage, responseStream);
 			setIsLoading(false);
+			streamChatResponse(userMessage, responseStream);
 		} else if (hasURL) {
 			const urls = extractURLs(userMessage.message);
 			setTargetUrl(urls[0]);
@@ -215,8 +240,8 @@ const MiraChatBot: React.FC = () => {
 			}
 			setPendingAction(botMessage.id as string);
 			requestHumanApproval("scan", manualMessage, "none", botMessage.id);
-		} else if (isReportRequest) {
-			const manualMessage = "Do you want to generate a report?";
+		} else if (reportRequest) {
+			const manualMessage = "Thank you for your request.";
 			const botMessage: Message = {
 				id: uuidv4(),
 				message: manualMessage,
@@ -235,21 +260,26 @@ const MiraChatBot: React.FC = () => {
 				});
 			}
 			setPendingAction(botMessage.id as string);
-			requestHumanApproval("report", manualMessage, "none", botMessage.id);
+			requestHumanApproval(
+				"report",
+				manualMessage,
+				"none",
+				botMessage.id,
+			);
 		} else {
-			//handled properly
-
 			try {
 				setIsLoading(true);
 				const responseStream = (await chatApis.chat({
 					message: userMessage.message,
 					useRAG: false,
 				})) as StreamResponse;
-				streamChatResponse(userMessage, responseStream as StreamResponse);
+				setIsLoading(false);
+				streamChatResponse(
+					userMessage,
+					responseStream as StreamResponse,
+				);
 			} catch (error) {
 				return error;
-			} finally {
-				setIsLoading(true);
 			}
 		}
 	};
@@ -310,7 +340,8 @@ const MiraChatBot: React.FC = () => {
 			setActionPrompts([]);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "folder") {
-			approvalMessage = "Select the folder where you want to save the report.";
+			approvalMessage =
+				"Select the folder where you want to save the report.";
 			setActionPrompts(foldersList);
 			setHumanInTheLoopMessage(approvalMessage);
 		}
@@ -347,6 +378,12 @@ const MiraChatBot: React.FC = () => {
 			try {
 				if (createdChatId) {
 					setMessages((prev) => [...prev, userMessage]);
+					await saveChatMessage({
+						humanInTheLoopId: userMessage.id,
+						chatId: createdChatId as Id<"chats">,
+						sender: userMessage.sender,
+						message: userMessage.message,
+					});
 				} else {
 					await saveChatMessage({
 						humanInTheLoopId: userMessage.id,
@@ -364,22 +401,35 @@ const MiraChatBot: React.FC = () => {
 				};
 				setPendingAction(botMessage.id as string);
 				await saveChatMessage({
+					humanInTheLoopId: botMessage.id,
 					chatId: createdChatId
 						? (createdChatId as Id<"chats">)
 						: (chatId as Id<"chats">),
-					humanInTheLoopId: botMessage.id,
 					sender: botMessage.sender,
 					message: botMessage.message,
 				});
 
-				requestHumanApproval("standards", manualMessage, "none", botMessage.id);
+				requestHumanApproval(
+					"standards",
+					manualMessage,
+					"none",
+					botMessage.id,
+				);
 			} catch {
-				addBotMessage("An error occurred while processing your request.");
+				addBotMessage(
+					"An error occurred while processing your request.",
+				);
 			}
 		} else if (type === "standards") {
 			try {
 				if (createdChatId) {
 					setMessages((prev) => [...prev, userMessage]);
+					await saveChatMessage({
+						humanInTheLoopId: userMessage.id,
+						chatId: createdChatId as Id<"chats">,
+						sender: userMessage.sender,
+						message: userMessage.message,
+					});
 				} else {
 					await saveChatMessage({
 						humanInTheLoopId: userMessage.id,
@@ -396,31 +446,36 @@ const MiraChatBot: React.FC = () => {
 						url: targetUrl as string,
 						complianceStandard: action as string,
 						scanType: scanType as string,
-						userId: Number(id),
+						userId: Number(user?.id),
 					};
 					setPendingAction(null);
 					setIsScanLoading(true);
 					setProgress(0);
-					const response = await scanApis.scanWithProgress(
-						payload,
-						(progress) => {
-							setProgress(progress);
-						},
-					);
-					setScanResponse(response.data);
 
-					setIsScanLoading(false);
+					const response = await scanApis.scanWithProgress(payload);
+					let progress = 0;
+					const totalSteps = 10; // Simulate 20 steps in the API process
+					for (let i = 0; i < totalSteps; i++) {
+						await new Promise((resolve) =>
+							setTimeout(resolve, 500),
+						);
+						progress += 100 / totalSteps;
+						setProgress(Math.min(progress, 100));
+					}
+					setScanResponse(response.data);
 					addBotMessage(
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
 					);
-					//for mock data
-					// addBotMessage("Scan completed");
 				} catch (error) {
-					addBotMessage("An error occurred while processing your request.");
+					setIsScanLoading(false);
+					addBotMessage(
+						"An error occurred while processing your request.",
+					);
 					return error;
 				}
 
-				const manualMessage = "Do you want to generate a brief summary?";
+				const manualMessage =
+					"Do you want to generate a brief summary?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -444,12 +499,20 @@ const MiraChatBot: React.FC = () => {
 					botMessage.id,
 				);
 			} catch {
-				addBotMessage("An error occurred while processing your request.");
+				addBotMessage(
+					"An error occurred while processing your request.",
+				);
 			}
 		} else if (type === "report") {
 			if (action === "Chat Summary Report") {
 				if (createdChatId) {
 					setMessages((prev) => [...prev, userMessage]);
+					await saveChatMessage({
+						humanInTheLoopId: userMessage.id,
+						chatId: createdChatId as Id<"chats">,
+						sender: userMessage.sender,
+						message: userMessage.message,
+					});
 				} else {
 					await saveChatMessage({
 						humanInTheLoopId: userMessage.id,
@@ -459,7 +522,7 @@ const MiraChatBot: React.FC = () => {
 					});
 				}
 				setPendingAction(null);
-				const manualMessage = "Thank you for providing the report type";
+				const manualMessage = "Thank you for your response";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -497,12 +560,15 @@ const MiraChatBot: React.FC = () => {
 						message: userMessage.message,
 					});
 				}
-				const manualMessage = "Thank you for providing the report type";
+				setPendingAction(null);
+				const manualMessage = "Thank you for your response";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
 					sender: "ai",
 				};
+
+				setPendingAction(botMessage.id as string);
 
 				await saveChatMessage({
 					chatId: createdChatId
@@ -512,7 +578,19 @@ const MiraChatBot: React.FC = () => {
 					sender: botMessage.sender,
 					message: botMessage.message,
 				});
-				addBotMessage("Vulnerability generation in progress...");
+				if (!targetUrl) {
+					addBotMessage("Please provide a URL to scan");
+					setPendingAction(null);
+					return;
+				}
+
+				//generate report based on sinduras api
+				requestHumanApproval(
+					"standards",
+					manualMessage,
+					"none",
+					botMessage.id,
+				);
 			}
 		} else if (type === "folder") {
 			// Folder selection
@@ -584,7 +662,7 @@ const MiraChatBot: React.FC = () => {
 					handleMessagesUpdate([userMessage, botMessage]);
 					if (action === "Chat Summary Report") {
 						await saveSummary({
-							userId: String(id),
+							userId: String(user?.id),
 							title: `Chat Summary - ${new Date().toLocaleDateString()}`,
 							content: accumulatedMessage,
 						});
@@ -602,10 +680,11 @@ const MiraChatBot: React.FC = () => {
 			}
 		} catch (error) {
 			const errorMessage =
-				error instanceof Error ? error.message : "Unknown error occurred";
+				error instanceof Error
+					? error.message
+					: "Unknown error occurred";
 			addBotMessage(`Error: ${errorMessage}`);
 		} finally {
-			setIsLoading(false);
 			setStreaming(false);
 		}
 	};
@@ -617,9 +696,16 @@ const MiraChatBot: React.FC = () => {
 			message: "Yes",
 			sender: "user",
 		};
+
 		if (confirmType === "report") {
 			if (createdChatId) {
 				setMessages((prev) => [...prev, userMessage]);
+				await saveChatMessage({
+					humanInTheLoopId: userMessage.id,
+					chatId: createdChatId as Id<"chats">,
+					sender: userMessage.sender,
+					message: userMessage.message,
+				});
 			} else {
 				await saveChatMessage({
 					humanInTheLoopId: userMessage.id,
@@ -639,7 +725,8 @@ const MiraChatBot: React.FC = () => {
 				// await streamOllamaChatResponse(responseStream);
 				await streamChatResponse(userMessage, responseStream);
 
-				const manualMessage = "Do you want to save this as a detailed report?";
+				const manualMessage =
+					"Do you want to save this as a detailed report?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -656,13 +743,24 @@ const MiraChatBot: React.FC = () => {
 				});
 
 				setPendingAction(botMessage.id as string);
-				requestHumanApproval("approval", manualMessage, "save", botMessage.id);
+				requestHumanApproval(
+					"approval",
+					manualMessage,
+					"save",
+					botMessage.id,
+				);
 			} catch (error) {
 				return error;
 			}
 		} else if (confirmType === "save") {
 			if (createdChatId) {
 				setMessages((prev) => [...prev, userMessage]);
+				await saveChatMessage({
+					humanInTheLoopId: userMessage.id,
+					chatId: createdChatId as Id<"chats">,
+					sender: userMessage.sender,
+					message: userMessage.message,
+				});
 			} else {
 				await saveChatMessage({
 					humanInTheLoopId: userMessage.id,
@@ -688,7 +786,12 @@ const MiraChatBot: React.FC = () => {
 			});
 
 			setPendingAction(botMessage.id as string);
-			requestHumanApproval("folder", manualMessage, "none", botMessage.id);
+			requestHumanApproval(
+				"folder",
+				manualMessage,
+				"none",
+				botMessage.id,
+			);
 		}
 	};
 
@@ -701,6 +804,12 @@ const MiraChatBot: React.FC = () => {
 		};
 		if (createdChatId) {
 			setMessages((prev) => [...prev, userMessage]);
+			await saveChatMessage({
+				humanInTheLoopId: userMessage.id,
+				chatId: createdChatId as Id<"chats">,
+				sender: userMessage.sender,
+				message: userMessage.message,
+			});
 		} else {
 			await saveChatMessage({
 				humanInTheLoopId: userMessage.id,
@@ -732,7 +841,7 @@ const MiraChatBot: React.FC = () => {
 				botMessage: botMessage,
 			});
 
-			return { title: data.response, userId: id };
+			return { title: data.response, userId: user?.id };
 		} catch (error) {
 			return error;
 		}
@@ -748,6 +857,8 @@ const MiraChatBot: React.FC = () => {
 			setMessages((prev) => [...prev, userMessage]);
 			setInput("");
 			if (createdChatId || chatId) {
+				// setFetchRegularly(false);
+				setFetchChatsRegurlarly(false);
 				try {
 					await saveChatMessage({
 						humanInTheLoopId: userMessage.id,
@@ -771,7 +882,10 @@ const MiraChatBot: React.FC = () => {
 		setMessages((prev) => {
 			const lastMessage = prev[prev.length - 1];
 			if (lastMessage?.sender === "ai" && lastMessage.isStreaming) {
-				return [...prev.slice(0, -1), { ...lastMessage, message: message }];
+				return [
+					...prev.slice(0, -1),
+					{ ...lastMessage, message: message },
+				];
 			}
 
 			return [
@@ -839,11 +953,7 @@ const MiraChatBot: React.FC = () => {
 	return (
 		<div className="flex justify-center">
 			<div className="flex flex-col space-y-6 w-3/4 h-full md:h-[90vh] rounded-lg p-4">
-				{!chatData ? (
-					<div className="flex items-center justify-center w-full h-full">
-						<Spinner />
-					</div>
-				) : chatData && messages.length === 0 ? (
+				{messages?.length === 0 ? (
 					<>
 						<div className="flex flex-col items-center justify-center w-full h-2/4">
 							<motion.div
@@ -868,8 +978,15 @@ const MiraChatBot: React.FC = () => {
 							</motion.h1>
 						</div>
 					</>
+				) : chatsLoader ? (
+					<div className="flex items-center justify-center w-full h-full">
+						<Spinner />
+					</div>
 				) : (
-					<ScrollArea ref={scrollAreaRef} className="flex-1 p-4  w-full">
+					<ScrollArea
+						ref={scrollAreaRef}
+						className="flex-1 p-4 w-full"
+					>
 						{messages.map((message) => {
 							const isPendingAction =
 								pendingAction === message.id ||
@@ -887,7 +1004,9 @@ const MiraChatBot: React.FC = () => {
 									>
 										<HumanInTheLoopApproval
 											key={message.id}
-											message={humanInTheLoopMessage || ""}
+											message={
+												humanInTheLoopMessage || ""
+											}
 											onCancel={cancelAction}
 											confirmType={confirmType || ""}
 											onConfirm={yesClicked}
@@ -904,7 +1023,9 @@ const MiraChatBot: React.FC = () => {
 										<HumanInTheLoopOptions
 											key={message.id}
 											setShowInfo={setShowInfo}
-											question={humanInTheLoopMessage || ""}
+											question={
+												humanInTheLoopMessage || ""
+											}
 											actionPrompts={actionPrompts || []}
 											onConfirm={confirmAction}
 										/>
@@ -923,17 +1044,17 @@ const MiraChatBot: React.FC = () => {
 							return (
 								<motion.div
 									key={message.id}
-									// initial={{ opacity: 0, y: 50 }}
 									className={containerClasses}
 									initial={{ opacity: 0 }}
-									// exit={{ opacity: 0, y: -50 }}
-									animate={{ opacity: 1 }}
+									animate={{ opacity: 1, y: 0 }}
 								>
 									<span className={`${messageClasses}`}>
 										{isUser ? (
 											message.message
 										) : (
-											<MarkdownViewer content={message.message} />
+											<MarkdownViewer
+												content={message.message}
+											/>
 										)}
 									</span>
 								</motion.div>
@@ -974,23 +1095,25 @@ const MiraChatBot: React.FC = () => {
 					>
 						{/* Textarea */}
 						<textarea
-							// ref={inputRef}
 							value={input}
-							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-								setInput(e.target.value)
-							}
-							onKeyPress={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+							onChange={(
+								e: React.ChangeEvent<HTMLTextAreaElement>,
+							) => setInput(e.target.value)}
+							onKeyPress={(
+								e: React.KeyboardEvent<HTMLTextAreaElement>,
+							) => {
 								if (e.key === "Enter" && !e.shiftKey) {
 									e.preventDefault();
 									handleSend();
 								}
 							}}
-							className="flex-1 resize-none text-sm bg-secondary border-none shadow-none rounded-full focus-visible:outline-none focus:ring-0 h-15 p-2 px-4 text-gray"
+							className={`flex-1 resize-none text-sm bg-secondary border-none shadow-none rounded-full focus-visible:outline-none focus:ring-0 h-15 p-2 px-4 text-gray
+								${(isLoading || !!pendingAction) && "cursor-not-allowed"}
+								`}
 							placeholder="Ask Mira..."
 							disabled={isLoading || !!pendingAction}
 						/>
 
-						{/* Animated Send Button */}
 						<motion.button
 							initial={{ opacity: 0, x: 20 }}
 							animate={{
@@ -1011,14 +1134,19 @@ const MiraChatBot: React.FC = () => {
 				<Dialog open={showInfo} onOpenChange={setShowInfo}>
 					<DialogContent className="dialog-content">
 						<DialogHeader>
-							<DialogTitle className="dialog-title">Information</DialogTitle>
+							<DialogTitle className="dialog-title">
+								Information
+							</DialogTitle>
 						</DialogHeader>
 						<div className="dialog-body">
 							{info.map((item) => (
 								<div key={item.id} className="info-item">
-									<h2 className="text-lg font-semibold">{item.name}</h2>
+									<h2 className="text-lg font-semibold">
+										{item.name}
+									</h2>
 									<p className="info-description">
-										{item.description || "No description available."}
+										{item.description ||
+											"No description available."}
 									</p>
 								</div>
 							))}

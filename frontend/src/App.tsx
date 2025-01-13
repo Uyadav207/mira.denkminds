@@ -31,7 +31,8 @@ import { ChatSummaries } from "./components/PDF/ChatSummaries";
 // 	console.log("Back to previous view");
 //   };
 import { FileView } from "./components/file";
-// import { Reports } from "./components/folder/Reports";
+import PrivateRoute from "./components/privateRoutes";
+import { NotFound } from "./pages/NotFound";
 
 const App = () => {
 	return (
@@ -51,6 +52,17 @@ const App = () => {
 							path="/auth/callback"
 							element={<AuthCallback />}
 						/>
+						<Route
+							element={
+								<PrivateRoute>
+									<Layout />
+								</PrivateRoute>
+							}
+						/>
+							{/* <Route
+								path="/chatbot/:chatId?"
+								element={<Chatbot />}
+							/> */}
 						 
 						 
 						
@@ -86,6 +98,7 @@ const App = () => {
 								element={<FileView />}
 							/>
 						</Route>
+						<Route path="*" element={<NotFound />} />
 					</Routes>
 				</Router>
 			</ThemeProvider>

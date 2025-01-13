@@ -45,8 +45,11 @@ export function Reports() {
       createdAt: new Date(),
     };
 
-    await saveReport({ folderName: newFolder.name, userId: String(id) });
-  };
+		await saveReport({
+			folderName: newFolder.name,
+			userId: String(id),
+		});
+	};
 
   useEffect(() => {
     if (folderData) {

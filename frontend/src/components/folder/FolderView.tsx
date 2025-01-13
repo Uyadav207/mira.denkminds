@@ -24,7 +24,7 @@ export function FolderView({ files }: FolderViewProps) {
 			(event.type === "keydown" &&
 				(event as React.KeyboardEvent).key === "Enter")
 		) {
-			navigate(`/file/${file.id}`, { state: { file } });
+			navigate(`/file/${file._id}`, { state: { file } });
 		}
 	};
 
@@ -71,7 +71,7 @@ export function FolderView({ files }: FolderViewProps) {
 						<tbody>
 							{files.map((file) => (
 								<tr
-									key={file.id}
+									key={file._id}
 									className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
 									onClick={(event) =>
 										handleFileInteraction(file, event)
@@ -84,7 +84,7 @@ export function FolderView({ files }: FolderViewProps) {
 									<td className="p-3 flex items-center gap-3">
 										<FileText className="h-6 w-6 text-blue-500" />
 										<span className="truncate dark:text-gray-100">
-											{file.name}
+											{file.fileName}
 										</span>
 									</td>
 									<td className="p-3 text-gray-600 dark:text-gray-400">

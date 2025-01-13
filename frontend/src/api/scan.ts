@@ -1,6 +1,7 @@
 import type { ScanResult } from "../types/zap-scan";
 import axiosInstance from "./axios";
 
+// import data from "../components/chat/testData.json";
 interface scanPayload {
 	url: string;
 	complianceStandard: string;
@@ -11,20 +12,10 @@ interface scanPayload {
 const scan = (payload: scanPayload) =>
 	axiosInstance.post("/zap/spider-scan", payload);
 
-const scanWithProgress = async (
-	payload: scanPayload,
-	onProgress: (progress: number) => void,
-) => {
-	let progress = 0;
-	const totalSteps = 20; // Simulate 20 steps in the API process
+const scanWithProgress = async (payload: scanPayload) => {
 	// const resultsResponse = axiosInstance.post("/zap/spider-scan", payload);
 	const resultsResponse = axiosInstance.post("/zap/baseline-scan", payload);
 
-	for (let i = 0; i < totalSteps; i++) {
-		await new Promise((resolve) => setTimeout(resolve, 500));
-		progress += 100 / totalSteps;
-		onProgress(Math.min(progress, 100));
-	}
 	return resultsResponse;
 };
 
@@ -49,15 +40,16 @@ const detailedReportGeneration = async (
 	onProgress: (progress: number) => void,
 ) => {
 	let progress = 0;
-	const totalSteps = 20; // Simulate 20 steps in the API process
-	const resultsResponse = axiosInstance.post("/chat/detailed/summary", {
-		scanResults: payload,
-	});
+	const totalSteps = 10; // Simulate 20 steps in the API process
 	for (let i = 0; i < totalSteps; i++) {
 		await new Promise((resolve) => setTimeout(resolve, 500));
 		progress += 100 / totalSteps;
 		onProgress(Math.min(progress, 100));
 	}
+	const resultsResponse = axiosInstance.post("/chat/detailed/summary", {
+		scanResults: payload,
+	});
+
 	return resultsResponse;
 };
 

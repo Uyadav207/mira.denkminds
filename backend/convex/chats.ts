@@ -102,3 +102,19 @@ export const deleteChatById = mutation({
 		};
 	},
 });
+
+export const validateChatId = query({
+	args: {
+		chatId: v.string(),
+		userId: v.string(),
+	},
+	handler: async (ctx, { chatId, userId }): Promise<boolean> => {
+		const chat = await ctx.db
+			.query("chats")
+			.withIndex("by_userId", (q) => q.eq("userId", userId))
+			.filter((q) => q.eq(q.field("_id"), chatId))
+			.first();
+
+		return chat !== null;
+	},
+});
