@@ -3,6 +3,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api"; // Adjust this import based on your project structure
 import { useNavigate } from "react-router-dom";
 import { Id } from "../../convex/_generated/dataModel";
+import useStore from "../../store/store";
 //for showing the chat summaries
 type Summary = {
  _id: Id<"summaries">;
@@ -15,9 +16,15 @@ export function ChatSummaries() {
   const [summaries, setSummaries] = useState<Summary[]>([]);
   const navigate = useNavigate();
 
+  const user = useStore((state) => state.user);
+
+	if (!user) {
+		return null;
+	}
+	const { id } = user;
   // Fetch summaries using Convex query
   const fetchedSummaries = useQuery(api.summaries.getSummariesByUserId, {
-    userId: "20", // Replace with the correct user ID
+    userId: String(id), // Replace with the correct user ID
   }) as Summary[] ;
 
   

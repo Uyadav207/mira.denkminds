@@ -25,12 +25,16 @@ export function ChatTemplate() {
 
   // Example user data
   const userData = useStore();
-  const user = userData.user as any;
+  const user = useStore((state) => state.user);
 
-  // Fetch summaries using the Convex query
+	if (!user) {
+		return null;
+	}
+	const { id } = user;
+  // Fetch summaries using Convex query
   const fetchedSummary = useQuery(api.summaries.getSummariesByUserId, {
-    userId: "20", // Replace with the correct user ID
-  })as Summary[];
+    userId: String(id), // Replace with the correct user ID
+  }) as Summary[] ;
 //   console.log("Summaries fetched:", summaries)
 
   useEffect(() => {

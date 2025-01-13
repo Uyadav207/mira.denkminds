@@ -31,6 +31,7 @@ import { ChatSummaries } from "./components/PDF/ChatSummaries";
 // 	console.log("Back to previous view");
 //   };
 import { FileView } from "./components/file";
+// import { Reports } from "./components/folder/Reports";
 
 const App = () => {
 	return (
@@ -59,6 +60,8 @@ const App = () => {
 						<Route path="/printtemplate" element={<PrintableTemplate />} />
 						 <Route path="/chat/:_id" element={<ChatTemplate />} />
 							<Route path="/chatbot/:chatId?" element={<Chatbot />} />
+							<Route path="chat-summaries" element={<ChatSummaries/>} />
+
 							<Route path="/settings" element={<Settings />} />
 							<Route path="/recent-scan" element={<RecentScans />} />
 							<Route
