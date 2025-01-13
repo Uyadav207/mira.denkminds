@@ -1,4 +1,4 @@
-import { FolderIcon, Search } from "lucide-react";
+import { FolderCheck, Search } from "lucide-react";
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
 import type { Folder } from "../../types/reports";
@@ -28,10 +28,10 @@ export function FolderGrid({
 					<Button
 						key={`${folder._id}-${index}`}
 						variant="outline"
-						className="h-32 w-full flex flex-col items-center justify-center gap-2"
-						onClick={() => onFolderClick(folder._id)}
+						className="h-32 w-full flex flex-col items-center justify-center gap-2 hover:bg-sidebar"
+						onClick={() => onFolderClick(folder.id)}
 					>
-						<FolderIcon className="h-8 w-8" />
+						<FolderCheck className="h-10 w-10" />
 						<span>{folder.name}</span>
 					</Button>
 				))}
