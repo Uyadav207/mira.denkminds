@@ -33,6 +33,7 @@ import { ChatSummaries } from "./components/PDF/ChatSummaries";
 import { FileView } from "./components/file";
 import PrivateRoute from "./components/privateRoutes";
 import { NotFound } from "./pages/NotFound";
+import PrivacyPolicy from "./pages/Privacy";
 
 const App = () => {
 	return (
@@ -48,6 +49,7 @@ const App = () => {
 							path="/forgot-password"
 							element={<ForgotPassword />}
 						/>
+						<Route path="/Privacy" element={<PrivacyPolicy />} />
 						<Route
 							path="/auth/callback"
 							element={<AuthCallback />}
