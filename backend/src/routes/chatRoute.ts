@@ -1,9 +1,16 @@
 import { Hono } from "hono";
 import { ChatController } from "../controllers/chatController";
+import { ScanController } from "../controllers/scanController";
 
-const chat = new Hono();
-const controller = new ChatController();
+const chatRoutes = new Hono();
+const chatController = new ChatController();
+const scanController = new ScanController();
 
-chat.post("/message", (c) => controller.chat(c));
+chatRoutes.post("/message", (c) => chatController.chat(c));
+chatRoutes.post("/title", (c) => chatController.chatTitle(c));
+chatRoutes.post("/message/stream", (c) => chatController.chatStream(c));
+chatRoutes.post("/scan/summary", (c) => scanController.chatStream(c));
+chatRoutes.post("/detailed/summary", (c) => scanController.detailedSummary(c));
+chatRoutes.post("/chat-summary", (c) => chatController.chatSummary(c));
 
-export { chat };
+export { chatRoutes };

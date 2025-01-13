@@ -1,124 +1,118 @@
-import { useState } from "react";
-import {
-	FileIcon,
-	UploadIcon,
-	DownloadIcon,
-	Eye,
-	ArrowLeft,
-} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { FileText, Trash, TriangleAlert } from "lucide-react";
 import { Button } from "@components/ui/button";
-import { Input } from "@components/ui/input";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from "@components/ui/dialog";
-import type { Folder, File } from "../../types/reports";
 
-interface FolderViewProps {
+import type { File, Folder } from "../../types/reports";
+import { Card } from "../ui/card";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+
+type FolderViewProps = {
 	folder: Folder;
-	onUploadFile: (folderId: string, file: File) => void;
+	reportId: string;
+	files: File[];
 	onBack: () => void;
-}
+};
 
-export function FolderView({ folder, onUploadFile, onBack }: FolderViewProps) {
-	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+export function FolderView({ files }: FolderViewProps) {
+	const navigate = useNavigate();
 
-	const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const file = event.target.files?.[0];
-		if (file) {
-			const newFile: File = {
-				id: crypto.randomUUID(),
-				name: file.name,
-				url: URL.createObjectURL(file),
-				createdAt: new Date(),
-				type: "pdf",
-				size: file.size,
-			};
-			onUploadFile(folder.id, newFile);
+	// Handler for navigating to a specific file
+	const handleFileInteraction = (
+		file: File,
+		event: React.MouseEvent | React.KeyboardEvent,
+	) => {
+		if (
+			event.type === "click" ||
+			(event.type === "keydown" &&
+				(event as React.KeyboardEvent).key === "Enter")
+		) {
+			navigate(`/file/${file._id}`, { state: { file } });
 		}
 	};
 
+	// Render fallback for empty file list
+	if (!files || files.length === 0) {
+		return (
+			<Card className="w-full max-w-md mx-auto mt-8 p-8 my-auto shadow-none border-2 border-secondary">
+				<Alert variant="default" className="border-none">
+					<div className="flex px--5">
+						<TriangleAlert className="w-10 h-10 mr-5" />
+						<AlertTitle className="text-3xl font-semibold mb-5">
+							No Reports Found Yet!
+						</AlertTitle>
+					</div>
+					<AlertDescription className="text-muted-foreground text-base">
+						Ask mira to create you a report and come back later.
+						Ciao! 👋
+					</AlertDescription>
+				</Alert>
+			</Card>
+		);
+	}
+
 	return (
-		<div className="space-y-4">
-			<div className="flex items-center justify-between">
-				<h2 className="text-2xl font-bold">{folder.name}</h2>
-				<Button variant="outline" onClick={onBack}>
-					<ArrowLeft className="mr-2 h-4 w-4" />
-					Back to Folders
-				</Button>
-			</div>
-			<div className="flex items-center gap-4">
-				<Input
-					type="file"
-					accept=".pdf"
-					onChange={handleFileUpload}
-					className="hidden"
-					id="file-upload"
-				/>
-				<label htmlFor="file-upload">
-					<Button asChild>
-						<span>
-							<UploadIcon className="mr-2 h-4 w-4" />
-							Upload PDF
-						</span>
-					</Button>
-				</label>
-			</div>
-			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-				{folder.files.map((file) => (
-					<div
-						key={file.id}
-						className="flex flex-col border rounded-lg p-4"
-					>
-						<FileIcon className="h-16 w-16 text-blue-500 mx-auto" />
-						<h3 className="mt-2 font-semibold text-center">
-							{file.name}
-						</h3>
-						<p className="text-sm text-muted-foreground text-center">
-							{(file.size / 1024 / 1024).toFixed(2)} MB
-						</p>
-						<div className="flex mt-4 space-x-2 justify-center">
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={() => window.open(file.url, "_blank")}
-							>
-								<DownloadIcon className="mr-2 h-4 w-4" />
-								Download
-							</Button>
-							<Button
-								size="sm"
-								variant="outline"
-								onClick={() => setSelectedFile(file)}
-							>
-								<Eye className="mr-2 h-4 w-4" />
-								View
-							</Button>
-						</div>
-					</div>
-				))}
-			</div>
-			<Dialog
-				open={!!selectedFile}
-				onOpenChange={() => setSelectedFile(null)}
+		<div className="p-4">
+			<Button
+				variant="outline"
+				onClick={() => navigate("/reports")}
+				className="mb-4"
 			>
-				<DialogContent className="max-w-4xl">
-					<DialogHeader>
-						<DialogTitle>{selectedFile?.name}</DialogTitle>
-					</DialogHeader>
-					<div className="aspect-video">
-						<iframe
-							src={selectedFile?.url}
-							title={selectedFile?.name}
-							width="100%"
-							height="100%"
-							style={{ border: "none" }}
-						/>
-					</div>
-				</DialogContent>
-			</Dialog>
+				Back to Folders
+			</Button>
+
+			<div className="rounded-lg">
+				<div className="overflow-x-auto">
+					<table className="table-auto w-full text-left">
+						<thead>
+							<tr className="bg-sidebar border">
+								<th className="p-3">Name</th>
+								<th className="p-3">Created on</th>
+								<th className="p-3 text-right">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{files.map((file) => (
+								<tr
+									key={file._id}
+									className="border cursor-pointer hover:bg-sidebar"
+									onClick={(event) =>
+										handleFileInteraction(file, event)
+									}
+									onKeyDown={(event) =>
+										handleFileInteraction(file, event)
+									}
+									tabIndex={0}
+								>
+									<td className="p-3 flex items-center gap-3">
+										<FileText className="h-6 w-6 font-black" />
+										<span className="truncate text-gray font-semibold">
+											{file.fileName}
+										</span>
+									</td>
+									<td className="p-3">
+										{file.createdAt
+											? new Date(
+													file.createdAt,
+												).toDateString()
+											: "N/A"}
+									</td>
+									<td className="p-3 text-right">
+										<Button
+											size="sm"
+											variant="ghost"
+											onClick={(e: Event) => {
+												e.stopPropagation();
+											}}
+										>
+											<Trash className="h-5 w-5" />
+										</Button>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	);
 }

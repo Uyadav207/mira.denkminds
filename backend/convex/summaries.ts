@@ -4,14 +4,13 @@ import { v } from "convex/values";
 // Mutation for saving a summary
 export const saveSummary = mutation({
 	args: {
-		userId: v.string(), // External user ID
-		title: v.string(), // Title of the summary
-		content: v.string(), // Content of the summary
+		userId: v.string(),
+		title: v.string(),
+		content: v.string(),
 	},
 	handler: async (ctx, { userId, title, content }) => {
 		const now = Date.now();
 
-		// Insert a new summary into the summaries table
 		const result = await ctx.db.insert("summaries", {
 			userId,
 			title,
@@ -19,35 +18,33 @@ export const saveSummary = mutation({
 			createdAt: now,
 		});
 
-		return result; // Return the created summary (includes auto-generated summaryId)
+		return result;
 	},
 });
 
 // Query for getting summaries by userId
-export const getSummariesByUser = query({
+export const getSummariesByUserId = query({
 	args: {
-		userId: v.string(), // External user ID
+		userId: v.string(),
 	},
 	handler: async (ctx, { userId }) => {
-		// Query the summaries table to get all summaries for the given userId
 		const summaries = await ctx.db
 			.query("summaries")
-			.filter((q) => q.eq("userId", userId))
+			.withIndex("by_userId", (q) => q.eq("userId", userId))
 			.collect();
 
-		return summaries; // Return all summaries associated with the user
+		return summaries;
 	},
 });
 
 // Mutation for deleting a summary by summaryId
 export const deleteSummary = mutation({
 	args: {
-		summaryId: v.id("summaries"), // ID of the summary to delete
+		summaryId: v.id("summaries"),
 	},
 	handler: async (ctx, { summaryId }) => {
-		// Delete the summary if it exists and matches the userId
 		await ctx.db.delete(summaryId);
 
-		return { success: true }; // Return success message
+		return { success: true };
 	},
 });

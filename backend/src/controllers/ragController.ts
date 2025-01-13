@@ -1,6 +1,6 @@
 import type { Context } from "hono";
 import { PineconeService } from "../services/pineconeStore";
-import { OpenAIService } from "../services/openAI";
+import { OpenAIService } from "../services/openai";
 import { Document } from "langchain/document";
 import type { CVEDocument } from "../types/cve";
 
@@ -19,7 +19,6 @@ export class RAGController {
 	async loadDocuments(c: Context) {
 		try {
 			const body = await c.req.json();
-			console.log(body);
 			const documents = body.documents.map(
 				(doc: CVEDocument) =>
 					new Document({
@@ -42,9 +41,15 @@ export class RAGController {
 		try {
 			const { question } = await c.req.json();
 			const docs = await this.pinecone.similaritySearch(question);
-			const context = docs.map((doc) => doc.pageContent).join("\n\n");
-			const answer = await this.openai.generateAnswer(context, question);
 
+			let context = "";
+			if (docs.length > 0) {
+				context = docs.map((doc) => doc.pageContent).join("\n\n");
+			} else {
+				context = "No relevant documents found.";
+			}
+
+			const answer = await this.openai.generateAnswer(context, question);
 			return c.json({ answer, context: docs });
 		} catch (error) {
 			return c.json(

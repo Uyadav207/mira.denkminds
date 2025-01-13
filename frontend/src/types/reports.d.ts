@@ -6,12 +6,14 @@ export interface Folder {
 }
 
 export interface File {
-	id: string;
-	name: string;
-	url: string;
-	createdAt: Date;
-	type: "pdf";
-	size: number;
+	_id: string;
+	_creationTime: number;
+	createdAt: number;
+	fileName: string;
+	fileUrl: string;
+	folderId: string;
+	markdownContent: string;
+	userId?: string; // Optional field
 }
 
 export interface FolderType {
@@ -24,4 +26,11 @@ export interface FolderItem {
 	id: string;
 	name: string;
 	type: string;
+}
+
+export interface ConvexFolderType {
+	_id: string;
+	folderName: string;
+	type: "folder";
+	userId?: string;
 }

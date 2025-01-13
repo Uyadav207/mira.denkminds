@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export const createReportFolder = mutation({
 	args: {
 		userId: v.string(), // External user ID
-		folderName: v.string(), // Name of the folder
+		folderName: v.string(),
 	},
 	handler: async (ctx, { userId, folderName }) => {
 		const now = Date.now();
@@ -16,7 +16,7 @@ export const createReportFolder = mutation({
 			createdAt: now,
 		});
 
-		return folderId; // Return the folder ID
+		return folderId;
 	},
 });
 
@@ -31,17 +31,18 @@ export const getReportFoldersByUser = query({
 			.withIndex("by_userId", (q) => q.eq("userId", userId))
 			.collect();
 
-		return folders; // Return all report folders for the user
+		return folders;
 	},
 });
 
 export const addReport = mutation({
 	args: {
 		folderId: v.id("reportFolders"), // ID of the report folder
-		fileName: v.string(), // Name of the file
-		fileUrl: v.string(), // URL of the uploaded file
+		fileName: v.string(),
+		fileUrl: v.string(),
+		markdownContent: v.any(),
 	},
-	handler: async (ctx, { folderId, fileName, fileUrl }) => {
+	handler: async (ctx, { folderId, fileName, fileUrl, markdownContent }) => {
 		const now = Date.now();
 
 		// Insert a new report into the reports table
@@ -49,24 +50,41 @@ export const addReport = mutation({
 			folderId,
 			fileName,
 			fileUrl,
+			markdownContent, // Empty content for now
 			createdAt: now,
 		});
 
-		return reportId; // Return the report ID
+		return reportId;
 	},
 });
 
 export const getReportsByFolder = query({
 	args: {
-		folderId: v.id("reportFolders"), // ID of the report folder
+		folderId: v.optional(v.id("reportFolders")),
 	},
 	handler: async (ctx, { folderId }) => {
 		// Query reports table by folderId
-		const reports = await ctx.db
-			.query("reports")
-			.withIndex("by_folderId", (q) => q.eq("folderId", folderId))
-			.collect();
+		if (folderId) {
+			const reports = await ctx.db
+				.query("reports")
+				.withIndex("by_folderId", (q) => q.eq("folderId", folderId))
+				.collect();
 
-		return reports; // Return all reports in the folder
+			return reports;
+		}
+		return [];
+	},
+});
+
+export const getFileById = query({
+	args: {
+		fileId: v.id("reports"),
+	},
+	handler: async (ctx, { fileId }) => {
+		const file = await ctx.db.get(fileId);
+		if (!file) {
+			return null;
+		}
+		return file;
 	},
 });

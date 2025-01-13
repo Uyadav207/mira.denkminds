@@ -1,4 +1,4 @@
-import { BadgeCheck, ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 
 import {
 	Avatar,
@@ -9,10 +9,7 @@ import {
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuGroup,
-	DropdownMenuItem,
 	DropdownMenuLabel,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
 
@@ -27,11 +24,9 @@ import type { User } from "../../types/user";
 import useStore from "../../store/store";
 import { Dialog } from "../dialog";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export function NavUser() {
 	const { isMobile } = useSidebar();
-	const navigate = useNavigate();
 	const userData = useStore();
 	const logout = useStore((state) => state.logout);
 	const user: User = userData.user as User;
@@ -66,7 +61,7 @@ export function NavUser() {
 										{user?.firstName}
 									</span>
 									<span className="truncate text-xs">
-										{user?.username}
+										@{user?.username}
 									</span>
 								</div>
 								<ChevronsUpDown className="ml-auto size-4" />
@@ -99,23 +94,6 @@ export function NavUser() {
 									</div>
 								</div>
 							</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							<DropdownMenuSeparator />
-							<DropdownMenuGroup>
-								<DropdownMenuItem
-									onClick={() => navigate("/accounts")}
-								>
-									<BadgeCheck />
-									Account
-								</DropdownMenuItem>
-							</DropdownMenuGroup>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								onClick={() => setDialogOpen(true)}
-							>
-								<LogOut />
-								Log out
-							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</SidebarMenuItem>
