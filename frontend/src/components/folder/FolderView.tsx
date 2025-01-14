@@ -66,7 +66,8 @@ export function FolderView({ files }: FolderViewProps) {
 						</AlertTitle>
 					</div>
 					<AlertDescription className="text-muted-foreground text-base">
-						Ask mira to create you a report and come back later. Ciao! 👋
+						Ask mira to create you a report and come back later.
+						Ciao! 👋
 					</AlertDescription>
 				</Alert>
 			</Card>
@@ -98,8 +99,12 @@ export function FolderView({ files }: FolderViewProps) {
 								<tr
 									key={file._id}
 									className="border cursor-pointer hover:bg-sidebar"
-									onClick={(event) => handleFileInteraction(file, event)}
-									onKeyDown={(event) => handleFileInteraction(file, event)}
+									onClick={(event) =>
+										handleFileInteraction(file, event)
+									}
+									onKeyDown={(event) =>
+										handleFileInteraction(file, event)
+									}
 									tabIndex={0}
 								>
 									<td className="p-3 flex items-center gap-3">
@@ -110,7 +115,9 @@ export function FolderView({ files }: FolderViewProps) {
 									</td>
 									<td className="p-3">
 										{file.createdAt
-											? new Date(file.createdAt).toDateString()
+											? new Date(
+													file.createdAt,
+												).toDateString()
 											: "N/A"}
 									</td>
 									<td className="p-3 text-right">
@@ -123,8 +130,13 @@ export function FolderView({ files }: FolderViewProps) {
 												className="w-48 bg-sidebar shadow-lg rounded-md py-1"
 											>
 												<DropdownMenuItem
-													onClick={(e: React.MouseEvent) => {
-														deleteReport(file._id, e);
+													onClick={(
+														e: React.MouseEvent,
+													) => {
+														deleteReport(
+															file._id,
+															e,
+														);
 													}}
 													className="flex items-center space-x-2 text-red-600"
 												>

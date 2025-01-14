@@ -25,7 +25,10 @@ export function FolderGrid({
 }: FolderGridProps) {
 	const deleteReportFolderById = useMutation(api.reports.deleteReportFolder);
 
-	const deleteReportFolder = async (folderId: string, e: React.MouseEvent) => {
+	const deleteReportFolder = async (
+		folderId: string,
+		e: React.MouseEvent,
+	) => {
 		e.stopPropagation();
 		const responseAfterDelete = await deleteReportFolderById({ folderId });
 		if (!responseAfterDelete) {
