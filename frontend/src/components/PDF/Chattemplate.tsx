@@ -22,7 +22,7 @@ export function ChatTemplate() {
 	const { _id } = useParams<{ _id: string }>();
 	const templateRef = useRef<HTMLDivElement>(null);
 	const [chatSummary, setChatSummary] = useState<Summary | null>(null);
-	const [isPrinting, setIsPrinting] = useState(false);
+	// const [isPrinting, setIsPrinting] = useState(false);
 	const user = useStore((state) => state.user);
 
 	if (!user) return null;
@@ -44,11 +44,11 @@ export function ChatTemplate() {
 		contentRef: templateRef,
 		documentTitle: chatSummary?.title || "Security Report",
 		onBeforePrint: () => {
-			setIsPrinting(true);
+			// setIsPrinting(true);
 			return Promise.resolve();
 		},
 		onAfterPrint: () => {
-			setIsPrinting(false);
+			// setIsPrinting(false);
 		},
 	});
 
@@ -98,28 +98,33 @@ export function ChatTemplate() {
 									<h2 className="text-xl font-semibold text-gray-900">
 										1. Executive Summary
 									</h2>
-									{chatSummary.content.split("\n").map((paragraph, index) => {
-										// Remove markdown-style headers
-										const cleanParagraph = paragraph.replace(
-											/^(###|##)\s+/,
-											"",
-										);
-										return (
-											<p
-												key={`${paragraph}-${
-													// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-													index
-												}`}
-												className="text-sm leading-relaxed text-gray-700"
-											>
-												{cleanParagraph.trim()}
-											</p>
-										);
-									})}
+									{chatSummary.content
+										.split("\n")
+										.map((paragraph, index) => {
+											// Remove markdown-style headers
+											const cleanParagraph =
+												paragraph.replace(
+													/^(###|##)\s+/,
+													"",
+												);
+											return (
+												<p
+													key={`${paragraph}-${
+														// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+														index
+													}`}
+													className="text-sm leading-relaxed text-gray-700"
+												>
+													{cleanParagraph.trim()}
+												</p>
+											);
+										})}
 								</div>
 								<div className="text-xs text-gray-500 mt-4">
 									Report generated on:{" "}
-									{new Date(chatSummary.createdAt).toLocaleString()}
+									{new Date(
+										chatSummary.createdAt,
+									).toLocaleString()}
 								</div>
 							</>
 						) : (
@@ -134,7 +139,9 @@ export function ChatTemplate() {
 						<div className="flex justify-between items-center text-xs text-gray-500">
 							<p>© 2025 denkMinds. All rights reserved.</p>
 							<div className="flex items-center gap-4">
-								<span className="uppercase font-medium">Sensitive</span>
+								<span className="uppercase font-medium">
+									Sensitive
+								</span>
 								<span>Page 1 of 1</span>
 							</div>
 						</div>

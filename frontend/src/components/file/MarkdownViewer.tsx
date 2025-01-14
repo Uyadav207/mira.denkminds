@@ -1,5 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+// import Image from 'next/image';
+import "../../../public/Mira_logo.png";
 
 interface MarkdownViewerProps {
 	content: string;
@@ -14,30 +16,42 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
             font-family: 'Open Sans', sans-serif !important;
             line-height: 1.5 !important;
             color: #000 !important;
-            background: white !important;
-            padding: 40px !important;
+            
+            padding: 20px !important;
             font-size: 12pt !important;
+          }
+			 .pdf-export .header {
+            text-align: center !important;
+            margin-bottom: 40px !important;
+          }
+          
+          .pdf-export .logo {
+            max-width: 200px !important;
+            margin: 0 auto 10px !important;
           }
           
           .pdf-export h1 {
             font-family: 'Open Sans', sans-serif !important;
-            font-size: 12pt !important;
-            font-weight: normal !important;
+            font-size: 24pt !important;
+            font-weight: bold !important;
             margin: 0 0 16pt 0 !important;
             page-break-after: avoid !important;
+			color: linear-gradient(150deg,#7156DB,#272278 23%,#0F0A25 53%,#080115) !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
           }
           
           .pdf-export h2 {
             font-family: 'Open Sans', sans-serif !important;
-            font-size: 12pt !important;
-            font-weight: normal !important;
+            font-size: 16pt !important;
+            font-weight: bold !important;
             margin: 16pt 0 8pt 0 !important;
             page-break-after: avoid !important;
           }
           
           .pdf-export h3 {
             font-family: 'Open Sans', sans-serif !important;
-            font-size: 13pt !important;
+            font-size: 16pt !important;
             font-weight: bold !important;
             margin: 8pt 0 !important;
             page-break-after: avoid !important;
@@ -45,8 +59,8 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
           
           .pdf-export h4, .pdf-export h5, .pdf-export h6 {
             font-family: 'Open Sans', sans-serif !important;
-            font-size: 12pt !important;
-            font-weight: normal !important;
+            font-size: 16pt !important;
+            font-weight: bold !important;
             margin: 8pt 0 !important;
             page-break-after: avoid !important;
           }
@@ -66,7 +80,7 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
           }
           
           .pdf-export ul li:before {
-            content: "* " !important;
+            content: "-> " !important;
             margin-left: -12pt !important;
           }
           
@@ -74,7 +88,16 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
             padding-left: 20pt !important;
             margin: 8pt 0 !important;
 			page-break-inside: avoid !important;
+			list-style-position: outside !important;
+  			line-height: 1.6 !important;
           }
+  .pdf-export ol li {
+  margin: 4pt 0 !important;
+   padding-left: 0 !important;
+  line-height: 1.5 !important;
+  display: list-item !important;
+  list-style-position: inside !important;
+}
           
           .pdf-export li {
             color: #000 !important;
@@ -160,6 +183,10 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
           }
         `}
 			</style>
+			{/* <div className="pdf-export"> */}
+			{/* <div className="header">
+				<img src="/Mira_logo.png" alt="Mira Logo" width={100} height={50} />
+			</div> */}
 			<ReactMarkdown
 				remarkPlugins={[remarkGfm]}
 				components={{
@@ -276,6 +303,7 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 			>
 				{content}
 			</ReactMarkdown>
+			{/* </div> */}
 		</>
 	);
 };

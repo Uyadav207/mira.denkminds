@@ -6,6 +6,7 @@ import MarkdownViewer from "./MarkdownViewer";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import html2pdf from "html2pdf.js";
+import "../../../public/Mira_logo.png";
 
 export function FileView() {
 	const navigate = useNavigate();
@@ -22,35 +23,54 @@ export function FileView() {
 		if (file) {
 			const element = document.getElementById("markdown-content");
 			if (element) {
-				element.classList.add("pdf-export");
-			}
-			const opt = {
-				margin: [20, 20, 20, 20],
-				filename: `${file.name}.pdf`,
-				image: { type: "jpeg", quality: 0.98 },
-				html2canvas: {
-					scale: 2,
-					useCORS: true,
-					logging: false,
-				},
-				jsPDF: {
-					unit: "mm",
-					format: "a4",
-					orientation: "portrait",
-				},
-				pagebreak: { mode: "css", before: ".page-break" },
-			};
+				// element.classList.add("pdf-export");
+				// Create a clone of the element to avoid modifying the visible content
+				const clonedElement = element.cloneNode(true) as HTMLElement;
+				clonedElement.classList.add("pdf-export");
 
-			html2pdf()
-				.set(opt)
-				.from(element)
-				.save()
-				.then(() => {
-					// Remove PDF-specific styles after generation
-					if (element) {
-						element.classList.remove("pdf-export");
-					}
-				});
+				// // Add the logo to the cloned element
+				// const logoImg = document.createElement("img");
+				// logoImg.src = "/Mira_logo.png";
+				// logoImg.alt = "Mira Logo";
+				// logoImg.style.height = "32px";
+				// logoImg.style.marginBottom = "20px";
+				// clonedElement.insertBefore(logoImg, clonedElement.firstChild);
+
+				// Temporarily append the cloned element to the body
+				document.body.appendChild(clonedElement);
+
+				const opt = {
+					margin: [20, 20, 20, 20],
+					filename: `${file.name}.pdf`,
+					image: { type: "jpeg", quality: 0.98 },
+					html2canvas: {
+						scale: 2,
+						useCORS: true,
+						logging: false,
+					},
+					jsPDF: {
+						unit: "mm",
+						format: "a4",
+						orientation: "portrait",
+					},
+					pagebreak: { mode: "css", before: ".page-break" },
+				};
+
+				html2pdf()
+					.set(opt)
+					.from(clonedElement)
+					.save()
+					// .then(() => {
+					// 	// Remove PDF-specific styles after generation
+					// 	if (element) {
+					// 		element.classList.remove("pdf-export");
+					// 	}
+					// });
+					.then(() => {
+						// Remove the cloned element after generation
+						document.body.removeChild(clonedElement);
+					});
+			}
 		}
 	};
 	return (
@@ -65,6 +85,7 @@ export function FileView() {
 				<div className="p-6 border rounded-lg">
 					<div className="flex justify-between items-center mb-4">
 						<h1 className="text-xl font-bold">{file.name}</h1>
+
 						<Button
 							onClick={downloadAsPDF}
 							// onClick={downloadAsPDF}
@@ -73,7 +94,9 @@ export function FileView() {
 							Download as PDF
 						</Button>
 					</div>
+
 					<div id="markdown-content">
+						<img src="/Mira_logo.png" alt="Mira Logo" className="h-8" />
 						<MarkdownViewer content={file.markdownContent} />
 					</div>
 				</div>
