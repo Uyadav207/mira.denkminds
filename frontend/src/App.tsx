@@ -15,10 +15,6 @@ import { RecentScans } from "./pages/scans/RecentScans";
 import { ApiScans } from "./pages/scans/ApiScans";
 import Vulnerabilities from "./pages/scans/vulnerabilities/vulnerabilities";
 import Urls from "./pages/scans/VulnerableUrls/Urls";
-import { PrintableTemplate } from "./components/PDF/PrintableTemplate";
-import { FolderView } from "./components/folder/FolderView";
-import { ChatTemplate } from "./components/PDF/Chattemplate";
-import { ChatSummaries } from "./components/PDF/ChatSummaries";
 // import TemplateContentPage from "./components/PDF/TemplateContentPage";
 
 // const mockFolder = {
@@ -34,6 +30,9 @@ import { FileView } from "./components/file";
 import PrivateRoute from "./components/privateRoutes";
 import { NotFound } from "./pages/NotFound";
 import PrivacyPolicy from "./pages/Privacy";
+import { PrintableTemplate } from "./components/pdf/PrintableTemplate";
+import { ChatTemplate } from "./components/pdf/Chattemplate";
+import { ChatSummaries } from "./components/pdf/ChatSummaries";
 
 const App = () => {
 	return (
@@ -59,24 +58,37 @@ const App = () => {
 								element={<Chatbot />}
 							/> */}
 
-
-
 						{/* <Route path="/template/:templateId" element={<TemplateContentPage />} /> */}
 
-						<Route element={
-							<PrivateRoute>
-
-								<Layout />
-							</PrivateRoute>
-						}
+						<Route
+							element={
+								<PrivateRoute>
+									<Layout />
+								</PrivateRoute>
+							}
 						>
-							<Route path="/printtemplate" element={<PrintableTemplate />} />
-							<Route path="/chat/:_id" element={<ChatTemplate />} />
-							<Route path="/chatbot/:chatId?" element={<Chatbot />} />
-							<Route path="chat-summaries" element={<ChatSummaries />} />
+							<Route
+								path="/printtemplate"
+								element={<PrintableTemplate />}
+							/>
+							<Route
+								path="/chat/:_id"
+								element={<ChatTemplate />}
+							/>
+							<Route
+								path="/chatbot/:chatId?"
+								element={<Chatbot />}
+							/>
+							<Route
+								path="chat-summaries"
+								element={<ChatSummaries />}
+							/>
 
 							<Route path="/settings" element={<Settings />} />
-							<Route path="/recent-scan" element={<RecentScans />} />
+							<Route
+								path="/recent-scan"
+								element={<RecentScans />}
+							/>
 							<Route
 								path="/recent-scan/:scanId/"
 								element={<Vulnerabilities />}
