@@ -33,7 +33,7 @@ export class PineconeService {
 
 		this.store = await PineconeStore.fromExistingIndex(embeddings, {
 			pineconeIndex: index,
-			namespace: "cve",
+			namespace: "ns1",
 		});
 	}
 
@@ -49,7 +49,23 @@ export class PineconeService {
 		await this.store.addDocuments(documents);
 	}
 
-	async similaritySearch(query: string, k = 4): Promise<Document[]> {
+	async similaritySearch(query: string, k = 5): Promise<Document[]> {
+		const cveMatch = query.match(/CVE-\d{4}-\d+/i);
+		if (cveMatch) {
+			const cveId = cveMatch[0].toUpperCase();
+			const filter = {
+				metadata: {
+					id: cveId,
+				},
+			};
+			console.log("filter metadata", filter);
+			return this.store.similaritySearch(
+				query.toUpperCase(),
+				1,
+				filter.metadata,
+			);
+		}
+
 		return this.store.similaritySearch(query, k);
 	}
 }
