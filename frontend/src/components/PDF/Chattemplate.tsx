@@ -4,7 +4,7 @@ import { useReactToPrint } from "react-to-print";
 import Logo from "/logo.jpg";
 import useStore from "../../store/store";
 import "../PDF/printtemplate.css";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import type { Id } from "../../convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
 import { useParams } from "react-router-dom";
@@ -21,14 +21,14 @@ export function ChatTemplate() {
 	const templateRef = useRef<HTMLDivElement>(null);
 	const [chatSummary, setChatSummary] = useState<Summary | null>(null); // Example chat messages
 	// const [selectedTemplate, setSelectedTemplate] = useState<string | null>(
-		// 	null,
-		// );
-		// const [isPrinting, setIsPrinting] = useState(false);
+	// 	null,
+	// );
+	// const [isPrinting, setIsPrinting] = useState(false);
 
-		// Example user data
-		// const userData = useStore();
-		// const user = useStore((state) => state.user);
-		const { user } = useStore();
+	// Example user data
+	// const userData = useStore();
+	// const user = useStore((state) => state.user);
+	const { user } = useStore();
 
 	if (!user) {
 		return null;
@@ -117,7 +117,10 @@ export function ChatTemplate() {
 							{chatSummary.content
 								.split("\n")
 								.map((paragraph) => (
-									<p key={paragraph.slice(0, 10)} className="text-sm mb-4">
+									<p
+										key={paragraph.slice(0, 10)}
+										className="text-sm mb-4"
+									>
 										{paragraph.trim()}{" "}
 										{/* Trim to avoid any extra whitespace */}
 									</p>

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Button } from "@components/ui/button";
 import { useReactToPrint } from "react-to-print";
 import Logo from "/logo.jpg";
