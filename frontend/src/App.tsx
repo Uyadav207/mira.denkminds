@@ -30,9 +30,9 @@ import { FileView } from "./components/file";
 import PrivateRoute from "./components/privateRoutes";
 import { NotFound } from "./pages/NotFound";
 import PrivacyPolicy from "./pages/Privacy";
-import { PrintableTemplate } from "./components/pdf/PrintableTemplate";
-import { ChatTemplate } from "./components/pdf/Chattemplate";
-import { ChatSummaries } from "./components/pdf/ChatSummaries";
+import { ChatTemplate } from "./components/PDF/Chattemplate";
+import { ChatSummaries } from "./components/PDF/ChatSummaries";
+// import { PrintableTemplate } from "./components/pdf/PrintableTemplate";
 
 const App = () => {
 	return (
@@ -66,11 +66,19 @@ const App = () => {
 									<Layout />
 								</PrivateRoute>
 							}
-						>
-							<Route
+						/>
+						{/* <Route
+								path="/chatbot/:chatId?"
+								element={<Chatbot />}
+							/> */}
+
+						{/* <Route path="/template/:templateId" element={<TemplateContentPage />} /> */}
+
+						<Route element={<Layout />}>
+							{/* <Route
 								path="/printtemplate"
 								element={<PrintableTemplate />}
-							/>
+							/> */}
 							<Route
 								path="/chat/:_id"
 								element={<ChatTemplate />}
