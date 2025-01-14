@@ -3,7 +3,7 @@ import { Button } from "@components/ui/button";
 import { useReactToPrint } from "react-to-print";
 import Logo from "/logo.jpg";
 import useStore from "../../store/store";
-import useStore from "../../store/store";
+
 import "../PDF/printtemplate.css";
 import { useQuery } from "convex/react";
 import type { Id } from "../../convex/_generated/dataModel";
@@ -120,7 +120,7 @@ export function ChatTemplate() {
 								.split("\n")
 								.map((paragraph, index) => (
 									<p
-										key={`${paragraph}-${index}`}
+										key={`${paragraph.slice(0, 10)}-${index}`}
 										className="text-sm mb-4"
 									>
 										{paragraph.trim()}{" "}
