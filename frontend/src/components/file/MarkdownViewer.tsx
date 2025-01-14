@@ -74,35 +74,71 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
           
           .pdf-export ul {
             list-style-type: none !important;
-            padding-left: 20pt !important;
+            padding-left: 0 !important;
             margin: 8pt 0 !important;
 			page-break-inside: avoid !important;
           }
+			
           
           .pdf-export ul li:before {
-            content: "-> " !important;
-            margin-left: -12pt !important;
+            content: "•" !important;
+			  position: absolute !important;
+             left: 0 !important;
           }
+			 .pdf-export ul ul li::before {
+  content: "•" !important;
+  position: absolute !important;
+  left: 0 !important;
+  color: #555 !important;
+}
+  .pdf-export ul li {
+  padding-left: 20px !important;
+  margin: 4pt 0 !important;
+  position: relative !important;
+}
           
           .pdf-export ol {
-            padding-left: 20pt !important;
+            padding-left: 20px !important;
             margin: 8pt 0 !important;
-			page-break-inside: avoid !important;
-			list-style-position: outside !important;
-  			line-height: 1.6 !important;
+			list-style: none !important;
+            counter-reset: main-counter !important;
+  			
           }
-  .pdf-export ol li {
+   .pdf-export ol>li {
+   
+            counter-increment: main-counter !important;
+            // text-indent: 0 !important;
+            padding-left: 25px !important;
+            position: relative !important;
+          }
+			.pdf-export ol > li::before {
+            content: counter(main-counter) "." !important;
+            position: absolute !important;
+            left: 0 !important;
+            width: 20px !important;
+          }
+			.pdf-export ul {
+  list-style-type: none !important;
+  padding-left: 25px !important;
+  margin: 8pt 0 !important;
+}
+  .pdf-export ul > li::before {
+  content: "•" !important;
+  position: absolute !important;
+  left: 0 !important;
+}
+
+.pdf-export ul li {
+  padding-left: 20px !important;
   margin: 4pt 0 !important;
-   padding-left: 0 !important;
-  line-height: 1.5 !important;
-  display: list-item !important;
-  list-style-position: inside !important;
+  position: relative !important;
 }
           
           .pdf-export li {
             color: #000 !important;
             margin: 4pt 0 !important;
 			page-break-inside: avoid !important;
+			 display: block !important;
           }
           
           .pdf-export code {
@@ -215,13 +251,16 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 						<p className="mb-4 text-gray-700 dark:text-gray-300" {...props} />
 					),
 					ul: ({ node, ...props }) => (
-						<ul className="list-disc pl-6 mb-4" {...props} />
+						<ul className="list-disc pl-5 relative" {...props} />
 					),
 					ol: ({ node, ...props }) => (
-						<ol className="list-decimal pl-6 mb-4" {...props} />
+						<ol className="list-decimal pl-8 mb-4 space-y-1" {...props} />
 					),
 					li: ({ node, ...props }) => (
-						<li className="mb-1 text-gray-700 dark:text-gray-300" {...props} />
+						<li
+							className=" mb-1 pl-5 relative text-gray-700 dark:text-gray-300"
+							{...props}
+						/>
 					),
 					hr: ({ node, ...props }) => (
 						<hr

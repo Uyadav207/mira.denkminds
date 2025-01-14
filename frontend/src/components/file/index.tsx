@@ -96,7 +96,11 @@ export function FileView() {
 					</div>
 
 					<div id="markdown-content">
-						<img src="/Mira_logo.png" alt="Mira Logo" className="h-8" />
+						<img
+							src="/Mira_logo.png"
+							alt="Mira Logo"
+							className="h-8"
+						/>
 						<MarkdownViewer content={file.markdownContent} />
 					</div>
 				</div>
