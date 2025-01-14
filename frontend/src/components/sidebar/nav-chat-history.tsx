@@ -82,6 +82,11 @@ export default function ChatHistory() {
 		}
 	};
 
+	const folderData = useQuery(api.reports.getReportFoldersByUser, {
+		userId: String(id),
+	});
+	const reportCount = folderData?.length ?? 0;
+
 	useEffect(() => {
 		if (recentChats) {
 			setIsLoading(false);
@@ -132,7 +137,7 @@ export default function ChatHistory() {
 							</SidebarMenuButton>
 
 							{/* Calculate Length of the no of reports array */}
-							<SidebarMenuBadge>12</SidebarMenuBadge>
+							<SidebarMenuBadge>{reportCount}</SidebarMenuBadge>
 						</a>
 					</SidebarMenuItem>
 				</SidebarMenu>
@@ -151,9 +156,7 @@ export default function ChatHistory() {
 								<SidebarMenuItem>
 									<div className="mt-10 flex flex-col items-center justify-center">
 										<MessageSquareCode />
-										{state === "expanded" && (
-											<p>No recent chats</p>
-										)}
+										{state === "expanded" && <p>No recent chats</p>}
 									</div>
 								</SidebarMenuItem>
 							) : (
@@ -162,19 +165,13 @@ export default function ChatHistory() {
 										<SidebarMenuButton
 											asChild
 											className="w-full justify-between cursor-pointer"
-											onClick={() =>
-												navigate(`/chatbot/${chat._id}`)
-											}
+											onClick={() => navigate(`/chatbot/${chat._id}`)}
 										>
 											<div className="flex items-center">
 												<MessageCircle className="mr-2 h-4 w-4 shrink-0" />
-												<span className="flex-grow truncate">
-													{chat.title}
-												</span>
+												<span className="flex-grow truncate">{chat.title}</span>
 												<DropdownMenu>
-													<DropdownMenuTrigger
-														asChild
-													>
+													<DropdownMenuTrigger asChild>
 														<MoreHorizontal className="h-4 w-4 ml-auto right-0 cursor-pointer" />
 													</DropdownMenuTrigger>
 													<DropdownMenuContent
@@ -183,11 +180,7 @@ export default function ChatHistory() {
 														className="w-[160px] bg-white shadow-lg rounded-md border border-gray-200"
 													>
 														<DropdownMenuItem
-															onClick={() =>
-																handleDelete(
-																	chat._id,
-																)
-															}
+															onClick={() => handleDelete(chat._id)}
 															className="text-red-600 flex items-center gap-2 hover:bg-red-50 cursor-pointer"
 														>
 															<Trash2 className="mr-2 h-4 w-4" />

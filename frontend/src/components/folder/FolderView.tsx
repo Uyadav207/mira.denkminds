@@ -33,7 +33,7 @@ export function FolderView({ files }: FolderViewProps) {
 
 	const deleteReport = async (folderId: string, e: React.MouseEvent) => {
 		e.stopPropagation();
-		const responseAfterDelete = await deleteReportById({ folderId });
+		const responseAfterDelete = await deleteReportById({ reportId: folderId });
 		if (!responseAfterDelete) {
 			return;
 		}
@@ -50,7 +50,13 @@ export function FolderView({ files }: FolderViewProps) {
 			(event.type === "keydown" &&
 				(event as React.KeyboardEvent).key === "Enter")
 		) {
+			// if (file.reportType === "chatSummaryReport") {
+			// 	console.log("file", file._id);
+
+			// 	navigate(`/chat/${file._id}`, { state: { file } });
+			// } else {
 			navigate(`/file/${file._id}`, { state: { file } });
+			// }
 		}
 	};
 
@@ -91,6 +97,7 @@ export function FolderView({ files }: FolderViewProps) {
 							<tr className="bg-sidebar border">
 								<th className="p-3">Name</th>
 								<th className="p-3">Created on</th>
+								<th className="p-3">Report Type</th>
 								<th className="p-3 text-right">Actions</th>
 							</tr>
 						</thead>
@@ -119,6 +126,14 @@ export function FolderView({ files }: FolderViewProps) {
 													file.createdAt,
 												).toDateString()
 											: "N/A"}
+									</td>
+									<td className="p-3">
+										{file.reportType === "chatSummaryReport"
+											? "Chat Summary Report"
+											: file.reportType ===
+													"vulnerabilityReport"
+												? "Vulnerability Report"
+												: "Report"}
 									</td>
 									<td className="p-3 text-right">
 										<DropdownMenu>
