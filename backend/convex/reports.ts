@@ -41,8 +41,14 @@ export const addReport = mutation({
 		fileName: v.string(),
 		fileUrl: v.string(),
 		markdownContent: v.any(),
+		reportType: v.optional(
+			v.union(v.literal("chatSummaryReport"), v.literal("vulnerabilityReport")),
+		),
 	},
-	handler: async (ctx, { folderId, fileName, fileUrl, markdownContent }) => {
+	handler: async (
+		ctx,
+		{ folderId, fileName, fileUrl, markdownContent, reportType },
+	) => {
 		const now = Date.now();
 
 		// Insert a new report into the reports table
@@ -51,6 +57,7 @@ export const addReport = mutation({
 			fileName,
 			fileUrl,
 			markdownContent, // Empty content for now
+			reportType: reportType || undefined,
 			createdAt: now,
 		});
 
@@ -86,5 +93,45 @@ export const getFileById = query({
 			return null;
 		}
 		return file;
+	},
+});
+
+export const deleteReport = mutation({
+	args: {
+		reportId: v.id("reports"), // ID of the report to delete
+	},
+	handler: async (ctx, { reportId }) => {
+		// Delete the report by its ID
+		const deleted = await ctx.db.delete(reportId);
+		return {
+			success: true,
+			message: "Report deleted successfully.",
+		};
+	},
+});
+
+export const deleteReportFolder = mutation({
+	args: {
+		folderId: v.id("reportFolders"), // ID of the folder to delete
+	},
+	handler: async (ctx, { folderId }) => {
+		// Step 1: Fetch all reports associated with the folder
+		const reportsInFolder = await ctx.db
+			.query("reports")
+			.withIndex("by_folderId", (q) => q.eq("folderId", folderId))
+			.collect();
+
+		// Step 2: Delete all the reports in the folder
+		for (const report of reportsInFolder) {
+			await ctx.db.delete(report._id);
+		}
+
+		// Step 3: Delete the folder itself
+		await ctx.db.delete(folderId);
+
+		return {
+			success: true,
+			message: "Folder and all related reports deleted successfully.",
+		};
 	},
 });
