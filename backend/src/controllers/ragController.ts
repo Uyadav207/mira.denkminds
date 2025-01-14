@@ -4,6 +4,15 @@ import { OpenAIService } from "../services/openai";
 import { Document } from "langchain/document";
 import type { CVEDocument } from "../types/cve";
 
+interface QueryResponse {
+	answer: string;
+	context: Document[];
+	metadata?: {
+		totalDocs: number;
+		searchScore?: number;
+	};
+}
+
 export class RAGController {
 	private pinecone!: PineconeService;
 	private openai = OpenAIService.getInstance();
@@ -40,17 +49,40 @@ export class RAGController {
 	async query(c: Context) {
 		try {
 			const { question } = await c.req.json();
-			const docs = await this.pinecone.similaritySearch(question);
 
-			let context = "";
-			if (docs.length > 0) {
-				context = docs.map((doc) => doc.pageContent).join("\n\n");
-			} else {
-				context = "No relevant documents found.";
+			// Input validation
+			if (!question || typeof question !== "string") {
+				return c.json(
+					{
+						status: "error",
+						message: "Invalid question format",
+					},
+					400,
+				);
 			}
 
-			const answer = await this.openai.generateAnswer(context, question);
-			return c.json({ answer, context: docs });
+			const docs: Document[] = await this.pinecone.similaritySearch(question);
+
+			// Handle no results case
+			if (docs.length === 0) {
+				return c.json({
+					answer: "No information found for the given query.",
+					context: [],
+					metadata: { totalDocs: 0 },
+				});
+			}
+
+			const answer = await this.openai.generateAnswer(docs, question as string);
+
+			const response: QueryResponse = {
+				answer,
+				context: docs,
+				metadata: {
+					totalDocs: docs.length,
+				},
+			};
+
+			return c.json(response);
 		} catch (error) {
 			return c.json(
 				{ status: "error", message: (error as Error).message },

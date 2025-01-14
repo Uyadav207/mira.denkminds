@@ -2,6 +2,25 @@ import OpenAI from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/chat";
 import type { Stream } from "openai/streaming";
 
+interface Document {
+	pageContent: string;
+	metadata?: {
+		publishedDate?: string;
+	};
+}
+
+interface CVEDocument {
+	id: string;
+	description: string;
+	references: string;
+	cvssScore: number | string;
+	severity: string;
+	vectorString: string;
+	weaknesses: string;
+	affectedProducts: string[];
+	mitigation: string;
+}
+
 export class OpenAIService {
 	private static instance: OpenAIService;
 	private client: OpenAI;
@@ -31,22 +50,56 @@ export class OpenAIService {
 
 	//rag chat completion
 
-	async generateAnswer(context: string, question: string): Promise<string> {
+	private preprocessContext(documents: Document[]): string {
+		return documents
+			.map((doc) => {
+				// Parse the JSON string in pageContent
+				const cveData: CVEDocument = JSON.parse(doc.pageContent);
+
+				// Create a clean, readable format for the LLM
+				return `
+					CVE ID: ${cveData.id}
+					Description: ${cveData.description}
+					Severity: ${cveData.severity}
+					CVSS Score: ${cveData.cvssScore}
+					Vector String: ${cveData.vectorString}
+					Weaknesses: ${cveData.weaknesses}
+					References: ${cveData.references}
+					Published: ${doc?.metadata?.publishedDate}
+	---`;
+			})
+			.join("\n\n");
+	}
+
+	async generateAnswer(
+		documents: Document[],
+		question: string,
+	): Promise<string> {
+		const formattedContext = this.preprocessContext(documents);
+
 		const response = await this.client.chat.completions.create({
-			model: "gpt-4",
+			model: "gpt-3.5-turbo",
 			messages: [
 				{
 					role: "system",
-					content:
-						"You are a helpful cyber security assistant that answers questions based on the provided context.",
+					content: `You are a cyber security assistant specializing in CVE analysis. Your task is to:
+						1. Analyze the provided CVE data carefully
+						2. For questions about specific CVEs, only use information explicitly stated in the context
+						3. If a CVE is not found in the context, clearly state that no information is available
+						4. When providing severity or CVSS scores, always cite the specific CVE ID
+						5. Include relevant references when available
+						6. Format numbers and technical details precisely as they appear in the data`,
 				},
 				{
 					role: "user",
-					content: `Answer the question based only on the following context:\n\n${context}\n\nQuestion: ${question}\nAnswer:`,
+					content: `Context:\n${formattedContext}\n\nQuestion: ${question}\n\nProvide a detailed answer based solely on the above context.`,
 				},
 			],
+			temperature: 0.3, // Lower temperature for more focused responses
+			max_tokens: 500, // Adjust based on your needs
 		});
-		return response.choices[0].message.content || "";
+
+		return response.choices[0].message.content || "Unable to generate response";
 	}
 
 	async generateSummary(prompt: string): Promise<string> {

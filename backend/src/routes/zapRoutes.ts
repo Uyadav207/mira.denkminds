@@ -7,4 +7,4 @@ const zapRoutes = new Hono();
 zapRoutes.post("/spider-scan", spiderAndScanUrl);
 zapRoutes.post("/baseline-scan", baselineScanHandler);
 
-export default zapRoutes;
+export { zapRoutes };
