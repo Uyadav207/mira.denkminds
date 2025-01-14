@@ -3,6 +3,7 @@ import { Button } from "@components/ui/button";
 import { useReactToPrint } from "react-to-print";
 import Logo from "/logo.jpg";
 import useStore from "../../store/store";
+
 import "../PDF/printtemplate.css";
 import { useQuery } from "convex/react";
 import type { Id } from "../../convex/_generated/dataModel";
@@ -48,6 +49,7 @@ export function ChatTemplate() {
 		//     ]);
 		//   }, []);
 
+		// Update chatSummary state when summaries data is fetched
 		// Update chatSummary state when summaries data is fetched
 
 		if (fetchedSummary) {
@@ -116,9 +118,9 @@ export function ChatTemplate() {
 							{/* Split content by newlines and map over it */}
 							{chatSummary.content
 								.split("\n")
-								.map((paragraph) => (
+								.map((paragraph, index) => (
 									<p
-										key={paragraph.slice(0, 10)}
+										key={`${paragraph.slice(0, 10)}-${index}`}
 										className="text-sm mb-4"
 									>
 										{paragraph.trim()}{" "}
