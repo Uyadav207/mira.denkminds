@@ -10,4 +10,4 @@ zapRoutes.post("/spider-scan", spiderAndScanUrl);
 zapRoutes.post("/baseline-scan", baselineScanHandler);
 zapRoutes.post("/sonar-scan", (c) => sonarController.scanRepository(c));
 
-export default zapRoutes;
+export { zapRoutes };
