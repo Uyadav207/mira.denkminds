@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 
 //components
@@ -28,7 +28,14 @@ import useChatActionStore from "../../store/chatActions";
 
 // svgs
 import MiraAvatar from "../../assets/Mira.svg";
-import { SendIcon } from "lucide-react";
+import {
+	BrainIcon,
+	EyeIcon,
+	Image,
+	Lightbulb,
+	MoreHorizontal,
+	SendIcon,
+} from "lucide-react";
 
 // types
 import type { Message, ChatHistory, Info } from "../../types/chats";
@@ -50,6 +57,7 @@ import { isReportRequest } from "./helpers";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
+	const [showMore, setShowMore] = useState(false);
 	const [scanType, setScanType] = useState<string | null>(null);
 	const [confirmType, setConfirmType] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +68,14 @@ const MiraChatBot: React.FC = () => {
 	const [progress, setProgress] = useState(0);
 	const [input, setInput] = useState("");
 	const [foldersList, setFoldersList] = useState([] as FolderItem[]);
+
+	const actionCards = [
+		{ title: "Create image", icon: Image },
+		{ title: "Make a plan", icon: Lightbulb },
+		{ title: "Brainstorm", icon: BrainIcon },
+	];
+
+	const moreCards = [{ title: "Analyze images", icon: EyeIcon }];
 
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const { chatId: chatIdParam } = useParams<{ chatId: string }>();
@@ -260,12 +276,7 @@ const MiraChatBot: React.FC = () => {
 				});
 			}
 			setPendingAction(botMessage.id as string);
-			requestHumanApproval(
-				"report",
-				manualMessage,
-				"none",
-				botMessage.id,
-			);
+			requestHumanApproval("report", manualMessage, "none", botMessage.id);
 		} else {
 			try {
 				setIsLoading(true);
@@ -274,10 +285,7 @@ const MiraChatBot: React.FC = () => {
 					useRAG: false,
 				})) as StreamResponse;
 				setIsLoading(false);
-				streamChatResponse(
-					userMessage,
-					responseStream as StreamResponse,
-				);
+				streamChatResponse(userMessage, responseStream as StreamResponse);
 			} catch (error) {
 				return error;
 			}
@@ -340,8 +348,7 @@ const MiraChatBot: React.FC = () => {
 			setActionPrompts([]);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "folder") {
-			approvalMessage =
-				"Select the folder where you want to save the report.";
+			approvalMessage = "Select the folder where you want to save the report.";
 			setActionPrompts(foldersList);
 			setHumanInTheLoopMessage(approvalMessage);
 		}
@@ -409,16 +416,9 @@ const MiraChatBot: React.FC = () => {
 					message: botMessage.message,
 				});
 
-				requestHumanApproval(
-					"standards",
-					manualMessage,
-					"none",
-					botMessage.id,
-				);
+				requestHumanApproval("standards", manualMessage, "none", botMessage.id);
 			} catch {
-				addBotMessage(
-					"An error occurred while processing your request.",
-				);
+				addBotMessage("An error occurred while processing your request.");
 			}
 		} else if (type === "standards") {
 			try {
@@ -456,9 +456,7 @@ const MiraChatBot: React.FC = () => {
 					let progress = 0;
 					const totalSteps = 10; // Simulate 20 steps in the API process
 					for (let i = 0; i < totalSteps; i++) {
-						await new Promise((resolve) =>
-							setTimeout(resolve, 500),
-						);
+						await new Promise((resolve) => setTimeout(resolve, 500));
 						progress += 100 / totalSteps;
 						setProgress(Math.min(progress, 100));
 					}
@@ -468,14 +466,11 @@ const MiraChatBot: React.FC = () => {
 					);
 				} catch (error) {
 					setIsScanLoading(false);
-					addBotMessage(
-						"An error occurred while processing your request.",
-					);
+					addBotMessage("An error occurred while processing your request.");
 					return error;
 				}
 
-				const manualMessage =
-					"Do you want to generate a brief summary?";
+				const manualMessage = "Do you want to generate a brief summary?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -499,9 +494,7 @@ const MiraChatBot: React.FC = () => {
 					botMessage.id,
 				);
 			} catch {
-				addBotMessage(
-					"An error occurred while processing your request.",
-				);
+				addBotMessage("An error occurred while processing your request.");
 			}
 		} else if (type === "report") {
 			if (action === "Chat Summary Report") {
@@ -585,12 +578,7 @@ const MiraChatBot: React.FC = () => {
 				}
 
 				//generate report based on sinduras api
-				requestHumanApproval(
-					"standards",
-					manualMessage,
-					"none",
-					botMessage.id,
-				);
+				requestHumanApproval("standards", manualMessage, "none", botMessage.id);
 			}
 		} else if (type === "folder") {
 			// Folder selection
@@ -680,9 +668,7 @@ const MiraChatBot: React.FC = () => {
 			}
 		} catch (error) {
 			const errorMessage =
-				error instanceof Error
-					? error.message
-					: "Unknown error occurred";
+				error instanceof Error ? error.message : "Unknown error occurred";
 			addBotMessage(`Error: ${errorMessage}`);
 		} finally {
 			setStreaming(false);
@@ -725,8 +711,7 @@ const MiraChatBot: React.FC = () => {
 				// await streamOllamaChatResponse(responseStream);
 				await streamChatResponse(userMessage, responseStream);
 
-				const manualMessage =
-					"Do you want to save this as a detailed report?";
+				const manualMessage = "Do you want to save this as a detailed report?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -743,12 +728,7 @@ const MiraChatBot: React.FC = () => {
 				});
 
 				setPendingAction(botMessage.id as string);
-				requestHumanApproval(
-					"approval",
-					manualMessage,
-					"save",
-					botMessage.id,
-				);
+				requestHumanApproval("approval", manualMessage, "save", botMessage.id);
 			} catch (error) {
 				return error;
 			}
@@ -786,12 +766,7 @@ const MiraChatBot: React.FC = () => {
 			});
 
 			setPendingAction(botMessage.id as string);
-			requestHumanApproval(
-				"folder",
-				manualMessage,
-				"none",
-				botMessage.id,
-			);
+			requestHumanApproval("folder", manualMessage, "none", botMessage.id);
 		}
 	};
 
@@ -882,10 +857,7 @@ const MiraChatBot: React.FC = () => {
 		setMessages((prev) => {
 			const lastMessage = prev[prev.length - 1];
 			if (lastMessage?.sender === "ai" && lastMessage.isStreaming) {
-				return [
-					...prev.slice(0, -1),
-					{ ...lastMessage, message: message },
-				];
+				return [...prev.slice(0, -1), { ...lastMessage, message: message }];
 			}
 
 			return [
@@ -952,12 +924,12 @@ const MiraChatBot: React.FC = () => {
 
 	return (
 		<div className="flex justify-center">
-			<div className="flex flex-col space-y-6 w-3/4 h-full md:h-[90vh] rounded-lg p-4">
+			<div className="flex flex-col space-y-6 w-3/4 h-full md:h-[90vh] rounded-lg">
 				{messages?.length === 0 ? (
 					<>
 						<div className="flex flex-col items-center justify-center w-full h-2/4">
 							<motion.div
-								className="w-full max-w-2/4 aspect-w-1 aspect-h-1 justify-center mt-20"
+								className="w-full max-w-2/4 aspect-w-1 aspect-h-1 justify-center mb-10"
 								initial={{ opacity: 0, scale: 0.8 }}
 								animate={{ opacity: 1, scale: 1 }}
 								transition={{ duration: 0.25 }}
@@ -968,14 +940,32 @@ const MiraChatBot: React.FC = () => {
 									className="flex w-auto h-auto object-cover justify-self-center"
 								/>
 							</motion.div>
-							<motion.h1
+
+							<motion.div
 								className="text-2xl font-semibold justify-center text-primary"
 								initial={{ opacity: 0, y: 20 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.25 }}
 							>
-								Need a Security Checkup?
-							</motion.h1>
+								{/* <span id="typed-output" />
+								{(() => {
+									useEffect(() => {
+										const typed = new Typed("#typed-output", {
+											strings: [
+												"Hello! I'm Mira. How can I help you today?",
+												"Need a Security Checkup?",
+											],
+											typeSpeed: 50,
+											backSpeed: 30,
+											loop: true,
+										});
+										return () => {
+											typed.destroy();
+										};
+									}, []);
+									return null;
+								})()} */}
+							</motion.div>
 						</div>
 					</>
 				) : chatsLoader ? (
@@ -983,10 +973,7 @@ const MiraChatBot: React.FC = () => {
 						<Spinner />
 					</div>
 				) : (
-					<ScrollArea
-						ref={scrollAreaRef}
-						className="flex-1 p-4 w-full"
-					>
+					<ScrollArea ref={scrollAreaRef} className="flex-1 p-4 w-full">
 						{messages.map((message) => {
 							const isPendingAction =
 								pendingAction === message.id ||
@@ -1004,9 +991,7 @@ const MiraChatBot: React.FC = () => {
 									>
 										<HumanInTheLoopApproval
 											key={message.id}
-											message={
-												humanInTheLoopMessage || ""
-											}
+											message={humanInTheLoopMessage || ""}
 											onCancel={cancelAction}
 											confirmType={confirmType || ""}
 											onConfirm={yesClicked}
@@ -1023,9 +1008,7 @@ const MiraChatBot: React.FC = () => {
 										<HumanInTheLoopOptions
 											key={message.id}
 											setShowInfo={setShowInfo}
-											question={
-												humanInTheLoopMessage || ""
-											}
+											question={humanInTheLoopMessage || ""}
 											actionPrompts={actionPrompts || []}
 											onConfirm={confirmAction}
 										/>
@@ -1034,10 +1017,10 @@ const MiraChatBot: React.FC = () => {
 							}
 
 							const isUser = message.sender === "user";
-							const messageClasses = `inline-block p-2 rounded-lg ${
+							const messageClasses = `inline-block p-2 rounded-xl ${
 								isUser
-									? "bg-primary text-primary-foreground dark:bg-primary-900"
-									: "bg-muted dark:bg-muted/40 text-foreground"
+									? "bg-primary text-primary-foreground dark:bg-primary-900 p-3"
+									: "bg-muted dark:bg-muted/40 text-foreground px-5 pt-3 pb-2"
 							}`;
 							const containerClasses = `mb-4 ${isUser ? "text-right" : "text-left"}`;
 
@@ -1052,9 +1035,7 @@ const MiraChatBot: React.FC = () => {
 										{isUser ? (
 											message.message
 										) : (
-											<MarkdownViewer
-												content={message.message}
-											/>
+											<MarkdownViewer content={message.message} />
 										)}
 									</span>
 								</motion.div>
@@ -1086,22 +1067,20 @@ const MiraChatBot: React.FC = () => {
 						</p>
 					</div>
 				)}
-				<div className="flex justify-center">
+				<div className="flex justify-center px-10 pb-5">
 					<motion.div
 						initial={{ width: "60%" }}
 						animate={{ width: input ? "70%" : "60%" }}
 						transition={{ duration: 0.3 }}
-						className="flex items-center rounded-full px-4 py-2 relativ bg-secondary"
+						className="flex items-center rounded-2xl px-4 py-2 relativ bg-secondary"
 					>
 						{/* Textarea */}
 						<textarea
 							value={input}
-							onChange={(
-								e: React.ChangeEvent<HTMLTextAreaElement>,
-							) => setInput(e.target.value)}
-							onKeyPress={(
-								e: React.KeyboardEvent<HTMLTextAreaElement>,
-							) => {
+							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+								setInput(e.target.value)
+							}
+							onKeyPress={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
 								if (e.key === "Enter" && !e.shiftKey) {
 									e.preventDefault();
 									handleSend();
@@ -1124,29 +1103,86 @@ const MiraChatBot: React.FC = () => {
 							type="button"
 							onClick={handleSend}
 							disabled={isLoading || !!pendingAction || streaming}
-							className="ml-2 text-gray hover:text-primary bg-secondary p-4 rounded-full"
+							className="ml-2 text-gray hover:text-primary bg-secondary rounded-full"
 						>
 							<SendIcon size={25} />
 						</motion.button>
 					</motion.div>
 				</div>
 
+				<div className="flex flex-col items-center gap-6 px-4 py-6">
+					<motion.div
+						className="flex flex-wrap justify-center items-center gap-4"
+						layout // Ensures smooth animation for layout changes
+					>
+						{actionCards.map((actionCard, index) => (
+							<motion.div
+								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+								key={index}
+								className="flex items-center space-x-2 bg-white border border-gray-300 p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
+								whileHover={{ scale: 1.05 }} // Hover animation
+								whileTap={{ scale: 0.95 }} // Tap animation
+							>
+								<actionCard.icon className="h-5 w-5 text-[#7156DB]" />
+								<span className="text-gray-700 text-sm font-medium">
+									{actionCard.title}
+								</span>
+							</motion.div>
+						))}
+					</motion.div>
+
+					{/* Show More Button */}
+					{!showMore && (
+						<motion.div
+							className="flex items-center space-x-2 bg-white border border-gray-300 p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
+							onClick={() => setShowMore(true)} // Toggle showMore state
+							whileHover={{ scale: 1.05 }}
+							whileTap={{ scale: 0.95 }}
+						>
+							<MoreHorizontal className="h-5 w-5 text-[#7156DB]" />
+							<span className="text-gray-700 text-sm font-medium">More</span>
+						</motion.div>
+					)}
+
+					{/* Reveal More Cards */}
+					<AnimatePresence>
+						{showMore && (
+							<motion.div
+								className="flex flex-wrap justify-center items-center gap-4"
+								initial={{ opacity: 0, y: -10 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: -10 }}
+							>
+								{moreCards.map((moreCard, index) => (
+									<motion.div
+										// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+										key={index}
+										className="flex items-center space-x-2 bg-white border border-gray-300 p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
+										whileHover={{ scale: 1.05 }}
+										whileTap={{ scale: 0.95 }}
+									>
+										<moreCard.icon className="h-5 w-5 text-green-500" />
+										<span className="text-gray-700 text-sm font-medium">
+											{moreCard.title}
+										</span>
+									</motion.div>
+								))}
+							</motion.div>
+						)}
+					</AnimatePresence>
+				</div>
+
 				<Dialog open={showInfo} onOpenChange={setShowInfo}>
 					<DialogContent className="dialog-content">
 						<DialogHeader>
-							<DialogTitle className="dialog-title">
-								Information
-							</DialogTitle>
+							<DialogTitle className="dialog-title">Information</DialogTitle>
 						</DialogHeader>
 						<div className="dialog-body">
 							{info.map((item) => (
 								<div key={item.id} className="info-item">
-									<h2 className="text-lg font-semibold">
-										{item.name}
-									</h2>
+									<h2 className="text-lg font-semibold">{item.name}</h2>
 									<p className="info-description">
-										{item.description ||
-											"No description available."}
+										{item.description || "No description available."}
 									</p>
 								</div>
 							))}
