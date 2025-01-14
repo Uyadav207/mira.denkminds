@@ -35,6 +35,9 @@ export default defineSchema({
 		fileName: v.string(),
 		fileUrl: v.string(),
 		markdownContent: v.string(),
+		reportType: v.optional(
+			v.union(v.literal("chatSummaryReport"), v.literal("vulnerabilityReport")),
+		),
 		createdAt: v.number(),
 	}).index("by_folderId", ["folderId"]),
 

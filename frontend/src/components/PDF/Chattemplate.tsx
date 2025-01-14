@@ -2,130 +2,148 @@ import { useRef, useEffect, useState } from "react";
 import { Button } from "@components/ui/button";
 import { useReactToPrint } from "react-to-print";
 import Logo from "/logo.jpg";
-import useStore from "../../store/store"; 
+import useStore from "../../store/store";
+
 import "../PDF/printtemplate.css";
-import { useQuery, useMutation } from "convex/react";
-import { Id } from "../../convex/_generated/dataModel";
+import { useQuery } from "convex/react";
+import type { Id } from "../../convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
 import { useParams } from "react-router-dom";
 
 type Summary = {
-    _id: Id<"summaries">;
-    title: string;
-    content: string;
-    createdAt: string;
-  };
+	_id: Id<"summaries">;
+	title: string;
+	content: string;
+	createdAt: string;
+};
 
 export function ChatTemplate() {
-    const { _id } = useParams<{ _id: string }>();
-  const templateRef = useRef<HTMLDivElement>(null);
-  const [chatSummary, setChatSummary] = useState<Summary | null>(null); // Example chat messages
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
-  const [isPrinting, setIsPrinting] = useState(false);
+	const { _id } = useParams<{ _id: string }>();
+	const templateRef = useRef<HTMLDivElement>(null);
+	const [chatSummary, setChatSummary] = useState<Summary | null>(null); // Example chat messages
+	// const [selectedTemplate, setSelectedTemplate] = useState<string | null>(
+	// 	null,
+	// );
+	// const [isPrinting, setIsPrinting] = useState(false);
 
-  // Example user data
-  const userData = useStore();
-  const user = useStore((state) => state.user);
+	// Example user data
+	// const userData = useStore();
+	// const user = useStore((state) => state.user);
+	const { user } = useStore();
 
 	if (!user) {
 		return null;
 	}
 	const { id } = user;
-  // Fetch summaries using Convex query
-  const fetchedSummary = useQuery(api.summaries.getSummariesByUserId, {
-    userId: String(id), // Replace with the correct user ID
-  }) as Summary[] ;
-//   console.log("Summaries fetched:", summaries)
+	// Fetch summaries using Convex query
+	const fetchedSummary = useQuery(api.summaries.getSummariesByUserId, {
+		userId: String(id), // Replace with the correct user ID
+	}) as Summary[];
+	//   console.log("Summaries fetched:", summaries)
 
-  useEffect(() => {
-    
-    // Fetch or generate chat summary
-//     setChatSummary([
-//       "1.Excecutive Summary:Another critical area that requires immediate attention is the absence of Content Security Policy (CSP) implementation.",
-//       "2. Technical Summary: The application is vulnerable to Cross-Site Scripting (XSS) attacks due to the absence of CSP headers.",
-//     ]);
-//   }, []);
+	useEffect(() => {
+		// Fetch or generate chat summary
+		//     setChatSummary([
+		//       "1.Excecutive Summary:Another critical area that requires immediate attention is the absence of Content Security Policy (CSP) implementation.",
+		//       "2. Technical Summary: The application is vulnerable to Cross-Site Scripting (XSS) attacks due to the absence of CSP headers.",
+		//     ]);
+		//   }, []);
 
-// Update chatSummary state when summaries data is fetched
+		// Update chatSummary state when summaries data is fetched
+		// Update chatSummary state when summaries data is fetched
 
-if (fetchedSummary) {
-    const foundSummary = fetchedSummary.find(
-        (summary) => summary._id === _id
-    );
-    setChatSummary(foundSummary || null);
-  }
-}, [fetchedSummary,_id]);
+		if (fetchedSummary) {
+			const foundSummary = fetchedSummary.find(
+				(summary) => summary._id === _id,
+			);
+			setChatSummary(foundSummary || null);
+		}
+	}, [fetchedSummary, _id]);
 
-  const handlePrint = useReactToPrint({
-    contentRef: templateRef,
-    documentTitle: chatSummary?.title || "Chat Summary",
-    onBeforePrint: () => {
-      setIsPrinting(true);
-      return Promise.resolve();
-    },
-    onAfterPrint: () => {
-      setIsPrinting(false);
-    //   setSelectedTemplate(null); // Reset after printing
-    },
-  });
+	const handlePrint = useReactToPrint({
+		contentRef: templateRef,
+		documentTitle: chatSummary?.title || "Chat Summary",
+		onBeforePrint: () => {
+			// setIsPrinting(true);
+			return Promise.resolve();
+		},
+		onAfterPrint: () => {
+			// setIsPrinting(false);
+			//   setSelectedTemplate(null); // Reset after printing
+		},
+	});
 
-  return (
-    <div className="relative p-8">
-      <div className="flex justify-between items-center absolute top-4 left-4 right-4">
-        {/* Print Button */}
-        <Button onClick={handlePrint} variant="outline">
-          Print Chat Summary
-        </Button>
-      </div>
+	return (
+		<div className="relative p-8">
+			<div className="flex justify-between items-center absolute top-4 left-4 right-4">
+				{/* Print Button */}
+				<Button onClick={handlePrint} variant="outline">
+					Print Chat Summary
+				</Button>
+			</div>
 
-      <div ref={templateRef} className="mt-8 p-6 border border-gray-300 rounded-lg shadow-lg">
-        {/* Header */}
-        <div className="print-header">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <img
-                src={Logo}
-                alt="Logo"
-                className="h-12 w-12 rounded-full object-cover"
-              />
-            </div>
-            <div className="text-center my-8">
-                <h1 className="text-3xl font-bold">Chat Summary</h1>
-            </div>
-        <p className="text-sm text-right font-semibold">Generated by: {user?.username}</p>
-        </div>
-    </div>
- 
-        
+			<div
+				ref={templateRef}
+				className="mt-8 p-6 border border-gray-300 rounded-lg shadow-lg"
+			>
+				{/* Header */}
+				<div className="print-header">
+					<div className="flex justify-between items-center">
+						<div className="flex items-center">
+							<img
+								src={Logo}
+								alt="Logo"
+								className="h-12 w-12 rounded-full object-cover"
+							/>
+						</div>
+						<div className="text-center my-8">
+							<h1 className="text-3xl font-bold">Chat Summary</h1>
+						</div>
+						<p className="text-sm text-right font-semibold">
+							Generated by: {user?.username}
+						</p>
+					</div>
+				</div>
 
-        {/* Chat Summary Section */}
-        <div className="mt-8 print-content">
-          <h2 className="text-lg font-semibold mb-4">Conversation:</h2>
-          {chatSummary ? (
-            <>
-              <h2 className="text-lg font-semibold mb-4">Title: {chatSummary.title}</h2>
-              {/* Split content by newlines and map over it */}
-      {chatSummary.content.split('\n').map((paragraph, index) => (
-        <p key={index} className="text-sm mb-4">
-          {paragraph.trim()} {/* Trim to avoid any extra whitespace */}
-        </p>
-      ))}
-              <p className="text-xs text-gray-500">
-                Created At: {new Date(chatSummary.createdAt).toLocaleString()}
-              </p>
-            </>
-          ) : (
-            <p>Loading chat summary...</p>
-          )}
-          </div>
-        
+				{/* Chat Summary Section */}
+				<div className="mt-8 print-content">
+					<h2 className="text-lg font-semibold mb-4">
+						Conversation:
+					</h2>
+					{chatSummary ? (
+						<>
+							<h2 className="text-lg font-semibold mb-4">
+								Title: {chatSummary.title}
+							</h2>
+							{/* Split content by newlines and map over it */}
+							{chatSummary.content
+								.split("\n")
+								.map((paragraph, index) => (
+									<p
+										key={`${paragraph.slice(0, 10)}-${index}`}
+										className="text-sm mb-4"
+									>
+										{paragraph.trim()}{" "}
+										{/* Trim to avoid any extra whitespace */}
+									</p>
+								))}
+							<p className="text-xs text-gray-500">
+								Created At:{" "}
+								{new Date(
+									chatSummary.createdAt,
+								).toLocaleString()}
+							</p>
+						</>
+					) : (
+						<p>Loading chat summary...</p>
+					)}
+				</div>
 
-        {/* Footer */}
-        <div className="print-footer">
-          <p>© 2025 denkMinds. All rights reserved.</p>
-          
-        </div>
-      </div>
-    </div>
-  );
+				{/* Footer */}
+				<div className="print-footer">
+					<p>© 2025 denkMinds. All rights reserved.</p>
+				</div>
+			</div>
+		</div>
+	);
 }
