@@ -28,14 +28,7 @@ import useChatActionStore from "../../store/chatActions";
 
 // svgs
 import MiraAvatar from "../../assets/Mira.svg";
-import {
-	BrainIcon,
-	EyeIcon,
-	Image,
-	Lightbulb,
-	MoreHorizontal,
-	SendIcon,
-} from "lucide-react";
+import { MoreHorizontal, SendIcon } from "lucide-react";
 
 // types
 import type { Message, ChatHistory, Info } from "../../types/chats";
@@ -54,6 +47,7 @@ import {
 	SCANTYPES,
 } from "./constants";
 import { isReportRequest } from "./helpers";
+import { actionCards, moreCards } from "./actions";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -68,14 +62,6 @@ const MiraChatBot: React.FC = () => {
 	const [progress, setProgress] = useState(0);
 	const [input, setInput] = useState("");
 	const [foldersList, setFoldersList] = useState([] as FolderItem[]);
-
-	const actionCards = [
-		{ title: "Create image", icon: Image },
-		{ title: "Make a plan", icon: Lightbulb },
-		{ title: "Brainstorm", icon: BrainIcon },
-	];
-
-	const moreCards = [{ title: "Analyze images", icon: EyeIcon }];
 
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const { chatId: chatIdParam } = useParams<{ chatId: string }>();
@@ -467,27 +453,30 @@ const MiraChatBot: React.FC = () => {
 					setPendingAction(null);
 					setIsScanLoading(true);
 					setProgress(0);
-
-					const response = await scanApis.scanWithProgress(payload);
-					let progress = 0;
+					// let progress = 0;
 					const totalSteps = 10; // Simulate 20 steps in the API process
 					for (let i = 0; i < totalSteps; i++) {
 						await new Promise((resolve) =>
 							setTimeout(resolve, 500),
 						);
-						progress += 100 / totalSteps;
-						setProgress(Math.min(progress, 100));
+						// progress += 100 / totalSteps;
+						setProgress((prevProgress) =>
+							Math.min(prevProgress, 100),
+						);
 					}
+					const response = await scanApis.scanWithProgress(payload);
+
 					setScanResponse(response.data);
 					addBotMessage(
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
 					);
 				} catch (error) {
-					setIsScanLoading(false);
 					addBotMessage(
 						"An error occurred while processing your request.",
 					);
 					return error;
+				} finally {
+					setIsScanLoading(false);
 				}
 
 				const manualMessage =
@@ -863,11 +852,16 @@ const MiraChatBot: React.FC = () => {
 		}
 	};
 
-	const handleSend = async () => {
-		if (input.trim()) {
+	const handleActionSend = (action: string) => {
+		handleSend(action);
+	};
+
+	const handleSend = async (message?: string) => {
+		const finalMessage = message || input.trim();
+		if (finalMessage) {
 			const userMessage: Message = {
 				id: uuidv4(),
-				message: input,
+				message: finalMessage,
 				sender: "user",
 			};
 			setMessages((prev) => [...prev, userMessage]);
@@ -971,7 +965,7 @@ const MiraChatBot: React.FC = () => {
 			<div className="flex flex-col space-y-6 w-3/4 h-full md:h-[90vh] rounded-lg">
 				{messages?.length === 0 ? (
 					<>
-						<div className="flex flex-col items-center justify-center w-full h-2/4">
+						<div className="flex flex-col items-center justify-center w-full h-1/3">
 							<motion.div
 								className="w-full max-w-2/4 aspect-w-1 aspect-h-1 justify-center mb-10"
 								initial={{ opacity: 0, scale: 0.8 }}
@@ -986,7 +980,7 @@ const MiraChatBot: React.FC = () => {
 							</motion.div>
 
 							<motion.div
-								className="text-2xl font-semibold justify-center text-primary"
+								className="text-2xl font-semibold justify-end text-primary"
 								initial={{ opacity: 0, y: 20 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.25 }}
@@ -1009,6 +1003,7 @@ const MiraChatBot: React.FC = () => {
 									}, []);
 									return null;
 								})()} */}
+								How can i assist you today?
 							</motion.div>
 						</div>
 					</>
@@ -1156,7 +1151,7 @@ const MiraChatBot: React.FC = () => {
 							}}
 							transition={{ duration: 0.3 }}
 							type="button"
-							onClick={handleSend}
+							onClick={() => handleSend()}
 							disabled={isLoading || !!pendingAction || streaming}
 							className="ml-2 text-gray hover:text-primary bg-secondary rounded-full"
 						>
@@ -1165,69 +1160,77 @@ const MiraChatBot: React.FC = () => {
 					</motion.div>
 				</div>
 
-				<div className="flex flex-col items-center gap-6 px-4 py-6">
-					<motion.div
-						className="flex flex-wrap justify-center items-center gap-4"
-						layout // Ensures smooth animation for layout changes
-					>
-						{actionCards.map((actionCard, index) => (
+				{messages.length === 0 ? (
+					<div className="flex flex-col items-center gap-6 px-4">
+						<motion.div
+							className="flex flex-wrap justify-center items-center gap-4"
+							layout // Ensures smooth animation for layout changes
+						>
+							{actionCards.map((actionCard, index) => (
+								<motion.div
+									// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+									key={index}
+									className="flex items-center space-x-2 bg-sidebar border p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
+									whileHover={{ scale: 1.05 }} // Hover animation
+									whileTap={{ scale: 0.95 }} // Tap animation
+									onClick={() => {
+										handleActionSend(actionCard.title);
+									}}
+								>
+									<actionCard.icon className="h-5 w-5 text-[#7156DB]" />
+									<span className="text-sm font-medium">
+										{actionCard.title}
+									</span>
+								</motion.div>
+							))}
+						</motion.div>
+						{/* Show More Button */}
+						{!showMore && (
 							<motion.div
-								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-								key={index}
-								className="flex items-center space-x-2 bg-white border border-gray-300 p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
-								whileHover={{ scale: 1.05 }} // Hover animation
-								whileTap={{ scale: 0.95 }} // Tap animation
+								className="flex items-center space-x-2 bg-sidebar border p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
+								onClick={() => {
+									setShowMore(true);
+								}} // Toggle showMore state
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
 							>
-								<actionCard.icon className="h-5 w-5 text-[#7156DB]" />
-								<span className="text-gray-700 text-sm font-medium">
-									{actionCard.title}
+								<MoreHorizontal className="h-5 w-5 text-[#7156DB]" />
+								<span className="text-sm font-medium">
+									More
 								</span>
 							</motion.div>
-						))}
-					</motion.div>
-
-					{/* Show More Button */}
-					{!showMore && (
-						<motion.div
-							className="flex items-center space-x-2 bg-white border border-gray-300 p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
-							onClick={() => setShowMore(true)} // Toggle showMore state
-							whileHover={{ scale: 1.05 }}
-							whileTap={{ scale: 0.95 }}
-						>
-							<MoreHorizontal className="h-5 w-5 text-[#7156DB]" />
-							<span className="text-gray-700 text-sm font-medium">
-								More
-							</span>
-						</motion.div>
-					)}
-
-					{/* Reveal More Cards */}
-					<AnimatePresence>
-						{showMore && (
-							<motion.div
-								className="flex flex-wrap justify-center items-center gap-4"
-								initial={{ opacity: 0, y: -10 }}
-								animate={{ opacity: 1, y: 0 }}
-								exit={{ opacity: 0, y: -10 }}
-							>
-								{moreCards.map((moreCard, index) => (
-									<motion.div
-										// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-										key={index}
-										className="flex items-center space-x-2 bg-white border border-gray-300 p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
-										whileHover={{ scale: 1.05 }}
-										whileTap={{ scale: 0.95 }}
-									>
-										<moreCard.icon className="h-5 w-5 text-green-500" />
-										<span className="text-gray-700 text-sm font-medium">
-											{moreCard.title}
-										</span>
-									</motion.div>
-								))}
-							</motion.div>
 						)}
-					</AnimatePresence>
-				</div>
+						{/* Reveal More Cards */}
+						<AnimatePresence>
+							{showMore && (
+								<motion.div
+									className="flex flex-wrap justify-center items-center gap-4"
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+								>
+									{moreCards.map((moreCard, index) => (
+										<motion.div
+											// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+											key={index}
+											className="flex items-center space-x-2 bg-sidebar border p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
+											whileHover={{ scale: 1.05 }}
+											whileTap={{ scale: 0.95 }}
+											onClick={() =>
+												handleActionSend(moreCard.title)
+											}
+										>
+											<moreCard.icon className="h-5 w-5 text-[#7156DB]" />
+											<span className="text-sm font-medium">
+												{moreCard.title}
+											</span>
+										</motion.div>
+									))}
+								</motion.div>
+							)}
+						</AnimatePresence>
+					</div>
+				) : null}
 
 				<Dialog open={showInfo} onOpenChange={setShowInfo}>
 					<DialogContent className="dialog-content">
