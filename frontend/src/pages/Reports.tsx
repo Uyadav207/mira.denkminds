@@ -10,8 +10,9 @@ import { useMutation, useQuery } from "convex/react";
 import useStore from "../store/store";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "../components/ui/button";
-import { FolderIcon } from "lucide-react";
+// import { Button } from "../components/ui/button";
+// import { FolderIcon } from "lucide-react";
+import { showErrorToast } from "@components/toaster";
 
 export function Reports() {
 	const navigate = useNavigate();
@@ -40,6 +41,18 @@ export function Reports() {
 	const saveReport = useMutation(api.reports.createReportFolder);
 
 	const handleCreateReportFolder = async (name: string) => {
+		// Check if a folder with the same name already exists
+		if (
+			folders.some(
+				(folder) => folder.name.toLowerCase() === name.toLowerCase(),
+			)
+		) {
+			showErrorToast("A folder with this name already exists.");
+			return;
+		}
+
+		// setError(null); // Clear any previous errors
+
 		const newFolder: Folder = {
 			id: uuidv4(),
 			name: name,
@@ -51,6 +64,8 @@ export function Reports() {
 			folderName: newFolder.name,
 			userId: String(id),
 		});
+		setFolders([...folders, newFolder]); // Update the folders state
+		setIsCreateDialogOpen(false);
 	};
 
 	useEffect(() => {
@@ -73,12 +88,12 @@ export function Reports() {
 	);
 
 	// Chat Summaries folder
-	const chatSummaryFolder: Folder = {
-		id: "chat-summary",
-		name: "Chat Summary",
-		files: [],
-		createdAt: new Date(),
-	};
+	// const chatSummaryFolder: Folder = {
+	// 	id: "chat-summary",
+	// 	name: "Chat Summary",
+	// 	files: [],
+	// 	createdAt: new Date(),
+	// };
 
 	return (
 		<div className="flex flex-1 flex-col gap-8 p-4">
@@ -124,7 +139,7 @@ export function Reports() {
 			</div>
 
 			{/* Chat Summaries Section */}
-			<div>
+			{/* <div>
 				<h2 className="text-xl font-bold mb-4">Chat Summaries</h2>
 				<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
 					<Button
@@ -137,7 +152,7 @@ export function Reports() {
 						<span>{chatSummaryFolder.name}</span>
 					</Button>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 }

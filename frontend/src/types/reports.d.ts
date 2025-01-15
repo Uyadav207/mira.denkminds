@@ -13,6 +13,7 @@ export interface File {
 	fileUrl: string;
 	folderId: string;
 	markdownContent: string;
+	reportType?: string;
 	userId?: string; // Optional field
 }
 

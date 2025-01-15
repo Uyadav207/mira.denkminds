@@ -8,7 +8,8 @@ import "../PDF/printtemplate.css";
 import { useQuery } from "convex/react";
 import type { Id } from "../../convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 type Summary = {
 	_id: Id<"summaries">;
@@ -40,6 +41,25 @@ export function ChatTemplate() {
 		userId: String(id), // Replace with the correct user ID
 	}) as Summary[];
 	//   console.log("Summaries fetched:", summaries)
+
+	const navigate = useNavigate();
+	// const { chatReportId } = useParams<{ chatReportId: string }>();
+	// const { chatReportId } = useParams<{ chatReportId: string }>();
+	// console.log("fileId", chatReportId);
+
+	// useEffect(() => {
+	// 	if (chatReportId) {
+	// 		console.log("fileId", chatReportId);
+
+	// 	}
+	// }, [chatReportId]);
+
+	// const file = useQuery(
+	// 	api.reports.getFileById,
+	// 	fileId && {
+	// 		fileId: String(fileId),
+	// 	},
+	// );
 
 	useEffect(() => {
 		// Fetch or generate chat summary
@@ -76,6 +96,10 @@ export function ChatTemplate() {
 	return (
 		<div className="relative p-8">
 			<div className="flex justify-between items-center absolute top-4 left-4 right-4">
+				<Button variant="outline" onClick={() => navigate(-1)}>
+					<ArrowLeft className="mr-2 h-4 w-4" />
+					Back to Files
+				</Button>
 				{/* Print Button */}
 				<Button onClick={handlePrint} variant="outline">
 					Print Chat Summary
