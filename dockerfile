@@ -3,17 +3,20 @@ FROM ghcr.io/zaproxy/zaproxy:stable
 USER zap
 WORKDIR /zap
 
+# Create a wrapper script to run ZAP baseline
+RUN echo '#!/bin/bash\n\
+while true; do\n\
+  if [ -n "$TARGET_URL" ]; then\n\
+    zap-baseline.py -t "$TARGET_URL" -J -r baseline-report.json\n\
+  fi\n\
+  sleep 30\n\
+done' > /zap/wrapper.sh && \
+chmod +x /zap/wrapper.sh
+
 EXPOSE 8080
 
-# Start ZAP with proper SSL and redirect handling
-CMD ["zap.sh", \
-    "-daemon", \
-    "-host", "0.0.0.0", \
-    "-port", "8080", \
-    "-config", "api.addrs.addr.name=.*", \
-    "-config", "api.addrs.addr.regex=true", \
-    "-config", "api.disablekey=true", \
-    "-config", "network.ssl.renegotiation=true", \
-    "-config", "connection.timeoutInSecs=600", \
-    "-config", "network.ssl.allowUnsafeLegacyRenegotiation=true", \
-    "-config", "network.ssl.clientauth=false"]
+ENV \
+    ZAP_PORT=8080 \
+    ZAP_HOST=0.0.0.0
+
+CMD ["/zap/wrapper.sh"]
