@@ -105,7 +105,11 @@ export function FileView() {
 							borderRadius: "8px",
 						}}
 					>
-						<img src="/Mira_logo.png" alt="Mira Logo" className="h-8" />
+						<img
+							src="/Mira_logo.png"
+							alt="Mira Logo"
+							className="h-8"
+						/>
 						<MarkdownViewer content={file.markdownContent} />
 					</div>
 				</div>
