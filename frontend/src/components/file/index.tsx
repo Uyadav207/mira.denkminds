@@ -28,13 +28,11 @@ export function FileView() {
 				const clonedElement = element.cloneNode(true) as HTMLElement;
 				clonedElement.classList.add("pdf-export");
 
-				// // Add the logo to the cloned element
-				// const logoImg = document.createElement("img");
-				// logoImg.src = "/Mira_logo.png";
-				// logoImg.alt = "Mira Logo";
-				// logoImg.style.height = "32px";
-				// logoImg.style.marginBottom = "20px";
-				// clonedElement.insertBefore(logoImg, clonedElement.firstChild);
+				// Add the footer to the cloned element
+				// const footer = document.createElement("div");
+				// footer.classList.add("pdf-footer");
+				// footer.innerHTML = `<p>Page Footer - <a href="denkminds.vercel.app">denkMinds</a></p>`;
+				// clonedElement.appendChild(footer);
 
 				// Temporarily append the cloned element to the body
 				document.body.appendChild(clonedElement);
@@ -95,12 +93,19 @@ export function FileView() {
 						</Button>
 					</div>
 
-					<div id="markdown-content">
-						<img
-							src="/Mira_logo.png"
-							alt="Mira Logo"
-							className="h-8"
-						/>
+					<div
+						id="markdown-content"
+						style={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							flexDirection: "column",
+							border: "4px solid #7156DB", // Your border style
+							padding: "20px", // Optional padding to make the content look neat inside the border
+							borderRadius: "8px",
+						}}
+					>
+						<img src="/Mira_logo.png" alt="Mira Logo" className="h-8" />
 						<MarkdownViewer content={file.markdownContent} />
 					</div>
 				</div>
