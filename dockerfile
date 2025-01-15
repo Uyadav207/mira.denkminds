@@ -1,22 +1,27 @@
+# Use the ZAP stable Docker image
 FROM ghcr.io/zaproxy/zaproxy:stable
 
+# Switch to root user to install any additional dependencies
+USER root
+
+# Install required dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Switch back to zap user
 USER zap
+
+# Set working directory
 WORKDIR /zap
 
-# Create a wrapper script to run ZAP baseline
-RUN echo '#!/bin/bash\n\
-while true; do\n\
-  if [ -n "$TARGET_URL" ]; then\n\
-    zap-baseline.py -t "$TARGET_URL" -J -r baseline-report.json\n\
-  fi\n\
-  sleep 30\n\
-done' > /zap/wrapper.sh && \
-chmod +x /zap/wrapper.sh
-
+# Expose ZAP default port
 EXPOSE 8080
 
-ENV \
-    ZAP_PORT=8080 \
-    ZAP_HOST=0.0.0.0
-
-CMD ["/zap/wrapper.sh"]
+# Start ZAP in daemon mode
+CMD ["zap.sh", "-daemon", "-host", "0.0.0.0", "-port", "8080", \
+     "-config", "api.addrs.addr.name=.*", \
+     "-config", "api.addrs.addr.regex=true", \
+     "-config", "api.disablekey=true", \
+     "-config", "network.localServers.mainProxy.behindNat=false", \
+     "-config", "logger.level=INFO"]
