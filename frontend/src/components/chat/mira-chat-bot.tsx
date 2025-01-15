@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 
 //components
@@ -28,7 +28,7 @@ import useChatActionStore from "../../store/chatActions";
 
 // svgs
 import MiraAvatar from "../../assets/Mira.svg";
-import { SendIcon } from "lucide-react";
+import { MoreHorizontal, SendIcon } from "lucide-react";
 
 // types
 import type { Message, ChatHistory, Info } from "../../types/chats";
@@ -47,9 +47,11 @@ import {
 	SCANTYPES,
 } from "./constants";
 import { isReportRequest } from "./helpers";
+import { actionCards, moreCards } from "./actions";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
+	const [showMore, setShowMore] = useState(false);
 	const [scanType, setScanType] = useState<string | null>(null);
 	const [confirmType, setConfirmType] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -451,27 +453,30 @@ const MiraChatBot: React.FC = () => {
 					setPendingAction(null);
 					setIsScanLoading(true);
 					setProgress(0);
-
-					const response = await scanApis.scanWithProgress(payload);
-					let progress = 0;
+					// let progress = 0;
 					const totalSteps = 10; // Simulate 20 steps in the API process
 					for (let i = 0; i < totalSteps; i++) {
 						await new Promise((resolve) =>
 							setTimeout(resolve, 500),
 						);
-						progress += 100 / totalSteps;
-						setProgress(Math.min(progress, 100));
+						// progress += 100 / totalSteps;
+						setProgress((prevProgress) =>
+							Math.min(prevProgress, 100),
+						);
 					}
+					const response = await scanApis.scanWithProgress(payload);
+
 					setScanResponse(response.data);
 					addBotMessage(
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
 					);
 				} catch (error) {
-					setIsScanLoading(false);
 					addBotMessage(
 						"An error occurred while processing your request.",
 					);
 					return error;
+				} finally {
+					setIsScanLoading(false);
 				}
 
 				const manualMessage =
@@ -847,11 +852,16 @@ const MiraChatBot: React.FC = () => {
 		}
 	};
 
-	const handleSend = async () => {
-		if (input.trim()) {
+	const handleActionSend = (action: string) => {
+		handleSend(action);
+	};
+
+	const handleSend = async (message?: string) => {
+		const finalMessage = message || input.trim();
+		if (finalMessage) {
 			const userMessage: Message = {
 				id: uuidv4(),
-				message: input,
+				message: finalMessage,
 				sender: "user",
 			};
 			setMessages((prev) => [...prev, userMessage]);
@@ -952,12 +962,12 @@ const MiraChatBot: React.FC = () => {
 
 	return (
 		<div className="flex justify-center">
-			<div className="flex flex-col space-y-6 w-3/4 h-full md:h-[90vh] rounded-lg p-4">
+			<div className="flex flex-col space-y-6 w-3/4 h-full md:h-[90vh] rounded-lg">
 				{messages?.length === 0 ? (
 					<>
-						<div className="flex flex-col items-center justify-center w-full h-2/4">
+						<div className="flex flex-col items-center justify-center w-full h-1/3">
 							<motion.div
-								className="w-full max-w-2/4 aspect-w-1 aspect-h-1 justify-center mt-20"
+								className="w-full max-w-2/4 aspect-w-1 aspect-h-1 justify-center mb-10"
 								initial={{ opacity: 0, scale: 0.8 }}
 								animate={{ opacity: 1, scale: 1 }}
 								transition={{ duration: 0.25 }}
@@ -968,14 +978,33 @@ const MiraChatBot: React.FC = () => {
 									className="flex w-auto h-auto object-cover justify-self-center"
 								/>
 							</motion.div>
-							<motion.h1
-								className="text-2xl font-semibold justify-center text-primary"
+
+							<motion.div
+								className="text-2xl font-semibold justify-end text-primary"
 								initial={{ opacity: 0, y: 20 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.25 }}
 							>
-								Need a Security Checkup?
-							</motion.h1>
+								{/* <span id="typed-output" />
+								{(() => {
+									useEffect(() => {
+										const typed = new Typed("#typed-output", {
+											strings: [
+												"Hello! I'm Mira. How can I help you today?",
+												"Need a Security Checkup?",
+											],
+											typeSpeed: 50,
+											backSpeed: 30,
+											loop: true,
+										});
+										return () => {
+											typed.destroy();
+										};
+									}, []);
+									return null;
+								})()} */}
+								How can i assist you today?
+							</motion.div>
 						</div>
 					</>
 				) : chatsLoader ? (
@@ -1034,10 +1063,10 @@ const MiraChatBot: React.FC = () => {
 							}
 
 							const isUser = message.sender === "user";
-							const messageClasses = `inline-block p-2 rounded-lg ${
+							const messageClasses = `inline-block p-2 rounded-xl ${
 								isUser
-									? "bg-primary text-primary-foreground dark:bg-primary-900"
-									: "bg-muted dark:bg-muted/40 text-foreground"
+									? "bg-primary text-primary-foreground dark:bg-primary-900 p-3"
+									: "bg-muted dark:bg-muted/40 text-foreground px-5 pt-3 pb-2"
 							}`;
 							const containerClasses = `mb-4 ${isUser ? "text-right" : "text-left"}`;
 
@@ -1086,12 +1115,12 @@ const MiraChatBot: React.FC = () => {
 						</p>
 					</div>
 				)}
-				<div className="flex justify-center">
+				<div className="flex justify-center px-10 pb-5">
 					<motion.div
 						initial={{ width: "60%" }}
 						animate={{ width: input ? "70%" : "60%" }}
 						transition={{ duration: 0.3 }}
-						className="flex items-center rounded-full px-4 py-2 relativ bg-secondary"
+						className="flex items-center rounded-2xl px-4 py-2 relativ bg-secondary"
 					>
 						{/* Textarea */}
 						<textarea
@@ -1122,14 +1151,86 @@ const MiraChatBot: React.FC = () => {
 							}}
 							transition={{ duration: 0.3 }}
 							type="button"
-							onClick={handleSend}
+							onClick={() => handleSend()}
 							disabled={isLoading || !!pendingAction || streaming}
-							className="ml-2 text-gray hover:text-primary bg-secondary p-4 rounded-full"
+							className="ml-2 text-gray hover:text-primary bg-secondary rounded-full"
 						>
 							<SendIcon size={25} />
 						</motion.button>
 					</motion.div>
 				</div>
+
+				{messages.length === 0 ? (
+					<div className="flex flex-col items-center gap-6 px-4">
+						<motion.div
+							className="flex flex-wrap justify-center items-center gap-4"
+							layout // Ensures smooth animation for layout changes
+						>
+							{actionCards.map((actionCard, index) => (
+								<motion.div
+									// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+									key={index}
+									className="flex items-center space-x-2 bg-sidebar border p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
+									whileHover={{ scale: 1.05 }} // Hover animation
+									whileTap={{ scale: 0.95 }} // Tap animation
+									onClick={() => {
+										handleActionSend(actionCard.title);
+									}}
+								>
+									<actionCard.icon className="h-5 w-5 text-[#7156DB]" />
+									<span className="text-sm font-medium">
+										{actionCard.title}
+									</span>
+								</motion.div>
+							))}
+						</motion.div>
+						{/* Show More Button */}
+						{!showMore && (
+							<motion.div
+								className="flex items-center space-x-2 bg-sidebar border p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
+								onClick={() => {
+									setShowMore(true);
+								}} // Toggle showMore state
+								whileHover={{ scale: 1.05 }}
+								whileTap={{ scale: 0.95 }}
+							>
+								<MoreHorizontal className="h-5 w-5 text-[#7156DB]" />
+								<span className="text-sm font-medium">
+									More
+								</span>
+							</motion.div>
+						)}
+						{/* Reveal More Cards */}
+						<AnimatePresence>
+							{showMore && (
+								<motion.div
+									className="flex flex-wrap justify-center items-center gap-4"
+									initial={{ opacity: 0, y: -10 }}
+									animate={{ opacity: 1, y: 0 }}
+									exit={{ opacity: 0, y: -10 }}
+								>
+									{moreCards.map((moreCard, index) => (
+										<motion.div
+											// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+											key={index}
+											className="flex items-center space-x-2 bg-sidebar border p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
+											whileHover={{ scale: 1.05 }}
+											whileTap={{ scale: 0.95 }}
+											onClick={() =>
+												handleActionSend(moreCard.title)
+											}
+										>
+											<moreCard.icon className="h-5 w-5 text-[#7156DB]" />
+											<span className="text-sm font-medium">
+												{moreCard.title}
+											</span>
+										</motion.div>
+									))}
+								</motion.div>
+							)}
+						</AnimatePresence>
+					</div>
+				) : null}
 
 				<Dialog open={showInfo} onOpenChange={setShowInfo}>
 					<DialogContent className="dialog-content">
