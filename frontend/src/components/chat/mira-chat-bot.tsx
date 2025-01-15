@@ -48,7 +48,7 @@ import {
 } from "./constants";
 import { isReportRequest } from "./helpers";
 import { actionCards, moreCards } from "./actions";
-import { set } from "zod";
+// import { set } from "zod";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -1286,19 +1286,35 @@ const MiraChatBot: React.FC = () => {
 						<DialogHeader>
 							<DialogTitle className="dialog-title">Information</DialogTitle>
 						</DialogHeader>
-						<div
-							className="dialog-body"
-							style={{ maxHeight: "400px", overflowY: "auto" }}
+						<ScrollArea
+							style={{
+								maxHeight: "400px",
+								width: "100%",
+								overflowY: "auto",
+								scrollbarWidth: "thick",
+								scrollbarColor: "#888 #f0f0f0",
+							}}
 						>
-							{info.map((item) => (
-								<div key={item.id} className="info-item">
-									<h2 className="text-lg font-semibold">{item.name}</h2>
-									<p className="info-description">
-										{item.description || "No description available."}
-									</p>
-								</div>
-							))}
-						</div>
+							<div
+								className="dialog-body"
+								// style={{
+								// 	maxHeight: "400px",
+								// 	overflowY: "auto",
+								// 	padding: "10px",
+								// 	scrollbarWidth: "auto",
+								// 	scrollbarColor: "#888 #f0f0f0",
+								// }}
+							>
+								{info.map((item) => (
+									<div key={item.id} className="info-item">
+										<h2 className="text-lg font-semibold">{item.name}</h2>
+										<p className="info-description">
+											{item.description || "No description available."}
+										</p>
+									</div>
+								))}
+							</div>
+						</ScrollArea>
 					</DialogContent>
 				</Dialog>
 			</div>
