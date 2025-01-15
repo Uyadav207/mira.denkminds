@@ -46,15 +46,13 @@ export function ChatTemplate() {
 	// const { chatReportId } = useParams<{ chatReportId: string }>();
 	// const { chatReportId } = useParams<{ chatReportId: string }>();
 	// console.log("fileId", chatReportId);
-	
 
 	// useEffect(() => {
 	// 	if (chatReportId) {
 	// 		console.log("fileId", chatReportId);
-			
+
 	// 	}
 	// }, [chatReportId]);
-	
 
 	// const file = useQuery(
 	// 	api.reports.getFileById,
@@ -145,14 +143,14 @@ export function ChatTemplate() {
 							{chatSummary.content
 								.split("\n")
 								.map((paragraph, index) => (
-								<p
-									key={`${paragraph.slice(0, 10)}-${index}`}
-									className="text-sm mb-4"
-								>
+									<p
+										key={`${paragraph.slice(0, 10)}-${index}`}
+										className="text-sm mb-4"
+									>
 										{paragraph.trim()}{" "}
 										{/* Trim to avoid any extra whitespace */}
-								</p>
-							))}
+									</p>
+								))}
 							<p className="text-xs text-gray-500">
 								Created At:{" "}
 								{new Date(

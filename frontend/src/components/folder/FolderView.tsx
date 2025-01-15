@@ -33,7 +33,9 @@ export function FolderView({ files }: FolderViewProps) {
 
 	const deleteReport = async (folderId: string, e: React.MouseEvent) => {
 		e.stopPropagation();
-		const responseAfterDelete = await deleteReportById({ reportId: folderId });
+		const responseAfterDelete = await deleteReportById({
+			reportId: folderId,
+		});
 		if (!responseAfterDelete) {
 			return;
 		}

@@ -40,35 +40,33 @@ export function Reports() {
 
 	const saveReport = useMutation(api.reports.createReportFolder);
 
-  const handleCreateReportFolder = async (name: string) => {
-			// Check if a folder with the same name already exists
-			if (
-				folders.some(
-					(folder) => folder.name.toLowerCase() === name.toLowerCase(),
-				)
-			) {
-				showErrorToast(
-					"A folder with this name already exists.",
-				);
-				return;
-			}
+	const handleCreateReportFolder = async (name: string) => {
+		// Check if a folder with the same name already exists
+		if (
+			folders.some(
+				(folder) => folder.name.toLowerCase() === name.toLowerCase(),
+			)
+		) {
+			showErrorToast("A folder with this name already exists.");
+			return;
+		}
 
-			// setError(null); // Clear any previous errors
+		// setError(null); // Clear any previous errors
 
-			const newFolder: Folder = {
-				id: uuidv4(),
-				name: name,
-				files: [],
-				createdAt: new Date(),
-			};
-
-			await saveReport({
-				folderName: newFolder.name,
-				userId: String(id),
-			});
-			setFolders([...folders, newFolder]); // Update the folders state
-			setIsCreateDialogOpen(false);
+		const newFolder: Folder = {
+			id: uuidv4(),
+			name: name,
+			files: [],
+			createdAt: new Date(),
 		};
+
+		await saveReport({
+			folderName: newFolder.name,
+			userId: String(id),
+		});
+		setFolders([...folders, newFolder]); // Update the folders state
+		setIsCreateDialogOpen(false);
+	};
 
 	useEffect(() => {
 		if (folderData) {
