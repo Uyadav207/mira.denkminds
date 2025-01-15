@@ -48,6 +48,7 @@ import {
 } from "./constants";
 import { isReportRequest } from "./helpers";
 import { actionCards, moreCards } from "./actions";
+import { set } from "zod";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -340,7 +341,14 @@ const MiraChatBot: React.FC = () => {
 		} else if (action === "folder") {
 			approvalMessage = "Select the folder where you want to save the report.";
 			setActionPrompts(foldersList);
-
+			setInfo([
+				{
+					id: uuidv4(),
+					description: "Select a folder to save the vulnerability summary.",
+					name: "Folder",
+					type: "folder",
+				},
+			]);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "save-chat-summary") {
 			approvalMessage = "Select the folder where you want to save the report.";
@@ -351,6 +359,14 @@ const MiraChatBot: React.FC = () => {
 				return folder; // Return the folder unchanged if type is not "folder"
 			});
 			setActionPrompts(folders);
+			setInfo([
+				{
+					id: uuidv4(),
+					description: "Select a folder to save the chat summary.",
+					name: "Chat Summary Folder",
+					type: "chat-summary", // Update type to "chat-summary"
+				},
+			]);
 			setHumanInTheLoopMessage(approvalMessage);
 		}
 		const approvalMessageObject: Message = {
@@ -1270,7 +1286,10 @@ const MiraChatBot: React.FC = () => {
 						<DialogHeader>
 							<DialogTitle className="dialog-title">Information</DialogTitle>
 						</DialogHeader>
-						<div className="dialog-body">
+						<div
+							className="dialog-body"
+							style={{ maxHeight: "400px", overflowY: "auto" }}
+						>
 							{info.map((item) => (
 								<div key={item.id} className="info-item">
 									<h2 className="text-lg font-semibold">{item.name}</h2>
