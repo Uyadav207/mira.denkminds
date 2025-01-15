@@ -25,42 +25,42 @@ const STANDARDS = [
 		name: "OWASP",
 		type: "standards",
 		description:
-			"The National Institute of Standards and Technology (NIST) develops and promotes standards to ensure innovation, security, and industrial competitiveness. It is widely used in cybersecurity frameworks.",
+			"(Open Web Application Security Project) Focuses on improving the security of software applications by providing guidelines and best practices for identifying and mitigating common web application vulnerabilities.",
 	},
 	{
 		id: "2",
 		name: "PCIDSS",
 		type: "standards",
 		description:
-			"The International Organization for Standardization (ISO) creates globally recognized standards to ensure quality, safety, and efficiency across various industries and sectors.",
+			" (Payment Card Industry Data Security Standard) Ensures the protection of credit card information by setting security requirements for organizations handling cardholder data, aiming to prevent fraud and breaches.",
 	},
 	{
 		id: "3",
 		name: "ISO27001-A",
 		type: "standards",
 		description:
-			"The General Data Protection Regulation (GDPR) is a European Union regulation that governs data privacy and security, ensuring individuals have greater control over their personal data.",
+			"(International Organization for Standardization 27001 - A) A globally recognized standard for establishing, implementing, maintaining, and continually improving an organization’s information security management system (ISMS), ensuring the confidentiality, integrity, and availability of data.",
 	},
 	{
 		id: "4",
 		name: "NIST CSF",
 		type: "standards",
 		description:
-			"The General Data Protection Regulation (GDPR) is a European Union regulation that governs data privacy and security, ensuring individuals have greater control over their personal data.",
+			"(National Institute of Standards and Technology Cybersecurity Framework) Provides a structured approach to help organizations manage and reduce cybersecurity risks, offering guidelines and best practices to strengthen their security posture.",
 	},
 	{
 		id: "5",
 		name: "GDPR",
 		type: "standards",
 		description:
-			"The General Data Protection Regulation (GDPR) is a European Union regulation that governs data privacy and security, ensuring individuals have greater control over their personal data.",
+			"(General Data Protection Regulation) A regulation in the European Union that governs how organizations collect, store, and process personal data of EU citizens, giving individuals greater control over their data privacy and security.",
 	},
 	{
 		id: "6",
 		name: "HIPAA",
 		type: "standards",
 		description:
-			"The General Data Protection Regulation (GDPR) is a European Union regulation that governs data privacy and security, ensuring individuals have greater control over their personal data.",
+			"(Health Insurance Portability and Accountability Act) A U.S. regulation that mandates the secure handling and confidentiality of health information by healthcare providers, insurers, and related organizations, ensuring the protection of sensitive patient data.",
 	},
 ];
 
@@ -69,11 +69,15 @@ const SCANTYPES = [
 		id: "1",
 		name: "Passive Scan",
 		type: "scan",
+		description:
+			"A non-intrusive scan type that monitors traffic without direct interaction.",
 	},
 	{
 		id: "2",
 		name: "Active Scan",
 		type: "scan",
+		description:
+			"A more aggressive scan type that directly interacts with targets to identify vulnerabilities.",
 	},
 ];
 
@@ -82,11 +86,15 @@ const REPORTS = [
 		id: "1",
 		name: "Chat Summary Report",
 		type: "report",
+		description:
+			"A summary report of the chat conversation between the user and MIRA.",
 	},
 	{
 		id: "2",
 		name: "Vulnerability Report",
 		type: "report",
+		description:
+			"A detailed report of highlighted vulnerabilities identified during the scan.",
 	},
 ];
 
