@@ -1,14 +1,11 @@
 # Use the official OWASP ZAP stable Docker image as the base
 FROM ghcr.io/zaproxy/zaproxy:stable
 
-# Set environment variables
-# The default Render environment provides a $PORT variable
-# Use this to dynamically bind the port ZAP listens to
-ENV PORT 8080
+# Set the environment variables
 ENV ZAP_HOST 0.0.0.0
 
-# Expose the dynamic port or fallback to 8080
-EXPOSE ${PORT}
+# Expose the dynamic port
+EXPOSE 8080
 
-# Run ZAP with the specified dynamic port
-CMD ["zap.sh", "-daemon", "-host", "${ZAP_HOST}", "-port", "${PORT}", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true"]
+# Use ENTRYPOINT and pass the resolved $PORT dynamically
+ENTRYPOINT ["sh", "-c", "zap.sh -daemon -host $ZAP_HOST -port $PORT -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true"]
