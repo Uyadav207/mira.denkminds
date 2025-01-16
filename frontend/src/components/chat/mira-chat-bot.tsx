@@ -32,7 +32,7 @@ import { MoreHorizontal, SendIcon } from "lucide-react";
 
 // types
 import type { Message, ChatHistory, Info } from "../../types/chats";
-import type { FolderItem, FolderType } from "../../types/reports";
+import type { Folder, FolderItem, FolderType } from "../../types/reports";
 
 //constants
 import { scanApis } from "../../api/scan";
@@ -45,9 +45,11 @@ import {
 	NEGATION_PATTERNS,
 	CLARIFICATION_PATTERNS,
 	SCANTYPES,
+	CREATE_FOLDER_ACTION,
 } from "./constants";
 import { isReportRequest } from "./helpers";
 import { actionCards, moreCards } from "./actions";
+import { CreateFolderDialog } from "../folder/CreateFolderDialog";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -61,7 +63,9 @@ const MiraChatBot: React.FC = () => {
 	const [isScanLoading, setIsScanLoading] = useState(false);
 	const [progress, setProgress] = useState(0);
 	const [input, setInput] = useState("");
-	const [foldersList, setFoldersList] = useState([] as FolderItem[]);
+	const [progressLoaderMessage, setProgressLoaderMessage] = useState("");
+	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+	const [foldersList, setFoldersList] = useState(CREATE_FOLDER_ACTION);
 
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const { chatId: chatIdParam } = useParams<{ chatId: string }>();
@@ -163,7 +167,17 @@ const MiraChatBot: React.FC = () => {
 				}),
 			);
 
-			setFoldersList(newFolders);
+			const updatedFoldersList: FolderItem[] = [
+				...foldersList,
+				...newFolders.filter(
+					(newFolder: FolderItem) =>
+						!foldersList.some(
+							(folder: FolderItem) => folder.id === newFolder.id,
+						),
+				),
+			];
+
+			setFoldersList(updatedFoldersList);
 		}
 	}, [chatData, folderData]);
 
@@ -189,6 +203,27 @@ const MiraChatBot: React.FC = () => {
 			}
 		});
 	}, []);
+	const saveReport = useMutation(api.reports.createReportFolder);
+
+	const handleCreateFolder = async (name: string) => {
+		const newFolder: Folder = {
+			id: uuidv4(),
+			name,
+			files: [],
+			createdAt: new Date(),
+		};
+
+		const response = await saveReport({
+			folderName: newFolder.name,
+			userId: String(user?.id),
+		});
+		if (response) {
+			addBotMessage(
+				"Created New Folder. Please check the folder to get the detailed report ",
+			);
+			setPendingAction(null);
+		}
+	};
 
 	const processPrompt = async (userMessage: Message) => {
 		const lowerPrompt = userMessage.message.toLowerCase().trim();
@@ -466,23 +501,39 @@ const MiraChatBot: React.FC = () => {
 					setPendingAction(null);
 					setIsScanLoading(true);
 					setProgress(0);
-					// let progress = 0;
-					const totalSteps = 10; // Simulate 20 steps in the API process
-					for (let i = 0; i < totalSteps; i++) {
-						await new Promise((resolve) =>
-							setTimeout(resolve, 500),
-						);
-						// progress += 100 / totalSteps;
-						setProgress((prevProgress) =>
-							Math.min(prevProgress, 100),
-						);
-					}
-					const response = await scanApis.scanWithProgress(payload);
+					setProgressLoaderMessage("Scanning in progress...");
 
+					const totalSteps = 20;
+					const stepDelay = 500;
+
+					// Create the progress animation promise
+					const progressAnimation = (async () => {
+						for (let i = 0; i < totalSteps; i++) {
+							await new Promise((resolve) =>
+								setTimeout(resolve, stepDelay),
+							);
+							setProgress(
+								(prevProgress) =>
+									Math.min(
+										prevProgress + 100 / totalSteps,
+										95,
+									), // Stop at 95% until API completes
+							);
+						}
+					})();
+
+					// Run both the animation and API call
+					const [response] = await Promise.all([
+						scanApis.scanWithProgress(payload),
+						progressAnimation,
+					]);
+
+					setProgress(100);
 					setScanResponse(response.data);
 					addBotMessage(
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
 					);
+					addBotMessage("Scan completed");
 				} catch (error) {
 					addBotMessage(
 						"An error occurred while processing your request.",
@@ -553,7 +604,7 @@ const MiraChatBot: React.FC = () => {
 					action as string,
 				);
 				const manualMessage =
-					"Do you want to save this as a detailed report?";
+					"Do you want to save this as a detailed Chat Summary report?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -621,18 +672,43 @@ const MiraChatBot: React.FC = () => {
 			}
 		} else if (type === "folder") {
 			// Folder selection
+			// if(action==="Create New Folder"){}
+			// else{
+
+			// }
 			let markDownContent = "";
 			try {
 				setPendingAction(null);
 				setIsScanLoading(true);
 				setProgress(0);
+				setProgressLoaderMessage("Generating report...");
 
-				const response = await scanApis.detailedReportGeneration(
-					scanResponse,
-					(progress) => {
-						setProgress(progress);
-					},
-				);
+				const totalSteps = 10;
+				const stepDelay = 500;
+
+				// Create the progress animation promise
+				const progressAnimation = (async () => {
+					for (let i = 0; i < totalSteps; i++) {
+						await new Promise((resolve) =>
+							setTimeout(resolve, stepDelay),
+						);
+						setProgress(
+							(prevProgress) =>
+								Math.min(prevProgress + 100 / totalSteps, 95), // Stop at 95% until API completes
+						);
+					}
+				})();
+
+				// Run both the animation and API call
+				const [response] = await Promise.all([
+					scanApis.detailedReportGeneration(scanResponse),
+					progressAnimation,
+				]);
+
+				setProgressLoaderMessage("Generating report...");
+				setProgress(100);
+
+				setIsScanLoading(true);
 
 				markDownContent = response.data.response;
 			} catch (error) {
@@ -779,7 +855,6 @@ const MiraChatBot: React.FC = () => {
 					await scanApis.scanReportGeneration(scanResponse);
 				setIsLoading(false);
 
-				// await streamOllamaChatResponse(responseStream);
 				await streamChatResponse(userMessage, responseStream);
 
 				const manualMessage =
@@ -1202,9 +1277,9 @@ const MiraChatBot: React.FC = () => {
 						<Progress value={progress} className="w-full" />
 
 						<p className="text-sm text-center text-gray-500">
-							{progress === 100
-								? "Scanning completed... Please wait"
-								: `Scan in progress: ${progress.toFixed(0)}%`}
+							{progress === 95
+								? "Almost done..."
+								: `${progressLoaderMessage}: ${progress.toFixed(0)}%`}
 						</p>
 					</div>
 				)}
@@ -1348,6 +1423,11 @@ const MiraChatBot: React.FC = () => {
 					</DialogContent>
 				</Dialog>
 			</div>
+			<CreateFolderDialog
+				open={isCreateDialogOpen}
+				onOpenChange={setIsCreateDialogOpen}
+				onCreateFolder={handleCreateFolder}
+			/>
 		</div>
 	);
 };

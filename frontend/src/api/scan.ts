@@ -35,17 +35,7 @@ const scanReportGeneration = async (payload: ScanResult) => {
 	return response; // Return the readable stream for processing
 };
 
-const detailedReportGeneration = async (
-	payload: ScanResult,
-	onProgress: (progress: number) => void,
-) => {
-	let progress = 0;
-	const totalSteps = 10; // Simulate 20 steps in the API process
-	for (let i = 0; i < totalSteps; i++) {
-		await new Promise((resolve) => setTimeout(resolve, 500));
-		progress += 100 / totalSteps;
-		onProgress(Math.min(progress, 100));
-	}
+const detailedReportGeneration = async (payload: ScanResult) => {
 	const resultsResponse = axiosInstance.post("/chat/detailed/summary", {
 		scanResults: payload,
 	});
