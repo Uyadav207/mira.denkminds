@@ -15,6 +15,9 @@ const useChatActionStore = create<ChatActionStore>()(
 			actionType: null,
 			actionPrompts: [],
 			humanInTheLoopMessage: null,
+			chatSummaryContent: "",
+			setChatSummaryContent: (content: string) =>
+				set((state) => ({ ...state, chatSummaryContent: content })),
 			setTargetUrl: (url: string) => set(() => ({ targetUrl: url })),
 			setFetchChatsRegurlarly: (value: boolean) =>
 				set(() => ({ fetchChatsRegurlarly: value })),
@@ -47,6 +50,8 @@ const useChatActionStore = create<ChatActionStore>()(
 					actionType: null,
 					humanInTheLoopMessage: null,
 					targetUrl: "",
+					chatSummaryContent: "",
+					chatTitle: "",
 				})),
 		}),
 		{

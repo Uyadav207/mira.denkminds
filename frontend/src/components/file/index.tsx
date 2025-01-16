@@ -8,6 +8,21 @@ import { api } from "../../convex/_generated/api";
 import html2pdf from "html2pdf.js";
 import "../../../public/Mira_logo.png";
 
+// Skeleton loader component for the FileView
+const FileViewSkeleton = () => {
+	return (
+		<div className="p-6 space-y-4">
+			{/* Skeleton for Back Button */}
+			<div className="w-32 h-8  bg-secondary rounded-lg animate-pulse" />
+
+			<div className="space-y-6">
+				{/* Skeleton for Page Header */}
+				<div className="w-3/4 h-96  bg-secondary rounded animate-pulse" />
+			</div>
+		</div>
+	);
+};
+
 export function FileView() {
 	const navigate = useNavigate();
 	const { fileId: folderIdParams } = useParams<{ fileId: string }>();
@@ -78,7 +93,7 @@ export function FileView() {
 				Back to Files
 			</Button>
 			{!file ? (
-				<>Loading</>
+				<FileViewSkeleton />
 			) : (
 				<div className="p-6 border rounded-lg">
 					<div className="flex justify-between items-center mb-4">

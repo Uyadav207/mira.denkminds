@@ -29,6 +29,7 @@ import Urls from "./pages/scans/VulnerableUrls/Urls";
 import { FileView } from "./components/file";
 import PrivateRoute from "./components/privateRoutes";
 import { NotFound } from "./pages/NotFound";
+import TermsOfService from "./pages/Termsofservice";
 import PrivacyPolicy from "./pages/Privacy";
 import { ChatTemplate } from "./components/PDF/Chattemplate";
 import { ChatSummaries } from "./components/PDF/ChatSummaries";
@@ -48,6 +49,7 @@ const App = () => {
 							path="/forgot-password"
 							element={<ForgotPassword />}
 						/>
+						<Route path="/terms" element={<TermsOfService />} />
 						<Route path="/Privacy" element={<PrivacyPolicy />} />
 						<Route
 							path="/auth/callback"

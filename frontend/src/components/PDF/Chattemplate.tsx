@@ -5,11 +5,11 @@ import { useQuery } from "convex/react";
 // biome-ignore lint/style/useImportType: <explanation>
 import { Id } from "../../convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
-import { useParams } from "react-router-dom";
-import { Card, CardContent } from "@components/ui/card";
-// import { Separator } from "@/components/ui/separator"
+import { useNavigate, useParams } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Card, CardContent } from "../ui/card";
 import useStore from "../../store/store";
-import Logo from "/logo.jpg";
+import Logo from "../../../public/Mira_logo.png";
 
 type Summary = {
 	_id: Id<"summaries">;
@@ -30,6 +30,25 @@ export function ChatTemplate() {
 	const fetchedSummary = useQuery(api.summaries.getSummariesByUserId, {
 		userId: String(user.id),
 	}) as Summary[];
+
+	const navigate = useNavigate();
+	// const { chatReportId } = useParams<{ chatReportId: string }>();
+	// const { chatReportId } = useParams<{ chatReportId: string }>();
+	// console.log("fileId", chatReportId);
+
+	// useEffect(() => {
+	// 	if (chatReportId) {
+	// 		console.log("fileId", chatReportId);
+
+	// 	}
+	// }, [chatReportId]);
+
+	// const file = useQuery(
+	// 	api.reports.getFileById,
+	// 	fileId && {
+	// 		fileId: String(fileId),
+	// 	},
+	// );
 
 	useEffect(() => {
 		if (fetchedSummary) {
@@ -53,14 +72,15 @@ export function ChatTemplate() {
 	});
 
 	return (
-		<div className="relative p-8 bg-[#f8f9fa]">
-			<div className="flex justify-end mb-6">
-				<Button
-					onClick={handlePrint}
-					variant="outline"
-					className="print:hidden"
-				>
-					Print Report
+		<div className="relative p-8">
+			<div className="flex justify-between items-center absolute top-4 left-4 right-4">
+				<Button variant="outline" onClick={() => navigate(-1)}>
+					<ArrowLeft className="mr-2 h-4 w-4" />
+					Back to Files
+				</Button>
+				{/* Print Button */}
+				<Button onClick={handlePrint} variant="outline">
+					Print Chat Summary
 				</Button>
 			</div>
 
@@ -90,61 +110,43 @@ export function ChatTemplate() {
 						</div>
 					</div>
 
-					{/* Content Section */}
-					<div className="space-y-6">
+					{/* Chat Summary Section */}
+					<div className="mt-8 print-content">
+						<h2 className="text-lg font-semibold mb-4">
+							Conversation:
+						</h2>
 						{chatSummary ? (
 							<>
-								<div className="space-y-4">
-									<h2 className="text-xl font-semibold text-gray-900">
-										1. Executive Summary
-									</h2>
-									{chatSummary.content
-										.split("\n")
-										.map((paragraph, index) => {
-											// Remove markdown-style headers
-											const cleanParagraph =
-												paragraph.replace(
-													/^(###|##)\s+/,
-													"",
-												);
-											return (
-												<p
-													key={`${paragraph}-${
-														// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-														index
-													}`}
-													className="text-sm leading-relaxed text-gray-700"
-												>
-													{cleanParagraph.trim()}
-												</p>
-											);
-										})}
-								</div>
-								<div className="text-xs text-gray-500 mt-4">
-									Report generated on:{" "}
+								<h2 className="text-lg font-semibold mb-4">
+									Title: {chatSummary.title}
+								</h2>
+								{/* Split content by newlines and map over it */}
+								{chatSummary.content
+									.split("\n")
+									.map((paragraph, index) => (
+										<p
+											key={`${paragraph.slice(0, 10)}-${index}`}
+											className="text-sm mb-4"
+										>
+											{paragraph.trim()}{" "}
+											{/* Trim to avoid any extra whitespace */}
+										</p>
+									))}
+								<p className="text-xs text-gray-500">
+									Created At:{" "}
 									{new Date(
 										chatSummary.createdAt,
 									).toLocaleString()}
-								</div>
+								</p>
 							</>
 						) : (
-							<div className="text-center py-8 text-gray-500">
-								Loading report content...
-							</div>
+							<p>Loading chat summary...</p>
 						)}
 					</div>
 
 					{/* Footer */}
-					<div className="mt-12 pt-4 border-t border-gray-200">
-						<div className="flex justify-between items-center text-xs text-gray-500">
-							<p>© 2025 denkMinds. All rights reserved.</p>
-							<div className="flex items-center gap-4">
-								<span className="uppercase font-medium">
-									Sensitive
-								</span>
-								<span>Page 1 of 1</span>
-							</div>
-						</div>
+					<div className="print-footer">
+						<p>© 2025 denkMinds. All rights reserved.</p>
 					</div>
 				</CardContent>
 			</Card>
