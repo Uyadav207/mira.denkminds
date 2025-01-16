@@ -48,7 +48,6 @@ import {
 } from "./constants";
 import { isReportRequest } from "./helpers";
 import { actionCards, moreCards } from "./actions";
-// import { set } from "zod";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -368,6 +367,17 @@ const MiraChatBot: React.FC = () => {
 				},
 			]);
 			setHumanInTheLoopMessage(approvalMessage);
+		} else if (action === "save-chat-summary") {
+			approvalMessage =
+				"Select the folder where you want to save the report.";
+			const folders = foldersList.map((folder) => {
+				if (folder.type === "folder") {
+					return { ...folder, type: "chat-summary" }; // Change type to "chat-summary"
+				}
+				return folder; // Return the folder unchanged if type is not "folder"
+			});
+			setActionPrompts(folders);
+			setHumanInTheLoopMessage(approvalMessage);
 		}
 		const approvalMessageObject: Message = {
 			id: id,
@@ -471,9 +481,13 @@ const MiraChatBot: React.FC = () => {
 					// let progress = 0;
 					const totalSteps = 10; // Simulate 20 steps in the API process
 					for (let i = 0; i < totalSteps; i++) {
-						await new Promise((resolve) => setTimeout(resolve, 500));
+						await new Promise((resolve) =>
+							setTimeout(resolve, 500),
+						);
 						// progress += 100 / totalSteps;
-						setProgress((prevProgress) => Math.min(prevProgress, 100));
+						setProgress((prevProgress) =>
+							Math.min(prevProgress, 100),
+						);
 					}
 					const response = await scanApis.scanWithProgress(payload);
 
@@ -482,7 +496,9 @@ const MiraChatBot: React.FC = () => {
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
 					);
 				} catch (error) {
-					addBotMessage("An error occurred while processing your request.");
+					addBotMessage(
+						"An error occurred while processing your request.",
+					);
 					return error;
 				} finally {
 					setIsScanLoading(false);
@@ -545,7 +561,8 @@ const MiraChatBot: React.FC = () => {
 					responseStream as StreamResponse,
 					action as string,
 				);
-				const manualMessage = "Do you want to save this as a detailed report?";
+				const manualMessage =
+					"Do you want to save this as a detailed report?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -823,6 +840,46 @@ const MiraChatBot: React.FC = () => {
 
 			setPendingAction(botMessage.id as string);
 			requestHumanApproval("folder", manualMessage, "none", botMessage.id);
+		} else if (confirmType === "save-chat-summary") {
+			if (createdChatId) {
+				setMessages((prev) => [...prev, userMessage]);
+				await saveChatMessage({
+					humanInTheLoopId: userMessage.id,
+					chatId: createdChatId as Id<"chats">,
+					sender: userMessage.sender,
+					message: userMessage.message,
+				});
+			} else {
+				await saveChatMessage({
+					humanInTheLoopId: userMessage.id,
+					chatId: chatId as Id<"chats">,
+					sender: userMessage.sender,
+					message: userMessage.message,
+				});
+			}
+
+			const manualMessage = "Select a folder to save the summary report.";
+			const botMessage: Message = {
+				id: uuidv4(),
+				message: manualMessage,
+				sender: "ai",
+			};
+			await saveChatMessage({
+				chatId: createdChatId
+					? (createdChatId as Id<"chats">)
+					: (chatId as Id<"chats">),
+				humanInTheLoopId: botMessage.id,
+				sender: botMessage.sender,
+				message: botMessage.message,
+			});
+
+			setPendingAction(botMessage.id as string);
+			requestHumanApproval(
+				"save-chat-summary",
+				manualMessage,
+				"summary",
+				botMessage.id,
+			);
 		} else if (confirmType === "save-chat-summary") {
 			if (createdChatId) {
 				setMessages((prev) => [...prev, userMessage]);
@@ -1248,7 +1305,9 @@ const MiraChatBot: React.FC = () => {
 								whileTap={{ scale: 0.95 }}
 							>
 								<MoreHorizontal className="h-5 w-5 text-[#7156DB]" />
-								<span className="text-sm font-medium">More</span>
+								<span className="text-sm font-medium">
+									More
+								</span>
 							</motion.div>
 						)}
 						{/* Reveal More Cards */}
@@ -1267,7 +1326,9 @@ const MiraChatBot: React.FC = () => {
 											className="flex items-center space-x-2 bg-sidebar border p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
 											whileHover={{ scale: 1.05 }}
 											whileTap={{ scale: 0.95 }}
-											onClick={() => handleActionSend(moreCard.title)}
+											onClick={() =>
+												handleActionSend(moreCard.title)
+											}
 										>
 											<moreCard.icon className="h-5 w-5 text-[#7156DB]" />
 											<span className="text-sm font-medium">

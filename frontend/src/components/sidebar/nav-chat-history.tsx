@@ -82,6 +82,11 @@ export default function ChatHistory() {
 		}
 	};
 
+	const folderData = useQuery(api.reports.getReportFoldersByUser, {
+		userId: String(id),
+	});
+	const reportCount = folderData?.length ?? 0;
+
 	useEffect(() => {
 		if (recentChats) {
 			setIsLoading(false);
@@ -132,7 +137,7 @@ export default function ChatHistory() {
 							</SidebarMenuButton>
 
 							{/* Calculate Length of the no of reports array */}
-							<SidebarMenuBadge>12</SidebarMenuBadge>
+							<SidebarMenuBadge>{reportCount}</SidebarMenuBadge>
 						</a>
 					</SidebarMenuItem>
 				</SidebarMenu>

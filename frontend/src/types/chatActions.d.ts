@@ -21,4 +21,6 @@ export interface ChatActionStore {
 	setHumanInTheLoopMessage: (message: string | null) => void;
 	addMessage: (message: Message) => void;
 	clearStore: () => void;
+	chatSummaryContent: string;
+	setChatSummaryContent: (content: string) => void;
 }
