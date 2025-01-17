@@ -1,5 +1,6 @@
 import { Button } from "../ui/button";
 import { BadgeInfo } from "lucide-react";
+import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
 
 interface VulnerabilityStandardsProps {
 	question?: string;
@@ -25,21 +26,22 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 				/>
 			</div>
 
-			<div className="flex space-x-4 mt-2">
-				{actionPrompts.map((action) => (
-					<Button
-						key={action.id}
-						variant="secondary"
-						size="sm"
-						onClick={() =>
-							onConfirm(action.name, action.type, action.id)
-						}
-						className="bg-[#7156DB] text-white hover:bg-[#5c4baf]"
-					>
-						{action.name}
-					</Button>
-				))}
-			</div>
+			<ScrollArea className="w-[90%]">
+				<div className="flex space-x-4  py-4">
+					{actionPrompts.map((action) => (
+						<Button
+							key={action.id}
+							variant="secondary"
+							size="sm"
+							onClick={() => onConfirm(action.name, action.type, action.id)}
+							className="bg-[#7156DB] text-white hover:bg-[#5c4baf]"
+						>
+							{action.name}
+						</Button>
+					))}
+				</div>
+				<ScrollBar orientation="horizontal" className=" " />
+			</ScrollArea>
 		</div>
 	);
 };
