@@ -20,6 +20,7 @@ export const baselineScanService = async (
 	const containerJsonReportPath = "scan-report.json";
 	const args = [
 		"run",
+		"--rm",
 		"-v",
 		`${tempDir}:/zap/wrk/:rw`,
 		"zaproxy/zap-stable",
@@ -28,6 +29,7 @@ export const baselineScanService = async (
 		targetUrl,
 		"-J",
 		containerJsonReportPath,
+		"-d",
 	];
 	console.log("dockerrrrrrrrr", `docker ${args.join(" ")}`);
 	return new Promise((resolve, reject) => {
@@ -47,6 +49,7 @@ export const baselineScanService = async (
 		process.on("close", (code) => {
 			const jsonReportPath = join(tempDir, reportJsonFileName);
 			if (existsSync(jsonReportPath)) {
+				console.log("JJJJJJJJJJJJ 111111", jsonReportPath);
 				try {
 					const reportContent: ZapReport = JSON.parse(
 						readFileSync(jsonReportPath, "utf-8"),
@@ -59,9 +62,6 @@ export const baselineScanService = async (
 							}
 						}
 					}
-
-					unlinkSync(jsonReportPath);
-
 					resolve({
 						report: reportContent,
 						complianceStandard,
