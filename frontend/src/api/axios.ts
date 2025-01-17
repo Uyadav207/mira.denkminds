@@ -56,10 +56,7 @@ axiosInstance.interceptors.response.use(
 					if (message === "Invalid token.") {
 						showErrorToast("Token Expired. Please login again");
 						localStorage.clear();
-						setTimeout(
-							() => window.location.replace("/login"),
-							1000,
-						);
+						setTimeout(() => window.location.replace("/login"), 1000);
 					} else {
 						showErrorToast(errorMessage);
 					}
@@ -67,7 +64,7 @@ axiosInstance.interceptors.response.use(
 
 				case 404:
 					// Handle Not Found
-					showErrorToast("Invalid Endpoint. Try again.");
+					showErrorToast(errorMessage || "Not Found");
 					break;
 
 				case 400:
