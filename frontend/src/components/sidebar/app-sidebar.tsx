@@ -18,7 +18,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<NavUser />
 			</SidebarHeader>
 			<SidebarSeparator />
-			<SidebarContent>
+			<SidebarContent className="overflow-hidden h-screen">
 				<ChatHistory />
 			</SidebarContent>
 			<SidebarFooter>

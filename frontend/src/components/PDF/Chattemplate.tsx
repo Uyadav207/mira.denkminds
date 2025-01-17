@@ -7,6 +7,8 @@ import { Id } from "../../convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import useStore from "../../store/store";
+import { Card, CardContent } from "../ui/card";
 
 type Summary = {
 	_id: Id<"summaries">;
@@ -86,7 +88,7 @@ export function ChatTemplate() {
 					{/* Header */}
 					<div className="flex justify-between items-center border-b border-gray-200 pb-4">
 						<div className="flex items-center gap-3">
-							<img src={Logo} alt="Logo" className="h-8 w-auto" />
+							{/* <img src={Logo} alt="Logo" className="h-8 w-auto" /> */}
 							<span className="text-sm font-medium text-gray-600">
 								denkMinds
 							</span>
@@ -115,33 +117,28 @@ export function ChatTemplate() {
 									<h2 className="text-xl font-semibold text-gray-900">
 										1. Executive Summary
 									</h2>
-									{chatSummary.content
-										.split("\n")
-										.map((paragraph, index) => {
-											// Remove markdown-style headers
-											const cleanParagraph =
-												paragraph.replace(
-													/^(###|##)\s+/,
-													"",
-												);
-											return (
-												<p
-													key={`${paragraph}-${
-														// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-														index
-													}`}
-													className="text-sm leading-relaxed text-gray-700"
-												>
-													{cleanParagraph.trim()}
-												</p>
-											);
-										})}
+									{chatSummary.content.split("\n").map((paragraph, index) => {
+										// Remove markdown-style headers
+										const cleanParagraph = paragraph.replace(
+											/^(###|##)\s+/,
+											"",
+										);
+										return (
+											<p
+												key={`${paragraph}-${
+													// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+													index
+												}`}
+												className="text-sm leading-relaxed text-gray-700"
+											>
+												{cleanParagraph.trim()}
+											</p>
+										);
+									})}
 								</div>
 								<div className="text-xs text-gray-500 mt-4">
 									Report generated on:{" "}
-									{new Date(
-										chatSummary.createdAt,
-									).toLocaleString()}
+									{new Date(chatSummary.createdAt).toLocaleString()}
 								</div>
 							</>
 						) : (
@@ -156,9 +153,7 @@ export function ChatTemplate() {
 						<div className="flex justify-between items-center text-xs text-gray-500">
 							<p>© 2025 denkMinds. All rights reserved.</p>
 							<div className="flex items-center gap-4">
-								<span className="uppercase font-medium">
-									Sensitive
-								</span>
+								<span className="uppercase font-medium">Sensitive</span>
 								<span>Page 1 of 1</span>
 							</div>
 						</div>
