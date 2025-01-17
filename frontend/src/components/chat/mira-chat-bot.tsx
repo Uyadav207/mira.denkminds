@@ -387,6 +387,7 @@ const MiraChatBot: React.FC = () => {
 			approvalMessage =
 				"Select your preferred scan type. You can choose from the following:";
 			setActionPrompts(SCANTYPES);
+			setInfo(SCANTYPES);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "standards") {
 			approvalMessage =
@@ -397,6 +398,7 @@ const MiraChatBot: React.FC = () => {
 		} else if (action === "report") {
 			approvalMessage = "What type of report do you want to generate?";
 			setActionPrompts(REPORTS);
+			setInfo(REPORTS);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "approval") {
 			approvalMessage = prompt;
@@ -412,7 +414,6 @@ const MiraChatBot: React.FC = () => {
 				return folder; // Return the folder unchanged if type is not "folder"
 			});
 			setActionPrompts(folders);
-
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "save-chat-summary") {
 			approvalMessage =
@@ -940,9 +941,49 @@ const MiraChatBot: React.FC = () => {
 
 			setPendingAction(botMessage.id as string);
 			requestHumanApproval(
-				"save-scan-summary",
+				"folder",
 				manualMessage,
 				"none",
+				botMessage.id,
+			);
+		} else if (confirmType === "save-chat-summary") {
+			if (createdChatId) {
+				setMessages((prev) => [...prev, userMessage]);
+				await saveChatMessage({
+					humanInTheLoopId: userMessage.id,
+					chatId: createdChatId as Id<"chats">,
+					sender: userMessage.sender,
+					message: userMessage.message,
+				});
+			} else {
+				await saveChatMessage({
+					humanInTheLoopId: userMessage.id,
+					chatId: chatId as Id<"chats">,
+					sender: userMessage.sender,
+					message: userMessage.message,
+				});
+			}
+
+			const manualMessage = "Select a folder to save the summary report.";
+			const botMessage: Message = {
+				id: uuidv4(),
+				message: manualMessage,
+				sender: "ai",
+			};
+			await saveChatMessage({
+				chatId: createdChatId
+					? (createdChatId as Id<"chats">)
+					: (chatId as Id<"chats">),
+				humanInTheLoopId: botMessage.id,
+				sender: botMessage.sender,
+				message: botMessage.message,
+			});
+
+			setPendingAction(botMessage.id as string);
+			requestHumanApproval(
+				"save-scan-summary",
+				manualMessage,
+				"summary",
 				botMessage.id,
 			);
 		} else if (confirmType === "save-chat-summary") {
@@ -1411,19 +1452,38 @@ const MiraChatBot: React.FC = () => {
 								Information
 							</DialogTitle>
 						</DialogHeader>
-						<div className="dialog-body">
-							{info.map((item) => (
-								<div key={item.id} className="info-item">
-									<h2 className="text-lg font-semibold">
-										{item.name}
-									</h2>
-									<p className="info-description">
-										{item.description ||
-											"No description available."}
-									</p>
-								</div>
-							))}
-						</div>
+						<ScrollArea
+							style={{
+								maxHeight: "400px",
+								width: "100%",
+								overflowY: "auto",
+								scrollbarWidth: "thick",
+								scrollbarColor: "#888 #f0f0f0",
+							}}
+						>
+							<div
+								className="dialog-body"
+								// style={{
+								// 	maxHeight: "400px",
+								// 	overflowY: "auto",
+								// 	padding: "10px",
+								// 	scrollbarWidth: "auto",
+								// 	scrollbarColor: "#888 #f0f0f0",
+								// }}
+							>
+								{info.map((item) => (
+									<div key={item.id} className="info-item">
+										<h2 className="text-lg font-semibold">
+											{item.name}
+										</h2>
+										<p className="info-description">
+											{item.description ||
+												"No description available."}
+										</p>
+									</div>
+								))}
+							</div>
+						</ScrollArea>
 					</DialogContent>
 				</Dialog>
 			</div>
