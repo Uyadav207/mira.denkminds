@@ -20,7 +20,7 @@ const scanWithProgress = async (payload: scanPayload) => {
 };
 
 const scanReportGeneration = async (payload: ScanResult) => {
-	const response = await fetch("http://localhost:8000/chat/scan/summary", {
+	const response = await fetch("http://34.60.226.88:8000/chat/scan/summary", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

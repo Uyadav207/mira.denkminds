@@ -8,7 +8,7 @@ import axios, {
 	type AxiosRequestHeaders,
 } from "axios";
 
-const baseURL = process.env.BACKEND_BASE_URL || "http://localhost:8000";
+const baseURL = "http://34.60.226.88:8000";
 // Creating an Axios instance
 const axiosInstance = axios.create({
 	baseURL,
@@ -56,10 +56,7 @@ axiosInstance.interceptors.response.use(
 					if (message === "Invalid token.") {
 						showErrorToast("Token Expired. Please login again");
 						localStorage.clear();
-						setTimeout(
-							() => window.location.replace("/login"),
-							1000,
-						);
+						setTimeout(() => window.location.replace("/login"), 1000);
 					} else {
 						showErrorToast(errorMessage);
 					}

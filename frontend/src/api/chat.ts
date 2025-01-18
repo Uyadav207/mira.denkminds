@@ -14,7 +14,7 @@ interface ScanPayload {
 }
 
 const chat = async (payload: ChatPayload) => {
-	const response = await fetch("http://localhost:8000/chat/message/stream", {
+	const response = await fetch("http://34.60.226.88:8000/chat/message/stream", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -30,7 +30,7 @@ const chat = async (payload: ChatPayload) => {
 };
 
 const chatOllama = async (payload: ChatOllamaPayload) => {
-	const response = await fetch("http://localhost:8000/api/chat", {
+	const response = await fetch("http://34.60.226.88:8000/api/chat", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -55,7 +55,7 @@ const generateTitle = (payload: GenerateTitlePayload) =>
 	axiosInstance.post("/chat/title", payload);
 
 const chatSummaryOllama = async (payload: { messages: string[] }) => {
-	const response = await fetch("http://localhost:8000/api/chat/summary", {
+	const response = await fetch("http://34.60.226.88:8000/api/chat/summary", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -70,7 +70,7 @@ const chatSummaryOllama = async (payload: { messages: string[] }) => {
 };
 
 const chatSummaryOpenAI = async (payload: { messages: string[] }) => {
-	const response = await fetch("http://localhost:8000/chat/chat-summary", {
+	const response = await fetch("http://34.60.226.88:8000/chat/chat-summary", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
