@@ -14,13 +14,16 @@ interface ScanPayload {
 }
 
 const chat = async (payload: ChatPayload) => {
-	const response = await fetch("http://34.60.226.88:8000/chat/message/stream", {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
+	const response = await fetch(
+		"http://34.60.226.88:8000/chat/message/stream",
+		{
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(payload),
 		},
-		body: JSON.stringify(payload),
-	});
+	);
 
 	if (!response.body) {
 		throw new Error("No response body");
