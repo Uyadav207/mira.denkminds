@@ -330,7 +330,12 @@ const MiraChatBot: React.FC = () => {
 				});
 			}
 			setPendingAction(botMessage.id as string);
-			requestHumanApproval("report", manualMessage, "none", botMessage.id);
+			requestHumanApproval(
+				"report",
+				manualMessage,
+				"none",
+				botMessage.id,
+			);
 		} else {
 			try {
 				setIsLoading(true);
@@ -339,7 +344,10 @@ const MiraChatBot: React.FC = () => {
 					useRAG: false,
 				})) as StreamResponse;
 				setIsLoading(false);
-				streamChatResponse(userMessage, responseStream as StreamResponse);
+				streamChatResponse(
+					userMessage,
+					responseStream as StreamResponse,
+				);
 			} catch (error) {
 				return error;
 			}
@@ -488,9 +496,16 @@ const MiraChatBot: React.FC = () => {
 					message: botMessage.message,
 				});
 
-				requestHumanApproval("standards", manualMessage, "none", botMessage.id);
+				requestHumanApproval(
+					"standards",
+					manualMessage,
+					"none",
+					botMessage.id,
+				);
 			} catch {
-				addBotMessage("An error occurred while processing your request.");
+				addBotMessage(
+					"An error occurred while processing your request.",
+				);
 			}
 		} else if (type === "standards") {
 			try {
@@ -522,9 +537,15 @@ const MiraChatBot: React.FC = () => {
 					// Create the progress animation promise
 					const progressAnimation = (async () => {
 						for (let i = 0; i < totalSteps; i++) {
-							await new Promise((resolve) => setTimeout(resolve, stepDelay));
+							await new Promise((resolve) =>
+								setTimeout(resolve, stepDelay),
+							);
 							setProgress(
-								(prevProgress) => Math.min(prevProgress + 100 / totalSteps, 95), // Stop at 95% until API completes
+								(prevProgress) =>
+									Math.min(
+										prevProgress + 100 / totalSteps,
+										95,
+									), // Stop at 95% until API completes
 							);
 						}
 					})();
@@ -541,13 +562,16 @@ const MiraChatBot: React.FC = () => {
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
 					);
 				} catch (error) {
-					addBotMessage("An error occurred while processing your request.");
+					addBotMessage(
+						"An error occurred while processing your request.",
+					);
 					return error;
 				} finally {
 					setIsScanLoading(false);
 				}
 
-				const manualMessage = "Do you want to generate a brief summary?";
+				const manualMessage =
+					"Do you want to generate a brief summary?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -571,7 +595,9 @@ const MiraChatBot: React.FC = () => {
 					botMessage.id,
 				);
 			} catch {
-				addBotMessage("An error occurred while processing your request.");
+				addBotMessage(
+					"An error occurred while processing your request.",
+				);
 			}
 		} else if (type === "report") {
 			if (action === "Chat Summary Report") {
@@ -663,7 +689,12 @@ const MiraChatBot: React.FC = () => {
 					return;
 				}
 
-				requestHumanApproval("standards", manualMessage, "none", botMessage.id);
+				requestHumanApproval(
+					"standards",
+					manualMessage,
+					"none",
+					botMessage.id,
+				);
 			}
 		} else if (type === "scan-summary") {
 			// Folder selection
@@ -739,9 +770,12 @@ const MiraChatBot: React.FC = () => {
 				// Create the progress animation promise
 				const progressAnimation = (async () => {
 					for (let i = 0; i < totalSteps; i++) {
-						await new Promise((resolve) => setTimeout(resolve, stepDelay));
+						await new Promise((resolve) =>
+							setTimeout(resolve, stepDelay),
+						);
 						setProgress(
-							(prevProgress) => Math.min(prevProgress + 100 / totalSteps, 95), // Stop at 95% until API completes
+							(prevProgress) =>
+								Math.min(prevProgress + 100 / totalSteps, 95), // Stop at 95% until API completes
 						);
 					}
 				})();
@@ -825,7 +859,9 @@ const MiraChatBot: React.FC = () => {
 			}
 		} catch (error) {
 			const errorMessage =
-				error instanceof Error ? error.message : "Unknown error occurred";
+				error instanceof Error
+					? error.message
+					: "Unknown error occurred";
 			addBotMessage(`Error: ${errorMessage}`);
 		} finally {
 			setStreaming(false);
@@ -859,7 +895,8 @@ const MiraChatBot: React.FC = () => {
 
 				await streamChatResponse(userMessage, responseStream);
 
-				const manualMessage = "Do you want to save this as a detailed report?";
+				const manualMessage =
+					"Do you want to save this as a detailed report?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -876,7 +913,12 @@ const MiraChatBot: React.FC = () => {
 				});
 
 				setPendingAction(botMessage.id as string);
-				requestHumanApproval("approval", manualMessage, "save", botMessage.id);
+				requestHumanApproval(
+					"approval",
+					manualMessage,
+					"save",
+					botMessage.id,
+				);
 			} catch (error) {
 				return error;
 			}
@@ -905,7 +947,12 @@ const MiraChatBot: React.FC = () => {
 			});
 
 			setPendingAction(botMessage.id as string);
-			requestHumanApproval("folder", manualMessage, "none", botMessage.id);
+			requestHumanApproval(
+				"folder",
+				manualMessage,
+				"none",
+				botMessage.id,
+			);
 		} else if (confirmType === "save-chat-summary") {
 			if (createdChatId) {
 				setMessages((prev) => [...prev, userMessage]);
@@ -990,7 +1037,9 @@ const MiraChatBot: React.FC = () => {
 		};
 		await saveChatMessage({
 			humanInTheLoopId: userMessage.id,
-			chatId: chatId ? (chatId as Id<"chats">) : (createdChatId as Id<"chats">),
+			chatId: chatId
+				? (chatId as Id<"chats">)
+				: (createdChatId as Id<"chats">),
 			sender: userMessage.sender,
 			message: userMessage.message,
 		});
@@ -1064,7 +1113,10 @@ const MiraChatBot: React.FC = () => {
 		setMessages((prev) => {
 			const lastMessage = prev[prev.length - 1];
 			if (lastMessage?.sender === "ai" && lastMessage.isStreaming) {
-				return [...prev.slice(0, -1), { ...lastMessage, message: message }];
+				return [
+					...prev.slice(0, -1),
+					{ ...lastMessage, message: message },
+				];
 			}
 
 			return [
@@ -1186,7 +1238,9 @@ const MiraChatBot: React.FC = () => {
 									>
 										<HumanInTheLoopApproval
 											key={message.id}
-											message={humanInTheLoopMessage || ""}
+											message={
+												humanInTheLoopMessage || ""
+											}
 											onCancel={cancelAction}
 											confirmType={confirmType || ""}
 											onConfirm={yesClicked}
@@ -1202,7 +1256,9 @@ const MiraChatBot: React.FC = () => {
 									>
 										<HumanInTheLoopInput
 											key={message.id}
-											message={humanInTheLoopMessage || ""}
+											message={
+												humanInTheLoopMessage || ""
+											}
 											onConfirm={confirmAction}
 											setShowInfo={setShowInfo}
 										/>
@@ -1218,7 +1274,9 @@ const MiraChatBot: React.FC = () => {
 										<HumanInTheLoopOptions
 											key={message.id}
 											setShowInfo={setShowInfo}
-											question={humanInTheLoopMessage || ""}
+											question={
+												humanInTheLoopMessage || ""
+											}
 											actionPrompts={actionPrompts || []}
 											onConfirm={confirmAction}
 										/>
@@ -1256,7 +1314,9 @@ const MiraChatBot: React.FC = () => {
 											{isUser ? (
 												message.message
 											) : (
-												<MarkdownViewer content={message.message} />
+												<MarkdownViewer
+													content={message.message}
+												/>
 											)}
 										</span>
 									</div>
@@ -1299,10 +1359,12 @@ const MiraChatBot: React.FC = () => {
 						{/* Textarea */}
 						<textarea
 							value={input}
-							onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-								setInput(e.target.value)
-							}
-							onKeyPress={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+							onChange={(
+								e: React.ChangeEvent<HTMLTextAreaElement>,
+							) => setInput(e.target.value)}
+							onKeyPress={(
+								e: React.KeyboardEvent<HTMLTextAreaElement>,
+							) => {
 								if (e.key === "Enter" && !e.shiftKey) {
 									e.preventDefault();
 									handleSend();
@@ -1367,7 +1429,9 @@ const MiraChatBot: React.FC = () => {
 								whileTap={{ scale: 0.95 }}
 							>
 								<MoreHorizontal className="h-5 w-5 text-[#7156DB]" />
-								<span className="text-sm font-medium">More</span>
+								<span className="text-sm font-medium">
+									More
+								</span>
 							</motion.div>
 						)}
 						{/* Reveal More Cards */}
@@ -1386,7 +1450,9 @@ const MiraChatBot: React.FC = () => {
 											className="flex items-center space-x-2 bg-sidebar border p-3 rounded-full shadow-sm cursor-pointer hover:shadow-md transition-all"
 											whileHover={{ scale: 1.05 }}
 											whileTap={{ scale: 0.95 }}
-											onClick={() => handleActionSend(moreCard.title)}
+											onClick={() =>
+												handleActionSend(moreCard.title)
+											}
 										>
 											<moreCard.icon className="h-5 w-5 text-[#7156DB]" />
 											<span className="text-sm font-medium">
@@ -1403,7 +1469,9 @@ const MiraChatBot: React.FC = () => {
 				<Dialog open={showInfo} onOpenChange={setShowInfo}>
 					<DialogContent className="dialog-content">
 						<DialogHeader>
-							<DialogTitle className="dialog-title">Information</DialogTitle>
+							<DialogTitle className="dialog-title">
+								Information
+							</DialogTitle>
 						</DialogHeader>
 						<ScrollArea
 							style={{
@@ -1426,9 +1494,12 @@ const MiraChatBot: React.FC = () => {
 							>
 								{info.map((item) => (
 									<div key={item.id} className="info-item">
-										<h2 className="text-lg font-semibold">{item.name}</h2>
+										<h2 className="text-lg font-semibold">
+											{item.name}
+										</h2>
 										<p className="info-description">
-											{item.description || "No description available."}
+											{item.description ||
+												"No description available."}
 										</p>
 									</div>
 								))}
