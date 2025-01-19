@@ -32,3 +32,10 @@ export interface Message {
 	confirmType?: string;
 	isStreaming?: boolean;
 }
+
+export interface RequestHumanInLoop {
+	action: string; // action for the approval message
+	prompt?: string; // prompt to show to the human
+	type?: string; // type of action to perform [none for options] [action type for approval]
+	id?: string; // id to link the approval message to the action
+}

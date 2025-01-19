@@ -65,6 +65,14 @@ export function FolderView({ files }: FolderViewProps) {
 	// Render fallback for empty file list
 	if (!files || files.length === 0) {
 		return (
+			<div className="p-4">
+			<Button
+				variant="outline"
+				onClick={() => navigate("/reports")}
+				className="mb-4"
+			>
+				Back to Folders
+			</Button>
 			<Card className="w-full max-w-md mx-auto mt-8 p-8 my-auto shadow-none border-2 border-secondary">
 				<Alert variant="default" className="border-none">
 					<div className="flex px--5">
@@ -79,6 +87,7 @@ export function FolderView({ files }: FolderViewProps) {
 					</AlertDescription>
 				</Alert>
 			</Card>
+			</div>
 		);
 	}
 

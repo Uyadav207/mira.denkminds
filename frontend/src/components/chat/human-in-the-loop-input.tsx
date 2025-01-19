@@ -2,21 +2,23 @@ import { Button } from "../ui/button";
 import { BadgeInfo } from "lucide-react";
 import { Input } from "../ui/input";
 import { useState } from "react";
+import type { RequestHumanInLoop } from "../../types/chats";
 
 interface HumanInTheLoopInputProps {
 	message: string;
 	onConfirm: (
 		selectedAction: string,
-		type: string,
-		actionId?: string,
-	) => void;
+		requestHumanInLoop: RequestHumanInLoop | null,
+	) => Promise<void>;
 	setShowInfo: (value: boolean) => void;
+	requestHumanInLoop: RequestHumanInLoop | null;
 }
 
 const HumanInTheLoopInput: React.FC<HumanInTheLoopInputProps> = ({
 	message,
 	onConfirm,
 	setShowInfo,
+	requestHumanInLoop,
 }) => {
 	const [inputValue, setInputValue] = useState("");
 	return (
@@ -39,7 +41,7 @@ const HumanInTheLoopInput: React.FC<HumanInTheLoopInputProps> = ({
 					onChange={(e) => setInputValue(e.target.value)}
 				/>
 				<Button
-					onClick={() => onConfirm(inputValue, "create-file")}
+					onClick={() => onConfirm(inputValue, requestHumanInLoop)}
 					variant="secondary"
 					size="sm"
 					className="bg-[#7156DB] text-white hover:bg-[#5c4baf]"
