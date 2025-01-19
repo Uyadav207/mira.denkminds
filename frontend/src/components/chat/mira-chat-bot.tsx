@@ -51,6 +51,7 @@ import { isReportRequest } from "./helpers";
 import { actionCards, moreCards } from "./actions";
 import { CreateFolderDialog } from "../folder/CreateFolderDialog";
 import { HumanInTheLoopInput } from "./human-in-the-loop-input";
+import { funkyGreeting } from "./greetings";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -72,6 +73,11 @@ const MiraChatBot: React.FC = () => {
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const { chatId: chatIdParam } = useParams<{ chatId: string }>();
 	const chatId = chatIdParam;
+
+	const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+	// Get the funky greeting based on the detected time zone
+	const greeting = funkyGreeting(timeZone);
 
 	//store actions
 
@@ -1179,27 +1185,21 @@ const MiraChatBot: React.FC = () => {
 			<div className="flex flex-col space-y-3 sm:w-3/4 md:w-4/5 lg:w-3/5 h-[90vh] rounded-lg">
 				{messages?.length === 0 ? (
 					<>
-						<div className="flex flex-col items-center justify-center w-full h-1/3">
+						<div className="flex items-center w-full h-1/3">
 							<motion.div
-								className="w-full max-w-2/4 aspect-w-1 aspect-h-1 justify-center mt-auto"
-								initial={{ opacity: 0, scale: 0.8 }}
-								animate={{ opacity: 1, scale: 1 }}
-								transition={{ duration: 0.25 }}
-							>
-								<img
-									src={mira_logo}
-									alt="Avatar"
-									className="flex w-20 h-20 object-cover justify-self-center mt-auto"
-								/>
-							</motion.div>
-
-							<motion.div
-								className="text-2xl font-semibold justify-end text-primary mt-auto"
+								className="flex text-center text-2xl sm:text-3xl font-semibold mt-auto space-x-3 mb-6 mx-auto"
 								initial={{ opacity: 0, y: 20 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.25 }}
 							>
-								How can i assist you today?
+								<img
+									src={mira_logo}
+									alt="Avatar"
+									className="rounded-full w-12 h-12 object-cover"
+								/>
+								<span className="flex items-center justify-between">
+									{`${greeting}, ${user?.firstName || "User"}`}
+								</span>
 							</motion.div>
 						</div>
 					</>
