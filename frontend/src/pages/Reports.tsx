@@ -13,6 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 // import { Button } from "../components/ui/button";
 // import { FolderIcon } from "lucide-react";
 import { showErrorToast } from "@components/toaster";
+import { Spinner } from "../components/loader/spinner";
 
 export function Reports() {
 	const navigate = useNavigate();
@@ -96,12 +97,11 @@ export function Reports() {
 	// };
 
 	return (
-		<div className="flex flex-1 flex-col gap-8 p-4">
+		<div className="flex flex-1 flex-col gap-8 p-8">
 			{/* Reports Section */}
-			<div>
-				<h2 className="text-xl font-bold mb-4">Reports</h2>
+				<h2 className="text-xl font-bold">Reports</h2>
 				{!folderData ? (
-					<div>Loading...</div>
+					<Spinner />
 				) : (
 					<div>
 						{folders.length === 0 ? (
@@ -136,7 +136,6 @@ export function Reports() {
 					onOpenChange={setIsCreateDialogOpen}
 					onCreateFolder={handleCreateReportFolder}
 				/>
-			</div>
 
 			{/* Chat Summaries Section */}
 			{/* <div>

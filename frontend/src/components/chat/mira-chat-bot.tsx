@@ -58,6 +58,7 @@ import { actionCards, moreCards } from "./actions";
 import { CreateFolderDialog } from "../folder/CreateFolderDialog";
 import { HumanInTheLoopInput } from "./human-in-the-loop-input";
 import { funkyGreeting } from "./greetings";
+import { showErrorToast } from "../toaster";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -226,6 +227,15 @@ const MiraChatBot: React.FC = () => {
 		name: string,
 		action: RequestHumanInLoop,
 	) => {
+		if (
+			foldersList.some(
+				(folder) => folder.name.toLowerCase() === name.toLowerCase(),
+			)
+		) {
+			showErrorToast("A folder with this name already exists.");
+			return;
+		}
+
 		const newFolder: Folder = {
 			id: uuidv4(),
 			name,

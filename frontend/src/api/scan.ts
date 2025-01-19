@@ -21,7 +21,7 @@ const scanWithProgress = async (payload: scanPayload) => {
 };
 
 const scanReportGeneration = async (payload: ScanResult) => {
-	const response = await fetch(`${BASE_URL}chat/scan/summary`, {
+	const response = await fetch(`${BASE_URL}/chat/scan/summary`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

@@ -35,7 +35,7 @@ const HumanInTheLoopInput: React.FC<HumanInTheLoopInputProps> = ({
 			<div className="flex space-x-4 mt-2">
 				<Input
 					placeholder="Enter your response"
-					className="w-full"
+					className="w-full text-primary bg-secondary"
 					type="text"
 					value={inputValue}
 					onChange={(e) => setInputValue(e.target.value)}
