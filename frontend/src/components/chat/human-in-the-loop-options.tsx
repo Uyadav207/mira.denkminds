@@ -26,8 +26,8 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 				/>
 			</div>
 
-			<ScrollArea className="w-[90%]">
-				<div className="flex space-x-4  py-4">
+			<ScrollArea className="w-full md:w-[90%] mt-4">
+				<div className="flex flex-wrap justify-start space-x-4 py-4">
 					{actionPrompts.map((action) => (
 						<Button
 							key={action.id}
@@ -36,7 +36,7 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 							onClick={() =>
 								onConfirm(action.name, action.type, action.id)
 							}
-							className="bg-[#7156DB] text-white hover:bg-[#5c4baf]"
+							className="bg-[#7156DB] text-white hover:bg-[#5c4baf] mb-2"
 						>
 							{action.name}
 						</Button>
