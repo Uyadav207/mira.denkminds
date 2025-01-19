@@ -6,7 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "../components/ui/card";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+
 
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
@@ -33,7 +33,7 @@ const TermsOfService: React.FC = () => {
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<ScrollArea className="h-[500px] p-4 border rounded-md overflow-auto">
+					
 						<div className="prose max-w-none">
 							<p className="text-gray-500 dark:text-gray-400">
 								<strong>Last Updated:</strong> January 3, 2025
@@ -164,7 +164,7 @@ const TermsOfService: React.FC = () => {
 								Email: denkminds@gmail.com
 							</p>
 						</div>
-					</ScrollArea>
+					
 				</CardContent>
 			</Card>
 		</div>
