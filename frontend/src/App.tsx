@@ -29,10 +29,11 @@ import Urls from "./pages/scans/VulnerableUrls/Urls";
 import { FileView } from "./components/file";
 import PrivateRoute from "./components/privateRoutes";
 import { NotFound } from "./pages/NotFound";
-import TermsOfService from "./pages/Termsofservice";
+import TermsOfService from "./pages/TermsOfservice";
 import PrivacyPolicy from "./pages/Privacy";
 import { ChatTemplate } from "./components/PDF/Chattemplate";
 import { ChatSummaries } from "./components/PDF/ChatSummaries";
+
 // import { PrintableTemplate } from "./components/pdf/PrintableTemplate";
 
 const App = () => {
