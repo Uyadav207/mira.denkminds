@@ -21,8 +21,8 @@ export function NewChat() {
 					className="flex bg-secondary justify-center border border-sidebar"
 					onClick={handleNewChat}
 				>
-					<Plus />
-					<span>New Chat</span>
+					<Plus className="text-[#7156DB]" />
+					<span className="text-[#7156DB]">New Chat</span>
 				</SidebarMenuButton>
 			</SidebarMenuItem>
 		</SidebarMenu>
