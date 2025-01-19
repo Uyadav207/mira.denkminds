@@ -102,7 +102,7 @@ export default function ChatHistory() {
 						<SidebarMenuItem>
 							<CollapsibleTrigger asChild>
 								<SidebarMenuButton tooltip="Dashboard">
-									<Home className="h-4 w-4" />
+									<Home className="h-4 w-4 text-[#7156DB]" />
 									<span>Dashboard</span>
 									<ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
 								</SidebarMenuButton>
@@ -112,7 +112,7 @@ export default function ChatHistory() {
 									{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 									<a onClick={() => navigate("/recent-scan")}>
 										<SidebarMenuButton tooltip="Scans">
-											<ScanText className="h-4 w-4" />
+											<ScanText className="h-4 w-4 text-[#7156DB]" />
 											<span>Scans</span>
 										</SidebarMenuButton>
 									</a>
@@ -124,7 +124,7 @@ export default function ChatHistory() {
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/accounts")}>
 							<SidebarMenuButton tooltip="Accounts">
-								<User2 className="h-4 w-4" />
+								<User2 className="h-4 w-4 text-[#7156DB]" />
 								<span>Accounts</span>
 							</SidebarMenuButton>
 						</a>
@@ -133,7 +133,7 @@ export default function ChatHistory() {
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/reports")}>
 							<SidebarMenuButton tooltip="Reports">
-								<Folder className="h-4 w-4" />
+								<Folder className="h-4 w-4 text-[#7156DB]" />
 								<span>Reports</span>
 							</SidebarMenuButton>
 
@@ -176,7 +176,7 @@ export default function ChatHistory() {
 												}
 											>
 												<div className="flex items-center">
-													<MessageCircle className="mr-2 h-4 w-4 shrink-0" />
+													<MessageCircle className="h-4 w-4 text-[#7156DB]" />
 													<span className="flex-grow truncate">
 														{chat.title}
 													</span>

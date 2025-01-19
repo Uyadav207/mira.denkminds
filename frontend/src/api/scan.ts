@@ -1,5 +1,6 @@
 import type { ScanResult } from "../types/zap-scan";
 import axiosInstance from "./axios";
+import { BASE_URL } from "./config.backend";
 
 // import data from "../components/chat/testData.json";
 interface scanPayload {
@@ -20,7 +21,7 @@ const scanWithProgress = async (payload: scanPayload) => {
 };
 
 const scanReportGeneration = async (payload: ScanResult) => {
-	const response = await fetch("http://34.60.226.88:8000/chat/scan/summary", {
+	const response = await fetch(`${BASE_URL}chat/scan/summary`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -36,9 +37,12 @@ const scanReportGeneration = async (payload: ScanResult) => {
 };
 
 const detailedReportGeneration = async (payload: ScanResult) => {
-	const resultsResponse = axiosInstance.post("/chat/detailed/summary", {
-		scanResults: payload,
-	});
+	const resultsResponse = axiosInstance.post(
+		`${BASE_URL}/chat/detailed/summary`,
+		{
+			scanResults: payload,
+		},
+	);
 
 	return resultsResponse;
 };

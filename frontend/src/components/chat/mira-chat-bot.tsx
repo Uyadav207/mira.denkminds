@@ -1176,7 +1176,7 @@ const MiraChatBot: React.FC = () => {
 
 	return (
 		<div className="flex justify-center">
-			<div className="flex flex-col space-y-6 w-full sm:w-3/4 md:w-3/4  md:h-[90vh] rounded-lg">
+			<div className="flex flex-col space-y-3 sm:w-3/4 md:w-4/5 lg:w-3/5 h-[90vh] rounded-lg">
 				{messages?.length === 0 ? (
 					<>
 						<div className="flex flex-col items-center justify-center w-full h-1/3">
@@ -1210,7 +1210,7 @@ const MiraChatBot: React.FC = () => {
 				) : (
 					<ScrollArea
 						ref={scrollAreaRef}
-						className="flex-1 p-4 w-full"
+						className="flex-1 p-4 w-full overflow-y-hidden"
 					>
 						{messages.map((message) => {
 							const isPendingAction =
@@ -1276,12 +1276,12 @@ const MiraChatBot: React.FC = () => {
 							}
 
 							const isUser = message.sender === "user";
-							const messageClasses = `inline-block p-2 rounded-xl ${
+							const messageClasses = `inline-block px-3 pt-3 rounded-xl max-w-[80%] sm:max-w-[100%] ${
 								isUser
-									? "bg-primary text-primary-foreground dark:bg-primary-900 p-3"
-									: "bg-muted dark:bg-muted/40 text-foreground px-5 pt-3 pb-2"
+									? "bg-secondary dark:bg-primary-900 p-4 text-sm"
+									: "text-foreground pr-4 overflow-y-auto text-pretty break-normal text-sm"
 							}`;
-							const containerClasses = `mb-4 ${isUser ? "text-right" : "text-left"}`;
+							const containerClasses = `mb-4  ${isUser ? "text-right" : "text-left"}`;
 
 							return (
 								<motion.div
@@ -1290,15 +1290,27 @@ const MiraChatBot: React.FC = () => {
 									initial={{ opacity: 0 }}
 									animate={{ opacity: 1, y: 0 }}
 								>
-									<span className={`${messageClasses}`}>
-										{isUser ? (
-											message.message
-										) : (
-											<MarkdownViewer
-												content={message.message}
+									<div
+										className={`items-center ${message.sender === "ai" ? "flex space-x-3" : ""}`}
+									>
+										{message.sender === "ai" && (
+											<img
+												src={mira_logo}
+												alt="Avatar"
+												className="w-5 h-5 mt-3 object-cover rounded-full justify-self-center mb-auto"
 											/>
 										)}
-									</span>
+
+										<span className={`${messageClasses}`}>
+											{isUser ? (
+												message.message
+											) : (
+												<MarkdownViewer
+													content={message.message}
+												/>
+											)}
+										</span>
+									</div>
 								</motion.div>
 							);
 						})}
@@ -1328,10 +1340,10 @@ const MiraChatBot: React.FC = () => {
 						</p>
 					</div>
 				)}
-				<div className="flex justify-center px-10 pb-5">
+				<div className="flex justify-center pt-auto px-10">
 					<motion.div
-						initial={{ width: "60%" }}
-						animate={{ width: input ? "70%" : "60%" }}
+						initial={{ width: "70%" }}
+						animate={{ width: input ? "100%" : "70%" }}
 						transition={{ duration: 0.3 }}
 						className="flex items-center rounded-2xl px-4 py-2 relativ bg-secondary"
 					>

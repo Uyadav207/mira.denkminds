@@ -23,8 +23,8 @@ export function Logout() {
 						className="flex bg-secondary justify-center border border-sidebar"
 						onClick={() => setDialogOpen(true)}
 					>
-						<LogOut />
-						<span>Log out</span>
+						<LogOut className="text-[#7156DB]" />
+						<span className="text-[#7156DB]">Log out</span>
 					</SidebarMenuButton>
 				</SidebarMenuItem>
 			</SidebarMenu>

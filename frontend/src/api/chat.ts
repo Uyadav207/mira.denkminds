@@ -1,4 +1,5 @@
 import axiosInstance from "./axios";
+import { BASE_URL } from "./config.backend";
 interface ChatPayload {
 	message: string;
 	useRAG?: boolean;
@@ -14,16 +15,13 @@ interface ScanPayload {
 }
 
 const chat = async (payload: ChatPayload) => {
-	const response = await fetch(
-		"http://34.60.226.88:8000/chat/message/stream",
-		{
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(payload),
+	const response = await fetch(`${BASE_URL}/chat/message/stream`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
 		},
-	);
+		body: JSON.stringify(payload),
+	});
 
 	if (!response.body) {
 		throw new Error("No response body");
@@ -33,7 +31,7 @@ const chat = async (payload: ChatPayload) => {
 };
 
 const chatOllama = async (payload: ChatOllamaPayload) => {
-	const response = await fetch("http://34.60.226.88:8000/api/chat", {
+	const response = await fetch(`${BASE_URL}/api/chat`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -58,7 +56,7 @@ const generateTitle = (payload: GenerateTitlePayload) =>
 	axiosInstance.post("/chat/title", payload);
 
 const chatSummaryOllama = async (payload: { messages: string[] }) => {
-	const response = await fetch("http://34.60.226.88:8000/api/chat/summary", {
+	const response = await fetch(`${BASE_URL}/api/chat/summary`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -73,7 +71,7 @@ const chatSummaryOllama = async (payload: { messages: string[] }) => {
 };
 
 const chatSummaryOpenAI = async (payload: { messages: string[] }) => {
-	const response = await fetch("http://34.60.226.88:8000/chat/chat-summary", {
+	const response = await fetch(`${BASE_URL}/chat/chat-summary`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
