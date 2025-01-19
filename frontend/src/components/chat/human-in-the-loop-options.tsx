@@ -42,7 +42,7 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 						</Button>
 					))}
 				</div>
-				<ScrollBar orientation="horizontal" className=" " />
+				<ScrollBar orientation="horizontal" className="" />
 			</ScrollArea>
 		</div>
 	);

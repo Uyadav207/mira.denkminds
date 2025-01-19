@@ -27,7 +27,7 @@ import useStore from "../../store/store";
 import useChatActionStore from "../../store/chatActions";
 
 // svgs
-import MiraAvatar from "../../assets/Mira.svg";
+import mira_logo from "../../assets/mira_logo.png"; // Add this line to import mira_logo
 import { MoreHorizontal, SendIcon } from "lucide-react";
 
 // types
@@ -51,6 +51,7 @@ import { isReportRequest } from "./helpers";
 import { actionCards, moreCards } from "./actions";
 import { CreateFolderDialog } from "../folder/CreateFolderDialog";
 import { HumanInTheLoopInput } from "./human-in-the-loop-input";
+import { funkyGreeting } from "./greetings";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -72,6 +73,11 @@ const MiraChatBot: React.FC = () => {
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const { chatId: chatIdParam } = useParams<{ chatId: string }>();
 	const chatId = chatIdParam;
+
+	const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+	// Get the funky greeting based on the detected time zone
+	const greeting = funkyGreeting(timeZone);
 
 	//store actions
 
@@ -1176,30 +1182,24 @@ const MiraChatBot: React.FC = () => {
 
 	return (
 		<div className="flex justify-center">
-			<div className="flex flex-col space-y-6 w-3/4 h-full md:h-[90vh] rounded-lg">
+			<div className="flex flex-col space-y-3 sm:w-3/4 md:w-4/5 lg:w-3/5 h-[90vh] rounded-lg">
 				{messages?.length === 0 ? (
 					<>
-						<div className="flex flex-col items-center justify-center w-full h-1/3">
+						<div className="flex items-center w-full h-1/3">
 							<motion.div
-								className="w-full max-w-2/4 aspect-w-1 aspect-h-1 justify-center mb-10"
-								initial={{ opacity: 0, scale: 0.8 }}
-								animate={{ opacity: 1, scale: 1 }}
-								transition={{ duration: 0.25 }}
-							>
-								<img
-									src={MiraAvatar}
-									alt="Avatar"
-									className="flex w-auto h-auto object-cover justify-self-center"
-								/>
-							</motion.div>
-
-							<motion.div
-								className="text-2xl font-semibold justify-end text-primary"
+								className="flex text-center text-2xl sm:text-3xl font-semibold mt-auto space-x-3 mb-6 mx-auto"
 								initial={{ opacity: 0, y: 20 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ delay: 0.25 }}
 							>
-								How can i assist you today?
+								<img
+									src={mira_logo}
+									alt="Avatar"
+									className="rounded-full w-12 h-12 object-cover"
+								/>
+								<span className="flex items-center justify-between">
+									{`${greeting}, ${user?.firstName || "User"}`}
+								</span>
 							</motion.div>
 						</div>
 					</>
@@ -1210,7 +1210,7 @@ const MiraChatBot: React.FC = () => {
 				) : (
 					<ScrollArea
 						ref={scrollAreaRef}
-						className="flex-1 p-4 w-full"
+						className="flex-1 p-4 w-full overflow-y-hidden"
 					>
 						{messages.map((message) => {
 							const isPendingAction =
@@ -1276,12 +1276,12 @@ const MiraChatBot: React.FC = () => {
 							}
 
 							const isUser = message.sender === "user";
-							const messageClasses = `inline-block p-2 rounded-xl ${
+							const messageClasses = `inline-block px-3 pt-3 rounded-xl max-w-[80%] sm:max-w-[100%] ${
 								isUser
-									? "bg-primary text-primary-foreground dark:bg-primary-900 p-3"
-									: "bg-muted dark:bg-muted/40 text-foreground px-5 pt-3 pb-2"
+									? "bg-secondary dark:bg-primary-900 p-4 text-sm"
+									: "text-foreground pr-4 overflow-y-auto text-pretty break-normal text-sm"
 							}`;
-							const containerClasses = `mb-4 ${isUser ? "text-right" : "text-left"}`;
+							const containerClasses = `mb-4  ${isUser ? "text-right" : "text-left"}`;
 
 							return (
 								<motion.div
@@ -1290,15 +1290,27 @@ const MiraChatBot: React.FC = () => {
 									initial={{ opacity: 0 }}
 									animate={{ opacity: 1, y: 0 }}
 								>
-									<span className={`${messageClasses}`}>
-										{isUser ? (
-											message.message
-										) : (
-											<MarkdownViewer
-												content={message.message}
+									<div
+										className={`items-center ${message.sender === "ai" ? "flex space-x-3" : ""}`}
+									>
+										{message.sender === "ai" && (
+											<img
+												src={mira_logo}
+												alt="Avatar"
+												className="w-5 h-5 mt-3 object-cover rounded-full justify-self-center mb-auto"
 											/>
 										)}
-									</span>
+
+										<span className={`${messageClasses}`}>
+											{isUser ? (
+												message.message
+											) : (
+												<MarkdownViewer
+													content={message.message}
+												/>
+											)}
+										</span>
+									</div>
 								</motion.div>
 							);
 						})}
@@ -1328,10 +1340,10 @@ const MiraChatBot: React.FC = () => {
 						</p>
 					</div>
 				)}
-				<div className="flex justify-center px-10 pb-5">
+				<div className="flex justify-center pt-auto px-10">
 					<motion.div
-						initial={{ width: "60%" }}
-						animate={{ width: input ? "70%" : "60%" }}
+						initial={{ width: "70%" }}
+						animate={{ width: input ? "100%" : "70%" }}
 						transition={{ duration: 0.3 }}
 						className="flex items-center rounded-2xl px-4 py-2 relativ bg-secondary"
 					>
