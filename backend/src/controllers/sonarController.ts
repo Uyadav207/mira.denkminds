@@ -16,7 +16,7 @@ export class SonarController {
 				githubUrl.split("/").pop()?.replace(".git", "") || "unknown-repo";
 			const localPath = `/tmp/${repoName}`;
 
-			await this.sonarService.cloneRepository(githubUrl, localPath);
+			await this.sonarService.cloneRepository(githubUrl);
 
 			await this.sonarService.runSonarScanner(repoName, localPath);
 

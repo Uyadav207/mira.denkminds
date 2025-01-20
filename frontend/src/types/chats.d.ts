@@ -1,6 +1,7 @@
 export interface Chats {
 	_id: string;
 	title: string;
+	createdAt: string;
 }
 
 export interface Info {

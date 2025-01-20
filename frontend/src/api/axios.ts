@@ -7,11 +7,11 @@ import axios, {
 	type AxiosResponse,
 	type AxiosRequestHeaders,
 } from "axios";
+import { BASE_URL } from "./config.backend";
 
-const baseURL = process.env.BACKEND_BASE_URL || "http://localhost:8000";
 // Creating an Axios instance
 const axiosInstance = axios.create({
-	baseURL,
+	baseURL: BASE_URL,
 });
 
 // Request interceptor

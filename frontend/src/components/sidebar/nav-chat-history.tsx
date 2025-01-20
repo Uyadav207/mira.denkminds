@@ -94,6 +94,13 @@ export default function ChatHistory() {
 		}
 	}, [recentChats]);
 
+	// Ensure recentChats is of type Chats[]
+	const sortedChats = recentChats?.slice().sort((a: Chats, b: Chats) => {
+		const dateA = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
+		const dateB = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+		return dateB - dateA; // Sort by descending
+	});
+
 	return (
 		<>
 			<SidebarGroup>
@@ -102,7 +109,7 @@ export default function ChatHistory() {
 						<SidebarMenuItem>
 							<CollapsibleTrigger asChild>
 								<SidebarMenuButton tooltip="Dashboard">
-									<Home className="h-4 w-4" />
+									<Home className="h-4 w-4 text-[#7156DB]" />
 									<span>Dashboard</span>
 									<ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
 								</SidebarMenuButton>
@@ -112,7 +119,7 @@ export default function ChatHistory() {
 									{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 									<a onClick={() => navigate("/recent-scan")}>
 										<SidebarMenuButton tooltip="Scans">
-											<ScanText className="h-4 w-4" />
+											<ScanText className="h-4 w-4 text-[#7156DB]" />
 											<span>Scans</span>
 										</SidebarMenuButton>
 									</a>
@@ -124,7 +131,7 @@ export default function ChatHistory() {
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/accounts")}>
 							<SidebarMenuButton tooltip="Accounts">
-								<User2 className="h-4 w-4" />
+								<User2 className="h-4 w-4 text-[#7156DB]" />
 								<span>Accounts</span>
 							</SidebarMenuButton>
 						</a>
@@ -133,7 +140,7 @@ export default function ChatHistory() {
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/reports")}>
 							<SidebarMenuButton tooltip="Reports">
-								<Folder className="h-4 w-4" />
+								<Folder className="h-4 w-4 text-[#7156DB]" />
 								<span>Reports</span>
 							</SidebarMenuButton>
 
@@ -154,7 +161,8 @@ export default function ChatHistory() {
 							<SidebarMenu>
 								{isLoading ? (
 									<ChatSkeleton />
-								) : recentChats?.length === 0 ? (
+								) : !sortedChats || sortedChats.length === 0 ? (
+									// : recentChats?.length === 0 ? (
 									<SidebarMenuItem>
 										<div className="mt-10 flex flex-col items-center justify-center">
 											<MessageSquareCode />
@@ -162,7 +170,8 @@ export default function ChatHistory() {
 										</div>
 									</SidebarMenuItem>
 								) : (
-									recentChats?.map((chat: Chats) => (
+									// recentChats?.map((chat: Chats) => (
+									sortedChats.map((chat: Chats) => (
 										<SidebarMenuItem key={chat._id}>
 											<SidebarMenuButton
 												asChild
@@ -170,7 +179,7 @@ export default function ChatHistory() {
 												onClick={() => navigate(`/chatbot/${chat._id}`)}
 											>
 												<div className="flex items-center">
-													<MessageCircle className="mr-2 h-4 w-4 shrink-0" />
+													<MessageCircle className="h-4 w-4 text-[#7156DB]" />
 													<span className="flex-grow truncate">
 														{chat.title}
 													</span>
