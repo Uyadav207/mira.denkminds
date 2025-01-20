@@ -12,12 +12,9 @@ import "../../../public/Mira_logo.png";
 const FileViewSkeleton = () => {
 	return (
 		<div className="p-6 space-y-4">
-			{/* Skeleton for Back Button */}
-			<div className="w-32 h-8  bg-secondary rounded-lg animate-pulse" />
-
 			<div className="space-y-6">
 				{/* Skeleton for Page Header */}
-				<div className="w-3/4 h-96  bg-secondary rounded animate-pulse" />
+				<div className="w-full h-screen  bg-secondary rounded animate-pulse" />
 			</div>
 		</div>
 	);

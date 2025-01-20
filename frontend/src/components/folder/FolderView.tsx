@@ -19,6 +19,7 @@ import {
 import { showSuccessToast } from "../toaster";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { Spinner } from "../loader/spinner";
 
 type FolderViewProps = {
 	folder: Folder;
@@ -62,9 +63,24 @@ export function FolderView({ files }: FolderViewProps) {
 		}
 	};
 
-	// Render fallback for empty file list
-	if (!files || files.length === 0) {
+	if (!files) {
 		return (
+			<div className="items-center justify-center w-full h-full">
+				<Spinner />
+			</div>
+		);
+	}
+	// Render fallback for empty file list
+	if (files.length === 0) {
+		return (
+			<div>
+			<Button
+				variant="outline"
+				onClick={() => navigate("/reports")}
+				className="mb-4"
+			>
+				Back to Folders
+			</Button>
 			<Card className="w-full max-w-md mx-auto mt-8 p-8 my-auto shadow-none border-2 border-secondary">
 				<Alert variant="default" className="border-none">
 					<div className="flex px--5">
@@ -79,11 +95,12 @@ export function FolderView({ files }: FolderViewProps) {
 					</AlertDescription>
 				</Alert>
 			</Card>
+			</div>
 		);
 	}
 
 	return (
-		<div className="p-4">
+		<div>
 			<Button
 				variant="outline"
 				onClick={() => navigate("/reports")}

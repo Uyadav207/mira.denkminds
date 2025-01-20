@@ -8,23 +8,27 @@ import {
 } from "../ui/dialog";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
+import type { RequestHumanInLoop } from "../../types/chats";
 
 interface CreateFolderDialogProps {
 	open: boolean;
+	humanInTheLoopAction?: RequestHumanInLoop | null | undefined;
 	onOpenChange: (open: boolean) => void;
-	onCreateFolder: (name: string) => void;
+	onCreateFolder: (name: string, action: RequestHumanInLoop) => void;
 }
 
 export function CreateFolderDialog({
 	open,
+	humanInTheLoopAction,
 	onOpenChange,
 	onCreateFolder,
 }: CreateFolderDialogProps) {
 	const [folderName, setFolderName] = useState("");
-
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		onCreateFolder(folderName);
+		if (humanInTheLoopAction) {
+			onCreateFolder(folderName, humanInTheLoopAction);
+		}
 		setFolderName("");
 		onOpenChange(false);
 	};

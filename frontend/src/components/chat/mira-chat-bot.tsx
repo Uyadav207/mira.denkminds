@@ -32,7 +32,12 @@ import MiraAvatar from "../../assets/Mira.svg";
 import { MoreHorizontal, SendIcon } from "lucide-react";
 
 // types
-import type { Message, ChatHistory, Info } from "../../types/chats";
+import type {
+	Message,
+	ChatHistory,
+	Info,
+	RequestHumanInLoop,
+} from "../../types/chats";
 import type { Folder, FolderItem, FolderType } from "../../types/reports";
 
 //constants
@@ -53,6 +58,7 @@ import { actionCards, moreCards } from "./actions";
 import { CreateFolderDialog } from "../folder/CreateFolderDialog";
 import { HumanInTheLoopInput } from "./human-in-the-loop-input";
 import { funkyGreeting } from "./greetings";
+import { showErrorToast } from "../toaster";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -70,6 +76,8 @@ const MiraChatBot: React.FC = () => {
 	const [folderId, setFolderId] = useState("");
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 	const [foldersList, setFoldersList] = useState(CREATE_FOLDER_ACTION);
+	const [requestHumanInLoop, setRequestHumanInLoop] =
+		useState<RequestHumanInLoop | null>();
 
 	const scrollAreaRef = useRef<HTMLDivElement>(null);
 	const { chatId: chatIdParam } = useParams<{ chatId: string }>();
@@ -215,7 +223,19 @@ const MiraChatBot: React.FC = () => {
 	}, []);
 	const saveReport = useMutation(api.reports.createReportFolder);
 
-	const handleCreateFolder = async (name: string) => {
+	const handleCreateFolder = async (
+		name: string,
+		action: RequestHumanInLoop,
+	) => {
+		if (
+			foldersList.some(
+				(folder) => folder.name.toLowerCase() === name.toLowerCase(),
+			)
+		) {
+			showErrorToast("A folder with this name already exists.");
+			return;
+		}
+
 		const newFolder: Folder = {
 			id: uuidv4(),
 			name,
@@ -245,12 +265,17 @@ const MiraChatBot: React.FC = () => {
 				sender: botMessage.sender,
 				message: botMessage.message,
 			});
-
 			setPendingAction(botMessage.id as string);
+			setRequestHumanInLoop({
+				action: action.action,
+				prompt: manualMessage,
+				type: action.type,
+				id: botMessage.id,
+			});
 			requestHumanApproval(
-				"input",
+				action.action,
 				manualMessage,
-				"create-file",
+				action.type,
 				botMessage.id,
 			);
 		}
@@ -309,6 +334,12 @@ const MiraChatBot: React.FC = () => {
 				});
 			}
 			setPendingAction(botMessage.id as string);
+			setRequestHumanInLoop({
+				action: "scan",
+				prompt: manualMessage,
+				type: "none",
+				id: botMessage.id,
+			});
 			requestHumanApproval("scan", manualMessage, "none", botMessage.id);
 		} else if (reportRequest) {
 			const manualMessage = "Thank you for your request.";
@@ -330,6 +361,12 @@ const MiraChatBot: React.FC = () => {
 				});
 			}
 			setPendingAction(botMessage.id as string);
+			setRequestHumanInLoop({
+				action: "report",
+				prompt: manualMessage,
+				type: "none",
+				id: botMessage.id,
+			});
 			requestHumanApproval(
 				"report",
 				manualMessage,
@@ -411,7 +448,7 @@ const MiraChatBot: React.FC = () => {
 			approvalMessage = prompt;
 			setActionPrompts([]);
 			setHumanInTheLoopMessage(approvalMessage);
-		} else if (action === "save-scan-summary") {
+		} else if (action === "folder") {
 			approvalMessage =
 				"Select or create a folder where you want to save the scan report.";
 			const folders = foldersList.map((folder) => {
@@ -496,6 +533,12 @@ const MiraChatBot: React.FC = () => {
 					message: botMessage.message,
 				});
 
+				setRequestHumanInLoop({
+					action: "standards",
+					prompt: manualMessage,
+					type: "none",
+					id: botMessage.id,
+				});
 				requestHumanApproval(
 					"standards",
 					manualMessage,
@@ -588,6 +631,12 @@ const MiraChatBot: React.FC = () => {
 				});
 
 				setPendingAction(botMessage.id as string);
+				setRequestHumanInLoop({
+					action: "approval",
+					prompt: manualMessage,
+					type: "report",
+					id: botMessage.id,
+				});
 				requestHumanApproval(
 					"approval",
 					manualMessage,
@@ -648,6 +697,13 @@ const MiraChatBot: React.FC = () => {
 				});
 
 				setPendingAction(botMessage.id as string);
+				setRequestHumanInLoop({
+					action: "approval",
+					prompt: manualMessage,
+					type: "save-chat-summary",
+					id: botMessage.id,
+				});
+
 				requestHumanApproval(
 					"approval",
 					manualMessage,
@@ -689,6 +745,12 @@ const MiraChatBot: React.FC = () => {
 					return;
 				}
 
+				setRequestHumanInLoop({
+					action: "standards",
+					prompt: manualMessage,
+					type: "none",
+					id: botMessage.id,
+				});
 				requestHumanApproval(
 					"standards",
 					manualMessage,
@@ -701,6 +763,10 @@ const MiraChatBot: React.FC = () => {
 
 			if (action === "Create New Folder") {
 				setIsCreateDialogOpen(true);
+				setRequestHumanInLoop({
+					action: "input",
+					type: "create-file",
+				});
 			} else {
 				setFolderId(actionId as string);
 				const manualMessage = "Thank you for providing the file name";
@@ -720,6 +786,12 @@ const MiraChatBot: React.FC = () => {
 				});
 
 				setPendingAction(botMessage.id as string);
+				setRequestHumanInLoop({
+					action: "input",
+					prompt: manualMessage,
+					type: "create-file",
+					id: botMessage.id,
+				});
 				requestHumanApproval(
 					"input",
 					manualMessage,
@@ -728,34 +800,42 @@ const MiraChatBot: React.FC = () => {
 				);
 			}
 		} else if (type === "chat-summary") {
-			let markDownContent = "";
-			try {
-				setPendingAction(null);
-				setIsScanLoading(true);
-				setProgress(0);
-				if (!chatSummaryContent) {
-					throw new Error("No chat summary available");
-				}
-				markDownContent = chatSummaryContent;
-			} catch (error) {
-				return error;
-			} finally {
-				setIsScanLoading(false);
+			if (action === "Create New Folder") {
+				setRequestHumanInLoop({
+					action: "input",
+					type: "chat-summary-create-file",
+				});
+				setIsCreateDialogOpen(true);
+			} else {
+				setFolderId(actionId as string);
+				const manualMessage = "Thank you for providing the file name";
+				const botMessage: Message = {
+					id: uuidv4(),
+					message: manualMessage,
+					sender: "ai",
+				};
+				await saveChatMessage({
+					chatId: createdChatId
+						? (createdChatId as Id<"chats">)
+						: (chatId as Id<"chats">),
+					humanInTheLoopId: botMessage.id,
+					sender: botMessage.sender,
+					message: botMessage.message,
+				});
+				setPendingAction(botMessage.id as string);
+				setRequestHumanInLoop({
+					action: "input",
+					prompt: manualMessage,
+					type: "chat-summary-create-file",
+					id: botMessage.id,
+				});
+				requestHumanApproval(
+					"input",
+					manualMessage,
+					"chat-summary-create-file",
+					botMessage.id,
+				);
 			}
-
-			const fileId = await saveFile({
-				fileName: "Chat Summary Report",
-				fileUrl: "randomUrl",
-				folderId: actionId as Id<"reportFolders">,
-				reportType: "chatSummaryReport",
-				markdownContent: markDownContent,
-			});
-			const fileLink = `/file/${fileId}`;
-			const message = `Report saved successfully. Click [here](${fileLink}) to view the report.`;
-			setChatSummaryContent("");
-			addBotMessage(message);
-
-			setPendingAction(null);
 		} else if (type === "create-file" && action) {
 			let markDownContent = "";
 			try {
@@ -808,9 +888,35 @@ const MiraChatBot: React.FC = () => {
 			} finally {
 				setIsScanLoading(false);
 			}
+		} else if (type === "chat-summary-create-file" && action) {
+			let markDownContent = "";
+			try {
+				setPendingAction(null);
+				setIsScanLoading(true);
+				setProgress(0);
+				if (!chatSummaryContent) {
+					throw new Error("No chat summary available");
+				}
+				markDownContent = chatSummaryContent;
+			} catch (error) {
+				return error;
+			} finally {
+				setIsScanLoading(false);
+			}
+			const fileId = await saveFile({
+				fileName: action,
+				fileUrl: "randomUrl",
+				folderId: folderId as Id<"reportFolders">,
+				reportType: "chatSummaryReport",
+				markdownContent: markDownContent,
+			});
+			const fileLink = `/file/${fileId}`;
+			const message = `Report saved successfully. Click [here](${fileLink}) to view the report.`;
+			setChatSummaryContent("");
+			addBotMessage(message);
+			setPendingAction(null);
 		}
 	};
-
 	const streamChatResponse = async (
 		userMessage: Message,
 		responseStream: StreamResponse,
@@ -913,6 +1019,12 @@ const MiraChatBot: React.FC = () => {
 				});
 
 				setPendingAction(botMessage.id as string);
+				setRequestHumanInLoop({
+					action: "approval",
+					prompt: manualMessage,
+					type: "save",
+					id: botMessage.id,
+				});
 				requestHumanApproval(
 					"approval",
 					manualMessage,
@@ -947,50 +1059,16 @@ const MiraChatBot: React.FC = () => {
 			});
 
 			setPendingAction(botMessage.id as string);
+			setRequestHumanInLoop({
+				action: "folder",
+				prompt: manualMessage,
+				type: "none",
+				id: botMessage.id,
+			});
 			requestHumanApproval(
 				"folder",
 				manualMessage,
 				"none",
-				botMessage.id,
-			);
-		} else if (confirmType === "save-chat-summary") {
-			if (createdChatId) {
-				setMessages((prev) => [...prev, userMessage]);
-				await saveChatMessage({
-					humanInTheLoopId: userMessage.id,
-					chatId: createdChatId as Id<"chats">,
-					sender: userMessage.sender,
-					message: userMessage.message,
-				});
-			} else {
-				await saveChatMessage({
-					humanInTheLoopId: userMessage.id,
-					chatId: chatId as Id<"chats">,
-					sender: userMessage.sender,
-					message: userMessage.message,
-				});
-			}
-
-			const manualMessage = "Select a folder to save the summary report.";
-			const botMessage: Message = {
-				id: uuidv4(),
-				message: manualMessage,
-				sender: "ai",
-			};
-			await saveChatMessage({
-				chatId: createdChatId
-					? (createdChatId as Id<"chats">)
-					: (chatId as Id<"chats">),
-				humanInTheLoopId: botMessage.id,
-				sender: botMessage.sender,
-				message: botMessage.message,
-			});
-
-			setPendingAction(botMessage.id as string);
-			requestHumanApproval(
-				"save-scan-summary",
-				manualMessage,
-				"summary",
 				botMessage.id,
 			);
 		} else if (confirmType === "save-chat-summary") {
@@ -1019,6 +1097,13 @@ const MiraChatBot: React.FC = () => {
 			});
 
 			setPendingAction(botMessage.id as string);
+			setRequestHumanInLoop({
+				action: "save-chat-summary",
+				prompt: manualMessage,
+				type: "summary",
+				id: botMessage.id,
+			});
+
 			requestHumanApproval(
 				"save-chat-summary",
 				manualMessage,
@@ -1181,6 +1266,15 @@ const MiraChatBot: React.FC = () => {
 		});
 	};
 
+	const handleFileCreation = async (
+		selectedAction: string,
+		action: RequestHumanInLoop | null,
+	) => {
+		if (action) {
+			await confirmAction(selectedAction, action.type ?? "create-file");
+		}
+	};
+
 	return (
 		<div className="flex justify-center">
 			<div className="flex flex-col space-y-3 sm:w-3/4 md:w-4/5 lg:w-3/5 h-[90vh] rounded-lg">
@@ -1259,8 +1353,11 @@ const MiraChatBot: React.FC = () => {
 											message={
 												humanInTheLoopMessage || ""
 											}
-											onConfirm={confirmAction}
+											onConfirm={handleFileCreation}
 											setShowInfo={setShowInfo}
+											requestHumanInLoop={
+												requestHumanInLoop ?? null
+											}
 										/>
 									</motion.div>
 								) : (
@@ -1371,8 +1468,8 @@ const MiraChatBot: React.FC = () => {
 								}
 							}}
 							className={`flex-1 resize-none text-sm bg-secondary border-none shadow-none rounded-full focus-visible:outline-none focus:ring-0 h-15 p-2 px-4 text-gray
-								${(isLoading || !!pendingAction) && "cursor-not-allowed"}
-								`}
+                                ${(isLoading || !!pendingAction) && "cursor-not-allowed"}
+                                `}
 							placeholder="Ask Mira..."
 							disabled={isLoading || !!pendingAction}
 						/>
@@ -1510,6 +1607,7 @@ const MiraChatBot: React.FC = () => {
 			</div>
 			<CreateFolderDialog
 				open={isCreateDialogOpen}
+				humanInTheLoopAction={requestHumanInLoop}
 				onOpenChange={setIsCreateDialogOpen}
 				onCreateFolder={handleCreateFolder}
 			/>
