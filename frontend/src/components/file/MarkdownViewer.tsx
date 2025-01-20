@@ -1,6 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+// import "../../../public/Mira_logo.png";
 import "../../../public/Mira_logo.png";
 import "../file/MarkdownViewer.css";
 
@@ -20,7 +21,7 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 							<div
 								style={{
 									display: "flex",
-									alignItems: "center",
+									// alignItems: "center",
 									justifyContent: "center",
 									height: "100px", // Adjust the height as needed
 								}}
@@ -35,7 +36,7 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 							<div
 								style={{
 									display: "flex",
-									alignItems: "center",
+									// alignItems: "center",
 									justifyContent: "center",
 									height: "60px", // Adjust the height as needed
 								}}
@@ -50,7 +51,7 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 							<div
 								style={{
 									display: "flex",
-									alignItems: "center",
+									// alignItems: "center",
 									justifyContent: "center",
 									height: "60px", // Adjust the height as needed
 								}}
