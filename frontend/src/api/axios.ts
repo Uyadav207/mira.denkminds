@@ -67,7 +67,7 @@ axiosInstance.interceptors.response.use(
 
 				case 404:
 					// Handle Not Found
-					showErrorToast("Invalid Endpoint. Try again.");
+					showErrorToast(errorMessage || "Not Found");
 					break;
 
 				case 400:
