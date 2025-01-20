@@ -239,7 +239,6 @@ export default function ChatHistory() {
 								{isLoading ? (
 									<ChatSkeleton />
 								) : !sortedChat || sortedChat.length === 0 ? (
-									// : recentChats?.length === 0 ? (
 									<SidebarMenuItem>
 										<div className="mt-10 flex flex-col items-center justify-center">
 											<MessageSquareCode />
@@ -247,54 +246,6 @@ export default function ChatHistory() {
 										</div>
 									</SidebarMenuItem>
 								) : (
-									// 	// recentChats?.map((chat: Chats) => (
-									// 	sortedChats.map((chat: Chats) => (
-									// 		<SidebarMenuItem key={chat._id}>
-									// 			<SidebarMenuButton
-									// 				asChild
-									// 				className="w-full justify-between cursor-pointer"
-									// 				onClick={() =>
-									// 					navigate(
-									// 						`/chatbot/${chat._id}`,
-									// 					)
-									// 				}
-									// 			>
-									// 				<div className="flex items-center">
-									// 					<MessageCircle className="h-4 w-4 text-[#7156DB]" />
-									// 					<span className="flex-grow truncate">
-									// 						{chat.title}
-									// 					</span>
-									// 					<DropdownMenu>
-									// 						<DropdownMenuTrigger
-									// 							asChild
-									// 						>
-									// 							<MoreHorizontal className="h-4 w-4 ml-auto right-0 cursor-pointer" />
-									// 						</DropdownMenuTrigger>
-									// 						<DropdownMenuContent
-									// 							align="end"
-									// 							sideOffset={4}
-									// 							className="w-[160px] bg-white shadow-lg rounded-md border border-gray-200"
-									// 						>
-									// 							<DropdownMenuItem
-									// 								onClick={() =>
-									// 									handleDelete(
-									// 										chat._id,
-									// 									)
-									// 								}
-									// 								className="text-red-600 flex items-center gap-2 hover:bg-red-50 cursor-pointer"
-									// 							>
-									// 								<Trash2 className="mr-2 h-4 w-4" />
-									// 								<span>
-									// 									Delete
-									// 								</span>
-									// 							</DropdownMenuItem>
-									// 						</DropdownMenuContent>
-									// 					</DropdownMenu>
-									// 				</div>
-									// 			</SidebarMenuButton>
-									// 		</SidebarMenuItem>
-									// 	))
-									// )}
 									<>
 										{todayChats?.length > 0 &&
 											renderCategory(
