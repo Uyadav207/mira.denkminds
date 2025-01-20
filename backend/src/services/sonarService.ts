@@ -3,7 +3,14 @@ import axios from "axios";
 import * as fs from "fs-extra";
 import * as path from "node:path";
 import git from "simple-git";
-import type { Hotspot, Issue, Metric, SonarReport } from "../types/sastScan";
+import type {
+	Hotspot,
+	Issue,
+	Metric,
+	SonarReport,
+	Rule,
+	DescriptionSection,
+} from "../types/sastScan";
 
 export class SonarService {
 	private readonly SONAR_URL: string =
@@ -85,49 +92,151 @@ export class SonarService {
 	}
 
 	async fetchSonarReport(projectKey: string): Promise<SonarReport> {
-		const metricsApiUrl = `${this.SONAR_URL}/api/measures/component?component=${projectKey}&metricKeys=bugs,vulnerabilities,code_smells,coverage`;
-		const issuesApiUrl = `${this.SONAR_URL}/api/issues/search?componentKeys=${projectKey}`;
+		const metricsApiUrl = `${this.SONAR_URL}/api/measures/component?component=${projectKey}&metricKeys=bugs,vulnerabilities,code_smells,coverage,duplicated_lines_density,security_rating,reliability_rating,software_quality_maintainability_rating,security_hotspots_reviewed,ncloc`;
+		const issuesApiUrl = `${this.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&additionalFields=_all`;
 		const hotspotsApiUrl = `${this.SONAR_URL}/api/hotspots/search?projectKey=${projectKey}`;
 		const authHeader = `Basic ${Buffer.from(`${this.SONAR_TOKEN}:`).toString("base64")}`;
 
-		const [metricsResponse, issuesResponse, hotspotsResponse] =
-			await Promise.all([
-				axios.get(metricsApiUrl, { headers: { Authorization: authHeader } }),
-				axios.get(issuesApiUrl, { headers: { Authorization: authHeader } }),
-				axios.get(hotspotsApiUrl, { headers: { Authorization: authHeader } }),
-			]);
+		try {
+			const [metricsResponse, issuesResponse, hotspotsResponse] =
+				await Promise.all([
+					axios.get(metricsApiUrl, {
+						headers: { Authorization: authHeader },
+					}),
+					axios.get(issuesApiUrl, { headers: { Authorization: authHeader } }),
+					axios.get(hotspotsApiUrl, {
+						headers: { Authorization: authHeader },
+					}),
+				]);
 
-		const metrics = metricsResponse.data.component.measures.reduce(
-			(acc: Record<string, string | number>, measure: Metric) => {
-				acc[measure.metric] = measure.value;
-				return acc;
-			},
-			{},
-		);
+			//  metrics
+			const metrics = metricsResponse?.data?.component?.measures.reduce(
+				(acc: Record<string, string | number>, measure: Metric) => {
+					acc[measure.metric] = measure.value || 0;
+					return acc;
+				},
+				{},
+			);
 
-		const issues = issuesResponse.data.issues.map((issue: Issue) => ({
-			key: issue.key,
-			type: issue.type,
-			severity: issue.severity,
-			message: issue.message,
-			component: issue.component,
-			line: issue.line,
-		}));
+			const ruleCache: Record<string, Rule> = {};
 
-		const hotspots = hotspotsResponse.data.hotspots.map((hotspot: Hotspot) => ({
-			key: hotspot.key,
-			status: hotspot.status,
-			message: hotspot.message,
-			vulnerabilityProbability: hotspot.vulnerabilityProbability,
-			line: hotspot.line,
-		}));
+			//  issues
+			const issues = issuesResponse.data.issues;
+			const enrichedIssues = await Promise.all(
+				issues.map(async (issue: Issue) => {
+					let ruleDetails: Rule | null = null;
 
-		return { metrics, issues, hotspots };
+					if (typeof issue.rule === "string" && ruleCache[issue.rule]) {
+						ruleDetails = ruleCache[issue.rule];
+					} else if (typeof issue.rule === "string") {
+						try {
+							const ruleResponse = await axios.get(
+								`${this.SONAR_URL}/api/rules/show?key=${issue.rule}`,
+								{ headers: { Authorization: authHeader } },
+							);
+							const fullRuleDetails = ruleResponse.data.rule;
+
+							//  remediation steps
+							const remediationSteps =
+								fullRuleDetails.descriptionSections
+									?.filter(
+										(section: DescriptionSection) =>
+											section.key === "how_to_fix",
+									)
+									.map((section: DescriptionSection) => {
+										const problemMatch = section.content.match(
+											/<pre.*?data-diff-type=["']noncompliant["'].*?>([\s\S]*?)<\/pre>/,
+										);
+										const remediationMatch = section.content.match(
+											/<pre.*?data-diff-type=["']compliant["'].*?>([\s\S]*?)<\/pre>/,
+										);
+
+										return {
+											context: section.context?.displayName || "General",
+											description:
+												section.content || "No description available",
+											problemCodeSnippet: problemMatch
+												? problemMatch[1].trim()
+												: "No problem code snippet available",
+											remediationCodeSnippet: remediationMatch
+												? remediationMatch[1].trim()
+												: "No remediation code snippet available",
+										};
+									}) || [];
+
+							ruleDetails = {
+								key: fullRuleDetails.key,
+								name: fullRuleDetails.name,
+								description:
+									fullRuleDetails.htmlDesc || "No description available",
+								remediation: {
+									func: fullRuleDetails.remFnType || "Unknown",
+									constantCost: fullRuleDetails.remFnBaseEffort || "Unknown",
+								},
+								remediationSteps,
+							};
+
+							// Cache rule details
+							ruleCache[issue.rule] = ruleDetails;
+						} catch (error) {
+							console.error(
+								`Failed to fetch rule details for ${issue.rule}:`,
+								error,
+							);
+						}
+					}
+
+					const remediationStep =
+						(ruleDetails?.remediationSteps || [])[0] || {};
+					return {
+						key: issue.key,
+						type: issue.type,
+						severity: issue.severity,
+						message: issue.message,
+						component: issue.component,
+						line: issue.line,
+						tags: issue.tags || [],
+						rule: {
+							key: ruleDetails?.key || "",
+							name: ruleDetails?.name || "",
+							description: ruleDetails?.description || "",
+							remediation: ruleDetails?.remediation || {
+								func: "",
+								constantCost: "",
+							},
+							remediationSteps: ruleDetails?.remediationSteps || [],
+						},
+					};
+				}),
+			);
+
+			//  hotspots
+			const hotspots = hotspotsResponse.data.hotspots.map(
+				(hotspot: Hotspot) => ({
+					key: hotspot.key,
+					status: hotspot.status,
+					message: hotspot.message,
+					vulnerabilityProbability:
+						hotspot.vulnerabilityProbability || "Unknown",
+					component: hotspot.component || "Unknown",
+					line: hotspot.line || -1,
+				}),
+			);
+
+			return {
+				metrics,
+				issues: enrichedIssues,
+				hotspots,
+			};
+		} catch (error) {
+			console.error("Error fetching SonarQube data:", error);
+			throw new Error(
+				"Failed to fetch SonarQube report. Check the logs for details.",
+			);
+		}
 	}
 
 	async analyzeRepository(githubUrl: string): Promise<SonarReport> {
-		console.log(`[DEBUG] Starting analysis for repository: ${githubUrl}`);
-
 		const localPath = await this.cloneRepository(githubUrl);
 		const repoName = path.basename(localPath);
 
@@ -135,12 +244,6 @@ export class SonarService {
 		await this.waitForTaskCompletion(taskId);
 		await this.ensureReportAvailability(repoName);
 
-		console.log(
-			"[DEBUG] Fetching the final report after processing is complete.",
-		);
-		const report = await this.fetchSonarReport(repoName);
-
-		console.log("[DEBUG] Analysis completed successfully.");
-		return report;
+		return this.fetchSonarReport(repoName);
 	}
 }
