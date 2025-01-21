@@ -185,7 +185,10 @@ export default function ChatHistory() {
 					<Collapsible defaultOpen className="group/collapsible">
 						<SidebarMenuItem>
 							<CollapsibleTrigger asChild>
-								<SidebarMenuButton tooltip="Dashboard">
+								<SidebarMenuButton
+									tooltip="Dashboard"
+									className="dashboard-button"
+								>
 									<Home className="h-4 w-4 text-[#7156DB]" />
 									<span>Dashboard</span>
 									<ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -195,7 +198,10 @@ export default function ChatHistory() {
 								<SidebarMenuSub>
 									{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 									<a onClick={() => navigate("/recent-scan")}>
-										<SidebarMenuButton tooltip="Scans">
+										<SidebarMenuButton
+											tooltip="Scans"
+											className="scans-button"
+										>
 											<ScanText className="h-4 w-4 text-[#7156DB]" />
 											<span>Scans</span>
 										</SidebarMenuButton>
@@ -207,7 +213,10 @@ export default function ChatHistory() {
 					<SidebarMenuItem>
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/accounts")}>
-							<SidebarMenuButton tooltip="Accounts">
+							<SidebarMenuButton
+								tooltip="Accounts"
+								className="accounts-button"
+							>
 								<User2 className="h-4 w-4 text-[#7156DB]" />
 								<span>Accounts</span>
 							</SidebarMenuButton>
@@ -216,7 +225,10 @@ export default function ChatHistory() {
 					<SidebarMenuItem>
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/reports")}>
-							<SidebarMenuButton tooltip="Reports">
+							<SidebarMenuButton
+								tooltip="Reports"
+								className="reports-button"
+							>
 								<Folder className="h-4 w-4 text-[#7156DB]" />
 								<span>Reports</span>
 							</SidebarMenuButton>

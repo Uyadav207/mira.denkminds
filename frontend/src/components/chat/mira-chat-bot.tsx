@@ -1467,7 +1467,7 @@ const MiraChatBot: React.FC = () => {
 									handleSend();
 								}
 							}}
-							className={`flex-1 resize-none text-sm bg-secondary border-none shadow-none rounded-full focus-visible:outline-none focus:ring-0 h-15 p-2 px-4 text-gray
+							className={`chat-input flex-1 resize-none text-sm bg-secondary border-none shadow-none rounded-full focus-visible:outline-none focus:ring-0 h-15 p-2 px-4 text-gray
                                 ${(isLoading || !!pendingAction) && "cursor-not-allowed"}
                                 `}
 							placeholder="Ask Mira..."
