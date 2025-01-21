@@ -1,8 +1,9 @@
 import { Button } from "../ui/button";
-import { BadgeInfo } from "lucide-react";
+import { BadgeInfo, XIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import type { RequestHumanInLoop } from "../../types/chats";
+import useChatActionStore from "../../store/chatActions";
 
 interface HumanInTheLoopInputProps {
 	message: string;
@@ -21,9 +22,14 @@ const HumanInTheLoopInput: React.FC<HumanInTheLoopInputProps> = ({
 	requestHumanInLoop,
 }) => {
 	const [inputValue, setInputValue] = useState("");
+	const { setPendingAction } = useChatActionStore();
 	return (
-		<div className="flex flex-col mt-4 p-4 bg-[#eeedff] border-l-4 border-[#7156DB] mb-4 rounded-lg rounded-l-none">
+		<div className="relative flex flex-col mt-4 p-4 bg-[#eeedff] border-l-4 border-[#7156DB] mb-4 rounded-lg rounded-l-none">
 			<div className="flex items-center justify-start">
+				<XIcon
+					onClick={() => setPendingAction(null)}
+					className="h-5 w-5 cursor-pointer absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+				/>
 				<p className="text-gray-950 mr-2">{message}</p>
 
 				<BadgeInfo
