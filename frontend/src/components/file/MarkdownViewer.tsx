@@ -21,8 +21,7 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 							<div
 								style={{
 									display: "flex",
-									// alignItems: "center",
-									// justifyContent: "center",
+
 									height: "100px", // Adjust the height as needed
 								}}
 							>
@@ -33,8 +32,7 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 							<div
 								style={{
 									display: "flex",
-									// alignItems: "center",
-									// justifyContent: "center",
+
 									height: "60px", // Adjust the height as needed
 								}}
 							>
@@ -45,8 +43,7 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 							<div
 								style={{
 									display: "flex",
-									// alignItems: "center",
-									// justifyContent: "center",
+
 									height: "60px", // Adjust the height as needed
 								}}
 							>

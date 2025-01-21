@@ -40,7 +40,9 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 							key={action.id}
 							variant="secondary"
 							size="sm"
-							onClick={() => onConfirm(action.name, action.type, action.id)}
+							onClick={() =>
+								onConfirm(action.name, action.type, action.id)
+							}
 							className="bg-[#7156DB] text-white hover:bg-[#5c4baf] mb-2"
 						>
 							{action.name}
