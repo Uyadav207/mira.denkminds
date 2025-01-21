@@ -5,17 +5,17 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	useSidebar,
+	// useSidebar,
 } from "../ui/sidebar";
 import useChatActionStore from "../../store/chatActions";
 import Tutorial from "../tutorial/tutorial";
 import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
+// import { Button } from "../ui/button";
 
 export function NewChat() {
 	const navigate = useNavigate();
 	const { clearStore } = useChatActionStore();
-	const { state } = useSidebar();
+	// const { state } = useSidebar();
 	const [runTutorial, setRunTutorial] = useState(false);
 
 	// Check if the user is new or if they have seen the tutorial before
@@ -47,28 +47,14 @@ export function NewChat() {
 		<>
 			<SidebarMenu>
 				<SidebarMenuItem>
-					{state === "expanded" ? (
-						<Button
-							onClick={handleTakeTutorial}
-							size="lg"
-							className="flex bg-secondary justify-center border border-sidebar w-full"
-						>
-							<HelpCircle className="mr-2 h-4 w-4" />
-							Take a Tutorial
-						</Button>
-					) : (
-						<Button
-							onClick={handleTakeTutorial}
-							size="icon"
-							variant="default"
-							className="flex bg-secondary justify-center border border-sidebar h-9 w-9"
-						>
-							<HelpCircle className="text-[#7156DB] h-4 w-4" />
-							<span className="text-[#7156DB] sr-only">
-								Take a Tutorial
-							</span>
-						</Button>
-					)}
+					<SidebarMenuButton
+						tooltip="Take a Tutorial"
+						className="flex bg-secondary justify-center border border-sidebar"
+						onClick={handleTakeTutorial}
+					>
+						<HelpCircle className="text-[#7156DB]" />
+						<span className="text-[#7156DB]">Take a Tutorial</span>
+					</SidebarMenuButton>
 				</SidebarMenuItem>
 				<SidebarMenuItem>
 					<SidebarMenuButton

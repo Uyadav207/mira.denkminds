@@ -29,7 +29,8 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 		},
 		{
 			target: ".accounts-button",
-			content: "Click here to change your settings like Update Profile data.",
+			content:
+				"Click here to change your settings like Update Profile data.",
 		},
 		{
 			target: ".reports-button",
