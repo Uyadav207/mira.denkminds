@@ -51,7 +51,7 @@ export function FileView() {
 
 				const opt = {
 					margin: [20, 20, 20, 20],
-					filename: `${file.name}.pdf`,
+					filename: `${file.fileName}.pdf`,
 					image: { type: "jpeg", quality: 0.98 },
 					html2canvas: {
 						scale: 2,
