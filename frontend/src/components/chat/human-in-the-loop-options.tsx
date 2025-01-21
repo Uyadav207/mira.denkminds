@@ -1,6 +1,7 @@
 import { Button } from "../ui/button";
-import { BadgeInfo } from "lucide-react";
+import { BadgeInfo, XIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@components/ui/scroll-area";
+import useChatActionStore from "../../store/chatActions";
 
 interface VulnerabilityStandardsProps {
 	question?: string;
@@ -15,9 +16,15 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 	onConfirm,
 	setShowInfo,
 }) => {
+	const { setPendingAction } = useChatActionStore();
 	return (
-		<div className="flex flex-col mt-4 p-4 bg-[#eeedff] border-l-4 border-[#7156DB] mb-4 rounded-lg rounded-l-none">
+		<div className="relative flex flex-col mt-4 p-4 bg-[#eeedff] border-l-4 border-[#7156DB] mb-4 rounded-lg rounded-l-none">
 			<div className="flex items-center justify-start">
+				<XIcon
+					onClick={() => setPendingAction(null)}
+					className="h-5 w-5 cursor-pointer absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+				/>
+
 				<p className="text-gray-950 mr-2">{question}</p>
 
 				<BadgeInfo

@@ -109,8 +109,11 @@ export function ChatTemplate() {
 						</div>
 					</div>
 
-					{/* Content Section */}
-					<div className="space-y-6">
+					{/* Chat Summary Section */}
+					<div className="mt-8 print-content">
+						<h2 className="text-lg font-semibold mb-4">
+							Conversation:
+						</h2>
 						{chatSummary ? (
 							<>
 								<div className="space-y-4">
@@ -147,9 +150,7 @@ export function ChatTemplate() {
 								</div>
 							</>
 						) : (
-							<div className="text-center py-8 text-gray-500">
-								Loading report content...
-							</div>
+							<p>Loading chat summary...</p>
 						)}
 					</div>
 

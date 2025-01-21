@@ -55,6 +55,64 @@ const ChatSkeleton = () => {
 		</div>
 	);
 };
+const isToday = (date: Date) => {
+	const today = new Date();
+	return date.toDateString() === today.toDateString();
+};
+const isWithinLast7Days = (date: Date) => {
+	const today = new Date();
+	const sevenDaysAgo = new Date();
+	sevenDaysAgo.setDate(today.getDate() - 7);
+	return date >= sevenDaysAgo && !isToday(date);
+};
+const isWithinLast30Days = (date: Date) => {
+	const today = new Date();
+	const thirtyDaysAgo = new Date();
+	thirtyDaysAgo.setDate(today.getDate() - 30);
+	return date >= thirtyDaysAgo && !isWithinLast7Days(date) && !isToday(date);
+};
+const renderCategory = (
+	label: string,
+	chats: Chats[],
+	navigate: (path: string) => void,
+	handleDelete: (chatId: string) => Promise<void>,
+) => (
+	<>
+		<SidebarGroupLabel>{label}</SidebarGroupLabel>
+		{chats.map((chat) => (
+			<SidebarMenuItem key={chat._id}>
+				<SidebarMenuButton
+					asChild
+					className="w-full justify-between cursor-pointer"
+					onClick={() => navigate(`/chatbot/${chat._id}`)}
+				>
+					<div className="flex items-center">
+						<MessageCircle className="h-4 w-4 text-[#7156DB]" />
+						<span className="flex-grow truncate">{chat.title}</span>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<MoreHorizontal className="h-4 w-4 ml-auto right-0 cursor-pointer" />
+							</DropdownMenuTrigger>
+							<DropdownMenuContent
+								align="end"
+								sideOffset={4}
+								className="w-[160px] bg-white shadow-lg rounded-md border border-gray-200"
+							>
+								<DropdownMenuItem
+									onClick={() => handleDelete(chat._id)}
+									className="text-red-600 flex items-center gap-2 hover:bg-red-50 cursor-pointer"
+								>
+									<Trash2 className="mr-2 h-4 w-4" />
+									<span>Delete</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
+				</SidebarMenuButton>
+			</SidebarMenuItem>
+		))}
+	</>
+);
 
 export default function ChatHistory() {
 	const navigate = useNavigate();
@@ -93,6 +151,32 @@ export default function ChatHistory() {
 			setIsLoading(false);
 		}
 	}, [recentChats]);
+
+	// Ensure recentChats is of type Chats[]
+	const sortedChat: Chats[] = recentChats
+		?.slice()
+		.sort((a: Chats, b: Chats) => {
+			const dateA = a?.createdAt ? new Date(a.createdAt).getTime() : 0;
+			const dateB = b?.createdAt ? new Date(b.createdAt).getTime() : 0;
+			return dateB - dateA; // Sort by descending
+		});
+
+	// Categorize chats
+	const todayChats = sortedChat?.filter((chat) =>
+		isToday(new Date(chat.createdAt)),
+	);
+	const last7DaysChats = sortedChat?.filter((chat) =>
+		isWithinLast7Days(new Date(chat.createdAt)),
+	);
+	const last30DaysChats = sortedChat?.filter((chat) =>
+		isWithinLast30Days(new Date(chat.createdAt)),
+	);
+	const olderChats = sortedChat?.filter(
+		(chat) =>
+			!isToday(new Date(chat.createdAt)) &&
+			!isWithinLast7Days(new Date(chat.createdAt)) &&
+			!isWithinLast30Days(new Date(chat.createdAt)),
+	);
 
 	return (
 		<>
@@ -154,7 +238,7 @@ export default function ChatHistory() {
 							<SidebarMenu>
 								{isLoading ? (
 									<ChatSkeleton />
-								) : recentChats?.length === 0 ? (
+								) : !sortedChat || sortedChat.length === 0 ? (
 									<SidebarMenuItem>
 										<div className="mt-10 flex flex-col items-center justify-center">
 											<MessageSquareCode />
@@ -164,52 +248,36 @@ export default function ChatHistory() {
 										</div>
 									</SidebarMenuItem>
 								) : (
-									recentChats?.map((chat: Chats) => (
-										<SidebarMenuItem key={chat._id}>
-											<SidebarMenuButton
-												asChild
-												className="w-full justify-between cursor-pointer"
-												onClick={() =>
-													navigate(
-														`/chatbot/${chat._id}`,
-													)
-												}
-											>
-												<div className="flex items-center">
-													<MessageCircle className="h-4 w-4 text-[#7156DB]" />
-													<span className="flex-grow truncate">
-														{chat.title}
-													</span>
-													<DropdownMenu>
-														<DropdownMenuTrigger
-															asChild
-														>
-															<MoreHorizontal className="h-4 w-4 ml-auto right-0 cursor-pointer" />
-														</DropdownMenuTrigger>
-														<DropdownMenuContent
-															align="end"
-															sideOffset={4}
-															className="w-[160px] bg-white shadow-lg rounded-md border border-gray-200"
-														>
-															<DropdownMenuItem
-																onClick={() =>
-																	handleDelete(
-																		chat._id,
-																	)
-																}
-																className="text-red-600 flex items-center gap-2 hover:bg-red-50 cursor-pointer"
-															>
-																<Trash2 className="mr-2 h-4 w-4" />
-																<span>
-																	Delete
-																</span>
-															</DropdownMenuItem>
-														</DropdownMenuContent>
-													</DropdownMenu>
-												</div>
-											</SidebarMenuButton>
-										</SidebarMenuItem>
-									))
+									<>
+										{todayChats?.length > 0 &&
+											renderCategory(
+												"Today",
+												todayChats,
+												navigate,
+												handleDelete,
+											)}
+										{last7DaysChats?.length > 0 &&
+											renderCategory(
+												"Previous 7 Days",
+												last7DaysChats,
+												navigate,
+												handleDelete,
+											)}
+										{last30DaysChats?.length > 0 &&
+											renderCategory(
+												"Previous 30 Days",
+												last30DaysChats,
+												navigate,
+												handleDelete,
+											)}
+										{olderChats?.length > 0 &&
+											renderCategory(
+												"Older",
+												olderChats,
+												navigate,
+												handleDelete,
+											)}
+									</>
 								)}
 							</SidebarMenu>
 						</SidebarGroupContent>
