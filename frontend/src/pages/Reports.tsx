@@ -99,43 +99,39 @@ export function Reports() {
 	return (
 		<div className="flex flex-1 flex-col gap-8 p-8">
 			{/* Reports Section */}
-				<h2 className="text-xl font-bold">Reports</h2>
-				{!folderData ? (
-					<Spinner />
-				) : (
-					<div>
-						{folders.length === 0 ? (
-							<EmptyState
-								onCreateFolder={() =>
-									setIsCreateDialogOpen(true)
-								}
-							/>
-						) : reportId ? (
-							<FolderView
-								folder={currentFolder as Folder}
-								reportId={reportId}
-								files={filesByFolder}
-								onBack={() => setCurrentFolderId(null)}
-							/>
-						) : (
-							<FolderGrid
-								folders={folders}
-								onCreateFolder={() =>
-									setIsCreateDialogOpen(true)
-								}
-								onFolderClick={(folderId) => {
-									navigate(`/reports/${folderId}`);
-									setCurrentFolderId(folderId);
-								}}
-							/>
-						)}
-					</div>
-				)}
-				<CreateFolderDialog
-					open={isCreateDialogOpen}
-					onOpenChange={setIsCreateDialogOpen}
-					onCreateFolder={handleCreateReportFolder}
-				/>
+			<h2 className="text-xl font-bold">Reports</h2>
+			{!folderData ? (
+				<Spinner />
+			) : (
+				<div>
+					{folders.length === 0 ? (
+						<EmptyState
+							onCreateFolder={() => setIsCreateDialogOpen(true)}
+						/>
+					) : reportId ? (
+						<FolderView
+							folder={currentFolder as Folder}
+							reportId={reportId}
+							files={filesByFolder}
+							onBack={() => setCurrentFolderId(null)}
+						/>
+					) : (
+						<FolderGrid
+							folders={folders}
+							onCreateFolder={() => setIsCreateDialogOpen(true)}
+							onFolderClick={(folderId) => {
+								navigate(`/reports/${folderId}`);
+								setCurrentFolderId(folderId);
+							}}
+						/>
+					)}
+				</div>
+			)}
+			<CreateFolderDialog
+				open={isCreateDialogOpen}
+				onOpenChange={setIsCreateDialogOpen}
+				onCreateFolder={handleCreateReportFolder}
+			/>
 
 			{/* Chat Summaries Section */}
 			{/* <div>

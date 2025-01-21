@@ -1,10 +1,7 @@
 import type React from "react";
 
 import { Button } from "../components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
-
-import MiraLogo from "../assets/MiraLogo.svg";
 import { ModeToggle } from "../components/theme/mode-toggle";
 import {
 	Card,
@@ -43,11 +40,13 @@ const PrivacyPolicy: React.FC = () => {
 							</p>
 							<section className="mt-6 space-y-4">
 								<p>
-									At denkMinds, we value your privacy and are committed to
-									protecting your personal information. This Privacy Policy
-									outlines how we collect, use, store, and share your
-									information when you interact with our products, services, and
-									platforms. By using our services, you agree to the practices
+									At denkMinds, we value your privacy and are
+									committed to protecting your personal
+									information. This Privacy Policy outlines
+									how we collect, use, store, and share your
+									information when you interact with our
+									products, services, and platforms. By using
+									our services, you agree to the practices
 									described in this policy.
 								</p>
 
@@ -57,30 +56,35 @@ const PrivacyPolicy: React.FC = () => {
 									Information We Collect
 								</h2>
 								<p>
-									We collect information to provide and improve our services.
-									This includes:
+									We collect information to provide and
+									improve our services. This includes:
 								</p>
 								<p className="text-gray-500 dark:text-gray-400">
 									<strong>Information You Provide:</strong>
 								</p>
 								<ul className="list-disc pl-6">
 									<li>
-										Personal details, such as your name and email address, when
-										you register or contact us.
+										Personal details, such as your name and
+										email address, when you register or
+										contact us.
 									</li>
 									<li>
-										Feedback, inquiries, or other communications sent to us.
+										Feedback, inquiries, or other
+										communications sent to us.
 									</li>
 								</ul>
 
 								<section className="mt-6 space-y-4">
 									<p className="text-gray-500 dark:text-gray-400">
-										<strong>Third-Party Information:</strong>
+										<strong>
+											Third-Party Information:
+										</strong>
 									</p>
 									<ul className="list-disc pl-6">
 										<li>
-											Data from partners or integrations you authorize, such as
-											CRM tools or analytics platforms.
+											Data from partners or integrations
+											you authorize, such as CRM tools or
+											analytics platforms.
 										</li>
 									</ul>
 								</section>
@@ -90,8 +94,9 @@ const PrivacyPolicy: React.FC = () => {
 								</p>
 								<ul className="list-disc pl-6">
 									<li>
-										Service providers that assist in our operations (e.g.,
-										hosting, analytics, or email communication).
+										Service providers that assist in our
+										operations (e.g., hosting, analytics, or
+										email communication).
 									</li>
 								</ul>
 							</section>
@@ -106,10 +111,13 @@ const PrivacyPolicy: React.FC = () => {
 									<strong>For Legal Reasons:</strong>
 								</p>
 								<ul className="list-disc pl-6">
-									<li>If required by law, regulation, or legal process.</li>
 									<li>
-										Partners in collaborative projects, only with relevant and
-										necessary data.
+										If required by law, regulation, or legal
+										process.
+									</li>
+									<li>
+										Partners in collaborative projects, only
+										with relevant and necessary data.
 									</li>
 								</ul>
 							</section>
@@ -121,10 +129,12 @@ const PrivacyPolicy: React.FC = () => {
 									Data Storage and Security
 								</h2>
 								<p>
-									We implement industry-standard security measures to protect
-									your data, including encryption, access controls, and regular
-									audits. However, no system is completely secure. While we
-									strive to safeguard your information, we cannot guarantee its
+									We implement industry-standard security
+									measures to protect your data, including
+									encryption, access controls, and regular
+									audits. However, no system is completely
+									secure. While we strive to safeguard your
+									information, we cannot guarantee its
 									absolute security.
 								</p>
 							</section>
@@ -138,22 +148,30 @@ const PrivacyPolicy: React.FC = () => {
 								<p>You have the right to: </p>
 								<ul className="list-disc pl-6">
 									<li>
-										<strong>Access and Update Your Data:</strong> Review or
-										correct inaccuracies in your personal information.
+										<strong>
+											Access and Update Your Data:
+										</strong>{" "}
+										Review or correct inaccuracies in your
+										personal information.
 									</li>
 									<li>
-										<strong>Request Deletion:</strong> Ask us to delete your
-										data, subject to legal or contractual obligations.
+										<strong>Request Deletion:</strong> Ask
+										us to delete your data, subject to legal
+										or contractual obligations.
 									</li>
 									<li>
-										<strong>Withdraw Consent:</strong> Revoke your consent for
-										processing, where applicable.
+										<strong>Withdraw Consent:</strong>{" "}
+										Revoke your consent for processing,
+										where applicable.
 									</li>
 								</ul>
 								<p>
 									To exercise these rights, contact us at{" "}
 									<strong className="text-gray-500 dark:text-gray-400">
-										<a href="mailto:denkminds@gmail.com" className="underline">
+										<a
+											href="mailto:denkminds@gmail.com"
+											className="underline"
+										>
 											denkminds@gmail.com
 										</a>
 									</strong>
@@ -167,10 +185,11 @@ const PrivacyPolicy: React.FC = () => {
 									Policy Updates
 								</h2>
 								<p>
-									We may update this policy periodically to reflect changes in
-									our practices or legal requirements. We will notify you of
-									significant updates and encourage you to review this policy
-									regularly.
+									We may update this policy periodically to
+									reflect changes in our practices or legal
+									requirements. We will notify you of
+									significant updates and encourage you to
+									review this policy regularly.
 								</p>
 							</section>
 
@@ -180,7 +199,9 @@ const PrivacyPolicy: React.FC = () => {
 								<h2 className="text-2xl font-bold tracking-tight">
 									Contact Us
 								</h2>
-								<p>If you have questions, reach out to us at:</p>
+								<p>
+									If you have questions, reach out to us at:
+								</p>
 								<ul className="list-disc pl-7">
 									<li>
 										<p>
@@ -214,8 +235,8 @@ const PrivacyPolicy: React.FC = () => {
 					</CardContent>
 				</Card>
 				<p className="text-center text-gray-500 text-wrap text-xs mt-1">
-					Copyright &copy; Mira, a product of denkMinds, Planspiel Project{" "}
-					{new Date().getFullYear()}
+					Copyright &copy; Mira, a product of denkMinds, Planspiel
+					Project {new Date().getFullYear()}
 				</p>
 			</div>
 		</>
