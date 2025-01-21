@@ -29,8 +29,7 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 		},
 		{
 			target: ".accounts-button",
-			content:
-				"Click here to change your settings like Update Profile data.",
+			content: "Click here to change your settings like Update Profile data.",
 		},
 		{
 			target: ".reports-button",
@@ -71,6 +70,12 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 				styles={{
 					options: {
 						zIndex: 10000,
+					},
+					buttonNext: {
+						backgroundColor: "#272278",
+					},
+					buttonBack: {
+						color: "#272278",
 					},
 				}}
 				callback={(data) => {
