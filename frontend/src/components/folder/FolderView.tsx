@@ -74,27 +74,27 @@ export function FolderView({ files }: FolderViewProps) {
 	if (files.length === 0) {
 		return (
 			<div>
-			<Button
-				variant="outline"
-				onClick={() => navigate("/reports")}
-				className="mb-4"
-			>
-				Back to Folders
-			</Button>
-			<Card className="w-full max-w-md mx-auto mt-8 p-8 my-auto shadow-none border-2 border-secondary">
-				<Alert variant="default" className="border-none">
-					<div className="flex px--5">
-						<TriangleAlert className="w-10 h-10 mr-5" />
-						<AlertTitle className="text-3xl font-semibold mb-5">
-							No Reports Found Yet!
-						</AlertTitle>
-					</div>
-					<AlertDescription className="text-muted-foreground text-base">
-						Ask mira to create you a report and come back later.
-						Ciao! 👋
-					</AlertDescription>
-				</Alert>
-			</Card>
+				<Button
+					variant="outline"
+					onClick={() => navigate("/reports")}
+					className="mb-4"
+				>
+					Back to Folders
+				</Button>
+				<Card className="w-full max-w-md mx-auto mt-8 p-8 my-auto shadow-none border-2 border-secondary">
+					<Alert variant="default" className="border-none">
+						<div className="flex px--5">
+							<TriangleAlert className="w-10 h-10 mr-5" />
+							<AlertTitle className="text-3xl font-semibold mb-5">
+								No Reports Found Yet!
+							</AlertTitle>
+						</div>
+						<AlertDescription className="text-muted-foreground text-base">
+							Ask mira to create you a report and come back later.
+							Ciao! 👋
+						</AlertDescription>
+					</Alert>
+				</Card>
 			</div>
 		);
 	}

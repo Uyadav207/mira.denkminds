@@ -21,58 +21,40 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 							<div
 								style={{
 									display: "flex",
-									// alignItems: "center",
-									justifyContent: "center",
+
 									height: "100px", // Adjust the height as needed
 								}}
 							>
-								<h1
-									className="text-3xl font-bold mb-4 "
-									{...props}
-								/>
+								<h1 className="text-3xl font-bold mb-4 " {...props} />
 							</div>
 						),
 						h2: ({ node, ...props }) => (
 							<div
 								style={{
 									display: "flex",
-									// alignItems: "center",
-									justifyContent: "center",
+
 									height: "60px", // Adjust the height as needed
 								}}
 							>
-								<h2
-									className="text-2xl font-semibold mb-3 mt-6"
-									{...props}
-								/>
+								<h2 className="text-2xl font-semibold mb-3 mt-6" {...props} />
 							</div>
 						),
 						h3: ({ node, ...props }) => (
 							<div
 								style={{
 									display: "flex",
-									// alignItems: "center",
-									justifyContent: "center",
+
 									height: "60px", // Adjust the height as needed
 								}}
 							>
-								<h3
-									className="text-xl font-semibold mb-2 mt-4"
-									{...props}
-								/>
+								<h3 className="text-xl font-semibold mb-2 mt-4" {...props} />
 							</div>
 						),
 						h4: ({ node, ...props }) => (
-							<h4
-								className="text-lg font-semibold mb-2 mt-3"
-								{...props}
-							/>
+							<h4 className="text-lg font-semibold mb-2 mt-3" {...props} />
 						),
 						h5: ({ node, ...props }) => (
-							<h5
-								className="text-base font-medium mb-1 mt-2"
-								{...props}
-							/>
+							<h5 className="text-base font-medium mb-1 mt-2" {...props} />
 						),
 						h6: ({ node, ...props }) => (
 							<h6
@@ -81,22 +63,13 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 							/>
 						),
 						p: ({ node, ...props }) => (
-							<p
-								className="mb-4 text-gray-700 dark:text-gray-300"
-								{...props}
-							/>
+							<p className="mb-4 text-gray-700 dark:text-gray-300" {...props} />
 						),
 						ul: ({ node, ...props }) => (
-							<ul
-								className="list-disc pl-5 relative"
-								{...props}
-							/>
+							<ul className="list-disc pl-5 relative" {...props} />
 						),
 						ol: ({ node, ...props }) => (
-							<ol
-								className="list-decimal pl-8 mb-4 space-y-1"
-								{...props}
-							/>
+							<ol className="list-decimal pl-8 mb-4 space-y-1" {...props} />
 						),
 						li: ({ node, ...props }) => (
 							<li
@@ -123,14 +96,9 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 						strong: ({ node, ...props }) => (
 							<strong className="font-semibold" {...props} />
 						),
-						em: ({ node, ...props }) => (
-							<em className="italic" {...props} />
-						),
+						em: ({ node, ...props }) => <em className="italic" {...props} />,
 						blockquote: ({ node, ...props }) => (
-							<blockquote
-								className="border-l-4  pl-4 italic my-4"
-								{...props}
-							/>
+							<blockquote className="border-l-4  pl-4 italic my-4" {...props} />
 						),
 						a: ({ href, children, ...props }) => (
 							<a
@@ -153,14 +121,10 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 							<thead className="bg-gray-200">{children}</thead>
 						),
 						tbody: ({ children }) => (
-							<tbody className="divide-y divide-gray-200">
-								{children}
-							</tbody>
+							<tbody className="divide-y divide-gray-200">{children}</tbody>
 						),
 						tr: ({ children }) => (
-							<tr className="border-b border-gray-300">
-								{children}
-							</tr>
+							<tr className="border-b border-gray-300">{children}</tr>
 						),
 						th: ({ children }) => (
 							<th className="px-4 py-2 text-left font-semibold text-gray-700">
@@ -168,9 +132,7 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 							</th>
 						),
 						td: ({ children }) => (
-							<td className="px-4 py-2 text-gray-600">
-								{children}
-							</td>
+							<td className="px-4 py-2 text-gray-600">{children}</td>
 						),
 						del: ({ node, ...props }) => (
 							<del className="line-through" {...props} />
