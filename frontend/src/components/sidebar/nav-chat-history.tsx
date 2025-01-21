@@ -197,7 +197,14 @@ export default function ChatHistory() {
 									<a onClick={() => navigate("/recent-scan")}>
 										<SidebarMenuButton tooltip="Scans">
 											<ScanText className="h-4 w-4 text-[#7156DB]" />
-											<span>Scans</span>
+											<span>Dynamic Scans</span>
+										</SidebarMenuButton>
+									</a>
+									{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+									<a onClick={() => navigate("/recent-static-scans")}>
+										<SidebarMenuButton tooltip="Scans">
+											<ScanText className="h-4 w-4 text-[#7156DB]" />
+											<span>Static Scans</span>
 										</SidebarMenuButton>
 									</a>
 								</SidebarMenuSub>
@@ -242,9 +249,7 @@ export default function ChatHistory() {
 									<SidebarMenuItem>
 										<div className="mt-10 flex flex-col items-center justify-center">
 											<MessageSquareCode />
-											{state === "expanded" && (
-												<p>No recent chats</p>
-											)}
+											{state === "expanded" && <p>No recent chats</p>}
 										</div>
 									</SidebarMenuItem>
 								) : (
