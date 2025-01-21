@@ -242,7 +242,9 @@ export default function ChatHistory() {
 									<SidebarMenuItem>
 										<div className="mt-10 flex flex-col items-center justify-center">
 											<MessageSquareCode />
-											{state === "expanded" && <p>No recent chats</p>}
+											{state === "expanded" && (
+												<p>No recent chats</p>
+											)}
 										</div>
 									</SidebarMenuItem>
 								) : (
