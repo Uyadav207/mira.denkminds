@@ -71,7 +71,7 @@ export class OpenAIService {
 			.join("\n\n");
 	}
 
-	async generateAnswer(
+	async generateRagAnswer(
 		documents: Document[],
 		question: string,
 	): Promise<string> {

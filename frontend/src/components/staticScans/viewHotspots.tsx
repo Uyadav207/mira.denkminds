@@ -40,7 +40,9 @@ const ViewHotspots: React.FC = () => {
 	};
 
 	const handleReviewClick = (key: string) => {
-		setReviewedHotspots((prev) => (prev.includes(key) ? prev : [...prev, key]));
+		setReviewedHotspots((prev) =>
+			prev.includes(key) ? prev : [...prev, key],
+		);
 	};
 
 	return (
@@ -53,8 +55,8 @@ const ViewHotspots: React.FC = () => {
 						<Info className="w-5 h-5 text-gray-500 cursor-pointer" />
 					</TooltipTrigger>
 					<TooltipContent>
-						Security hotspots are areas in the code that may require a review to
-						ensure security compliance.
+						Security hotspots are areas in the code that may require
+						a review to ensure security compliance.
 					</TooltipContent>
 				</Tooltip>
 			</div>
@@ -62,8 +64,9 @@ const ViewHotspots: React.FC = () => {
 			<div className="flex  items-center mb-6">
 				<p className="font-bold text-red-700 mr-2">NOTE!</p>
 				<p className="text-sm text-red-600 font-semibold">
-					Hotspots are identified to bring into your focus but not necessarily
-					real vulnerabilities. Please review them first and then take action.
+					Hotspots are identified to bring into your focus but not
+					necessarily real vulnerabilities. Please review them first
+					and then take action.
 				</p>
 			</div>
 
@@ -82,7 +85,9 @@ const ViewHotspots: React.FC = () => {
 						</Badge>
 
 						<div className="flex items-center space-x-2 mb-2">
-							<p className="text-lg font-semibold">{hotspot.message}</p>
+							<p className="text-lg font-semibold">
+								{hotspot.message}
+							</p>
 							<Button
 								className={`flex items-center space-x-1 ${
 									reviewedHotspots.includes(hotspot.key)

@@ -3,6 +3,10 @@ import { PineconeService } from "./pineconeStore";
 import type { ChatCompletionMessageParam } from "openai/resources/chat";
 import type { ScanResults, FilteredAlert } from "../types/scan";
 
+interface Document {
+	pageContent: string;
+}
+
 export class ChatService {
 	private static instance: ChatService;
 	private openai: OpenAIService;
@@ -138,9 +142,9 @@ export class ChatService {
 			return this.openai.chat(messages);
 		}
 
-		const docs = await this.pinecone.similaritySearch(message);
-		const context = docs.map((doc) => doc.pageContent).join("\n\n");
-		return this.openai.generateAnswer(context, message);
+		const docs: Document[] = await this.pinecone.similaritySearch(message);
+
+		return this.openai.generateRagAnswer(docs, message);
 	}
 
 	async processScanSummary(scanResults: ScanResults) {

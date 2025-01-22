@@ -15,7 +15,9 @@ const UserStaticScans: React.FC = () => {
 			{/* Header */}
 			<div className="flex items-center justify-between mb-4">
 				<div className="flex items-center space-x-2">
-					<h1 className="text-2xl font-semibold ">{scanData.title}</h1>
+					<h1 className="text-2xl font-semibold ">
+						{scanData.title}
+					</h1>
 					<Badge className="bg-gray-200 text-gray-600">
 						{scanData.visibility}
 					</Badge>

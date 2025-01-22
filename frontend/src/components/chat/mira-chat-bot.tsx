@@ -281,7 +281,7 @@ const MiraChatBot: React.FC = () => {
 		}
 	};
 
-	const processPrompt = async (userMessage: Message) => {
+	const processPrompt = async (userMessage: Message, useRag?: boolean) => {
 		const lowerPrompt = userMessage.message.toLowerCase().trim();
 		const extractURLs = (text: string): string[] => {
 			return text.match(URL_PATTERN) || [];
@@ -378,7 +378,7 @@ const MiraChatBot: React.FC = () => {
 				setIsLoading(true);
 				const responseStream = (await chatApis.chat({
 					message: userMessage.message,
-					useRAG: false,
+					useRAG: useRag,
 				})) as StreamResponse;
 				setIsLoading(false);
 				streamChatResponse(
@@ -1158,11 +1158,11 @@ const MiraChatBot: React.FC = () => {
 		}
 	};
 
-	const handleActionSend = (action: string) => {
-		handleSend(action);
+	const handleActionSend = (action: string, useRAG?: boolean) => {
+		handleSend(action, useRAG);
 	};
 
-	const handleSend = async (message?: string) => {
+	const handleSend = async (message?: string, useRAG?: boolean) => {
 		const finalMessage = message || input.trim();
 		if (finalMessage) {
 			const userMessage: Message = {
@@ -1184,12 +1184,12 @@ const MiraChatBot: React.FC = () => {
 						sender: userMessage.sender,
 						message: userMessage.message,
 					});
-					processPrompt(userMessage);
+					processPrompt(userMessage, useRAG);
 				} catch (error) {
 					return error;
 				}
 			} else {
-				processPrompt(userMessage);
+				processPrompt(userMessage, useRAG);
 			}
 		}
 	};
@@ -1505,7 +1505,10 @@ const MiraChatBot: React.FC = () => {
 									whileHover={{ scale: 1.05 }} // Hover animation
 									whileTap={{ scale: 0.95 }} // Tap animation
 									onClick={() => {
-										handleActionSend(actionCard.title);
+										handleActionSend(
+											actionCard.title,
+											actionCard.useRAG,
+										);
 									}}
 								>
 									<actionCard.icon className="h-5 w-5 text-[#7156DB]" />

@@ -65,7 +65,8 @@ const ViewIssuesDetails: React.FC = () => {
 						<span className="font-bold">Key:</span> {issue.rule.key}
 					</p>
 					<p>
-						<span className="font-bold">Component:</span> {issue.component}
+						<span className="font-bold">Component:</span>{" "}
+						{issue.component}
 					</p>
 					<p>
 						<span className="font-bold">Line:</span> {issue.line}
@@ -78,7 +79,9 @@ const ViewIssuesDetails: React.FC = () => {
 			</div>
 
 			<div className="bg-sidebar shadow-md mt-6 p-6 rounded-md">
-				<h2 className="text-lg font-semibold mb-4">Remediation Steps</h2>
+				<h2 className="text-lg font-semibold mb-4">
+					Remediation Steps
+				</h2>
 				{issue.rule.remediationSteps?.map(
 					(step) =>
 						step.problemCodeSnippet && (
@@ -86,7 +89,9 @@ const ViewIssuesDetails: React.FC = () => {
 								key={`${issue.rule.key}-${step.context}`}
 								className="mt-4 max-w-screen-lg w-full overflow-x-auto"
 							>
-								<h3 className="text-md font-semibold mb-2">{step.context}</h3>
+								<h3 className="text-md font-semibold mb-2">
+									{step.context}
+								</h3>
 								<div className="bg-sidebar rounded-lg shadow-lg p-4 mb-4">
 									<h4 className="text-sm font-semibold mb-2">
 										Problem Code Snippet

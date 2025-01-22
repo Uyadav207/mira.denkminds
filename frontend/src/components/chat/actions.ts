@@ -3,18 +3,18 @@ import {
 	CheckCircle,
 	Code2,
 	Lightbulb,
-	Lock,
+	DockIcon,
 	Search,
 } from "lucide-react";
 
 export const actionCards = [
-	{ title: "Scan a Domain", icon: Search },
-	{ title: "Get Cyber Tips ", icon: Lightbulb },
-	{ title: "Protect my Privacy", icon: Lock },
+	{ title: "Scan a Domain", icon: Search, useRAG: false },
+	{ title: "Get Cyber Tips ", icon: Lightbulb, useRAG: false },
+	{ title: "Latest CVE Updates", icon: DockIcon, useRAG: true },
 ];
 
 export const moreCards = [
-	{ title: "Defend Against Attacks", icon: AlertTriangleIcon },
-	{ title: "Secure Code review", icon: Code2 },
-	{ title: "Secure services hardening", icon: CheckCircle },
+	{ title: "Defend Against Attacks", icon: AlertTriangleIcon, useRAG: false },
+	{ title: "Secure Code review", icon: Code2, useRAG: false },
+	{ title: "Secure services hardening", icon: CheckCircle, useRAG: false },
 ];
