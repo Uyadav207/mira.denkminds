@@ -1,121 +1,127 @@
+import { useLocation, useNavigate } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import type { Issue } from "../../types/sastTypes";
 
 const ViewIssuesDetails: React.FC = () => {
-	const issueDetails = {
-		key: "401450b7-23a1-42a2-8380-b3c3c3b3b11e",
-		type: "CODE_SMELL",
-		severity: "CRITICAL",
-		message:
-			"Define a constant instead of duplicating this literal 'vulnerabilities/under-construction.html' 8 times.",
-		component: "TIWAP:app.py",
-		line: 199,
-		tags: ["design"],
-		rule: {
-			key: "python:S1192",
-			name: "String literals should not be duplicated",
-			description: "No description available",
-			remediationSteps: [
-				{
-					problemCodeSnippet: `def run():
-    prepare("action1")  # Noncompliant - "action1" is duplicated 3 times
-    execute("action1")
-    release("action1")
+	const location = useLocation();
+	const navigate = useNavigate();
+	const issue: Issue = location.state?.issue;
 
-@app.route("/api/users/", methods=['GET', 'POST', 'PUT'])
-def users():
-    pass
+	if (!issue) {
+		return (
+			<div className="p-6">
+				<p>No issue details available.</p>
+				<Button
+					onClick={() => navigate(-1)}
+					className="mt-4 bg-secondary text-white p-2 rounded"
+				>
+					Back
+				</Button>
+			</div>
+		);
+	}
 
-@app.route("/api/projects/", methods=['GET', 'POST', 'PUT'])  # Compliant - strings inside decorators are ignored
-def projects():
-    pass`,
-					remediationCodeSnippet: `ACTION_1 = "action1"
+	const paragraphDescription =
+		issue.rule.remediationSteps
+			?.map((step) => step.description.match(/<p>(.*?)<\/p>/)?.[1])
+			.filter((desc) => desc)
+			.join(" ") || "No additional information available.";
 
-def run():
-    prepare(ACTION_1)
-    execute(ACTION_1)
-    release(ACTION_1)`,
-				},
-			],
-		},
+	const getSeverityBadgeColor = (severity: string) => {
+		switch (severity.toUpperCase()) {
+			case "CRITICAL":
+				return "bg-red-100 text-red-600";
+			case "MAJOR":
+				return "bg-yellow-100 text-yellow-600";
+			case "BLOCKER":
+				return "bg-brown-100 text-brown-700";
+			case "MINOR":
+				return "bg-blue-100 text-blue-600";
+			default:
+				return "bg-gray-100 text-gray-600";
+		}
 	};
 
 	return (
-		<div>
-			<h1 className="text-xl font-bold  mb-4">Issue Details</h1>
-			<div className="grid md:grid-cols-2 gap-4">
-				{/* Left Section */}
-				<div className="bg-sidebar shadow-md p-6 rounded-md">
-					<h2 className="text-lg font-semibold  mb-2">Information</h2>
-					<p className=" mb-4 text-sm">
-						Content Security Policy (CSP) is an added layer of security that
-						helps to detect and mitigate certain types of attacks, including
-						Cross Site Scripting (XSS) and data injection attacks. These attacks
-						are used for everything from data theft to site defacement or
-						distribution of malware.
-					</p>
+		<div className="p-6">
+			<h1 className="text-xl font-bold mb-4">{issue.message}</h1>
+
+			<div className="bg-sidebar shadow-md p-6 rounded-md">
+				<h2 className="text-lg font-semibold mb-2">Information</h2>
+
+				<div className="flex items-center space-x-4 mb-4">
+					<Badge
+						className={`${getSeverityBadgeColor(issue.severity)} font-semibold`}
+					>
+						{issue.severity}
+					</Badge>
 				</div>
 
-				{/* Right Section */}
-				<div className="bg-sidebar shadow-md p-6 rounded-md">
-					<h2 className="text-lg font-semibold  mb-2">
-						Assessment Information
-					</h2>
-					<div className="text-sm  space-y-2">
-						<p>
-							<span className="font-bold ">Confidence:</span> 3
-						</p>
-						<p>
-							<span className="font-bold ">Cweld:</span> 693
-						</p>
-						<p>
-							<span className="font-bold ">Risk Level:</span> Medium (High)
-						</p>
-						<p>
-							<span className="font-bold ">Identified At:</span> Wed Jan 08 2025
-						</p>
-					</div>
+				<div className="text-sm space-y-2">
+					<p>
+						<span className="font-bold">Key:</span> {issue.rule.key}
+					</p>
+					<p>
+						<span className="font-bold">Component:</span> {issue.component}
+					</p>
+					<p>
+						<span className="font-bold">Line:</span> {issue.line}
+					</p>
+					<p>
+						<span className="font-bold">Description:</span>{" "}
+						{paragraphDescription}
+					</p>
 				</div>
 			</div>
 
-			{/* Code Smell Details */}
 			<div className="bg-sidebar shadow-md mt-6 p-6 rounded-md">
-				<h2 className="text-lg font-semibold mb-4">Code Smell Details</h2>
-				<p className=" text-sm mb-4">
-					Component: {issueDetails.component} | Line: {issueDetails.line} |
-					Severity:{" "}
-					<span className="font-bold text-red-500">
-						{issueDetails.severity}
-					</span>
-				</p>
-
-				<div className="mt-4">
-					<h3 className="text-md font-semibold mb-2">Problem Code Snippet</h3>
-					<div className="bg-sidebar rounded-lg shadow-lg p-4">
-						<SyntaxHighlighter
-							language="python"
-							style={atomDark}
-							showLineNumbers
-						>
-							{issueDetails.rule.remediationSteps[0].problemCodeSnippet}
-						</SyntaxHighlighter>
-					</div>
-				</div>
-
-				<div className="mt-6">
-					<h3 className="text-md font-semibold  mb-2">
-						Remediation Code Snippet
-					</h3>
-					<div className="bg-sidebar rounded-lg shadow-lg p-4">
-						<SyntaxHighlighter
-							language="python"
-							style={atomDark}
-							showLineNumbers
-						>
-							{issueDetails.rule.remediationSteps[0].remediationCodeSnippet}
-						</SyntaxHighlighter>
-					</div>
-				</div>
+				<h2 className="text-lg font-semibold mb-4">Remediation Steps</h2>
+				{issue.rule.remediationSteps?.map(
+					(step) =>
+						step.problemCodeSnippet && (
+							<div
+								key={`${issue.rule.key}-${step.context}`}
+								className="mt-4 max-w-screen-lg w-full overflow-x-auto"
+							>
+								<h3 className="text-md font-semibold mb-2">{step.context}</h3>
+								<div className="bg-sidebar rounded-lg shadow-lg p-4 mb-4">
+									<h4 className="text-sm font-semibold mb-2">
+										Problem Code Snippet
+									</h4>
+									<div className="overflow-x-auto max-w-full">
+										<SyntaxHighlighter
+											language="python"
+											style={atomDark}
+											wrapLongLines={false}
+											showLineNumbers
+										>
+											{step.problemCodeSnippet}
+										</SyntaxHighlighter>
+									</div>
+								</div>
+								{step.remediationCodeSnippet && (
+									<div className="bg-sidebar rounded-lg shadow-lg p-4">
+										<h4 className="text-sm font-semibold mb-2">
+											Remediation Code Snippet
+										</h4>
+										<div className="overflow-x-auto max-w-full">
+											<SyntaxHighlighter
+												language="python"
+												style={atomDark}
+												wrapLongLines={false}
+												showLineNumbers
+											>
+												{step.remediationCodeSnippet}
+											</SyntaxHighlighter>
+										</div>
+									</div>
+								)}
+							</div>
+						),
+				)}
 			</div>
 		</div>
 	);

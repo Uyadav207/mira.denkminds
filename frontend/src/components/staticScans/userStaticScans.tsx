@@ -2,37 +2,31 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { useNavigate } from "react-router-dom";
+import response from "../../response-sast.json";
+import { scanData } from "../../utils/sastScan";
 
 const UserStaticScans: React.FC = () => {
 	const navigate = useNavigate();
-	const scanData = {
-		title: "TIWAP",
-		visibility: "PUBLIC",
-		lastAnalysis: "3 hours ago",
-		status: "Passed",
-		metrics: {
-			Security: { value: 5, level: "E" },
-			Reliability: { value: 20, level: "D" },
-			Maintainability: { value: 52, level: "A" },
-			HotspotsReviewed: { value: "0.0%", level: "E" },
-			Coverage: { value: "0.0%", level: "E" },
-			Duplications: { value: "7.7%", level: "C" },
-		},
-	};
+
+	const metrics = Object.entries(scanData.metrics);
 
 	return (
 		<Card className="rounded-lg border p-6 bg-sidebar shadow-md">
 			{/* Header */}
 			<div className="flex items-center justify-between mb-4">
 				<div className="flex items-center space-x-2">
-					<h1 className="text-2xl font-semibold text-gray-800">
-						{scanData.title}
-					</h1>
+					<h1 className="text-2xl font-semibold ">{scanData.title}</h1>
 					<Badge className="bg-gray-200 text-gray-600">
 						{scanData.visibility}
 					</Badge>
 				</div>
-				<Badge className="bg-green-100 text-green-700 px-3 py-1">
+				<Badge
+					className={`${
+						scanData.status === "Passed"
+							? "bg-green-100 text-green-700"
+							: "bg-red-100 text-red-600"
+					} px-3 py-1`}
+				>
 					{scanData.status}
 				</Badge>
 			</div>
@@ -43,8 +37,8 @@ const UserStaticScans: React.FC = () => {
 			</div>
 
 			{/* Metrics */}
-			<div className="grid grid-cols-3 gap-4 text-sm">
-				{Object.entries(scanData.metrics).map(([metric, data]) => (
+			<div className="grid grid-cols-4 gap-4 text-sm">
+				{metrics.slice(0, 4).map(([metric, data]) => (
 					<div key={metric} className="flex items-center space-x-2">
 						<Badge
 							className={`${
@@ -58,8 +52,30 @@ const UserStaticScans: React.FC = () => {
 							{data.level}
 						</Badge>
 						<div>
-							<p className="font-semibold text-gray-800">{metric}</p>
-							<p className="text-gray-500">{data.value}</p>
+							<p className="font-semibold ">{metric}</p>
+							<p className="font-bold">{data.value}</p>
+						</div>
+					</div>
+				))}
+			</div>
+
+			<div className="grid grid-cols-4 gap-4 text-sm mt-4">
+				{metrics.slice(4).map(([metric, data]) => (
+					<div key={metric} className="flex items-center space-x-2">
+						<Badge
+							className={`${
+								data.level === "E"
+									? "bg-red-100 text-red-600"
+									: data.level === "D"
+										? "bg-yellow-100 text-yellow-600"
+										: "bg-green-100 text-green-600"
+							} px-2`}
+						>
+							{data.level}
+						</Badge>
+						<div>
+							<p className="font-semibold ">{metric}</p>
+							<p className="font-bold">{data.value}</p>
 						</div>
 					</div>
 				))}
@@ -69,13 +85,21 @@ const UserStaticScans: React.FC = () => {
 			<div className="mt-6 flex justify-end space-x-4">
 				<Button
 					className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-					onClick={() => navigate("/recent-static-scans/hotspots")}
+					onClick={() =>
+						navigate("/recent-static-scans/hotspots", {
+							state: { hotspots: response.report.issues },
+						})
+					}
 				>
 					View Hotspots
 				</Button>
 				<Button
 					className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-					onClick={() => navigate("/recent-static-scans/issues")}
+					onClick={() =>
+						navigate("/recent-static-scans/issues", {
+							state: { issues: response.report.issues },
+						})
+					}
 				>
 					View Issues
 				</Button>
