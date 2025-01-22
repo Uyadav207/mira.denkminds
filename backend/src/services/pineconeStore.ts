@@ -58,12 +58,30 @@ export class PineconeService {
 					id: cveId,
 				},
 			};
-			console.log("filter metadata", filter);
 			return this.store.similaritySearch(
 				query.toUpperCase(),
 				1,
 				filter.metadata,
 			);
+		}
+		const isListRequest =
+			query.toLowerCase().includes("latest") ||
+			query.toLowerCase().includes("list");
+		if (isListRequest) {
+			const results = await this.store.similaritySearch("", 100, {
+				metadata: {},
+			});
+
+			const latestCves = results
+				.filter((doc) => doc.metadata?.publishedDate)
+				.sort(
+					(a, b) =>
+						new Date(b.metadata.publishedDate).getTime() -
+						new Date(a.metadata.publishedDate).getTime(),
+				)
+				.slice(0, 10);
+
+			return latestCves;
 		}
 
 		return this.store.similaritySearch(query, k);

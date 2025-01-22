@@ -200,7 +200,7 @@ export default function ChatHistory() {
 											<span>Dynamic Scans</span>
 										</SidebarMenuButton>
 									</a>
-									{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+									{/* biome-ignore lint/a11y/useValidAnchor: not needed  */}
 									<a onClick={() => navigate("/recent-static-scans")}>
 										<SidebarMenuButton tooltip="Scans">
 											<ScanText className="h-4 w-4 text-[#7156DB]" />

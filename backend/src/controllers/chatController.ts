@@ -12,17 +12,6 @@ export class ChatController {
 		this.chatService = await ChatService.getInstance();
 	}
 
-	async chat(c: Context) {
-		try {
-			const { message, useRAG = false } = await c.req.json();
-			const response = await this.chatService.processMessage(message, useRAG);
-			return c.json({ response });
-		} catch (error) {
-			const errorMessage =
-				error instanceof Error ? error.message : "Unknown error";
-			return c.json({ status: "error", message: errorMessage }, 500);
-		}
-	}
 	async chatTitle(c: Context) {
 		try {
 			const { botMessage } = await c.req.json();
@@ -37,7 +26,7 @@ export class ChatController {
 
 	async chatStream(c: Context) {
 		try {
-			const { message, useRAG = false } = await c.req.json();
+			const { message, useRAG } = await c.req.json();
 			const stream = await this.chatService.processMessageStream(
 				message,
 				useRAG,

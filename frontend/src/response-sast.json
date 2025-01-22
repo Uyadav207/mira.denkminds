@@ -28,7 +28,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -51,7 +54,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -74,7 +80,10 @@
 					"key": "python:S3776",
 					"name": "Cognitive Complexity of functions should not be too high",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "5min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -97,7 +106,10 @@
 					"key": "python:S3776",
 					"name": "Cognitive Complexity of functions should not be too high",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "5min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -120,7 +132,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -143,7 +158,10 @@
 					"key": "python:S6903",
 					"name": "Using timezone-aware \"datetime\" objects should be preferred over using \"datetime.datetime.utcnow\" and \"datetime.datetime.utcfromtimestamp\"",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -166,7 +184,10 @@
 					"key": "python:S6903",
 					"name": "Using timezone-aware \"datetime\" objects should be preferred over using \"datetime.datetime.utcnow\" and \"datetime.datetime.utcfromtimestamp\"",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -189,7 +210,10 @@
 					"key": "python:S6903",
 					"name": "Using timezone-aware \"datetime\" objects should be preferred over using \"datetime.datetime.utcnow\" and \"datetime.datetime.utcfromtimestamp\"",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -212,7 +236,10 @@
 					"key": "python:S5659",
 					"name": "JWT should be signed and verified",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "30min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "30min"
+					},
 					"remediationSteps": [
 						{
 							"context": "PyJWT",
@@ -247,7 +274,10 @@
 					"key": "python:S6903",
 					"name": "Using timezone-aware \"datetime\" objects should be preferred over using \"datetime.datetime.utcnow\" and \"datetime.datetime.utcfromtimestamp\"",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -270,7 +300,10 @@
 					"key": "python:S6903",
 					"name": "Using timezone-aware \"datetime\" objects should be preferred over using \"datetime.datetime.utcnow\" and \"datetime.datetime.utcfromtimestamp\"",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -293,7 +326,10 @@
 					"key": "python:S1481",
 					"name": "Unused local variables should be removed",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -316,7 +352,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -339,7 +378,10 @@
 					"key": "python:S1656",
 					"name": "Variables should not be self-assigned",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "3min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "3min"
+					},
 					"remediationSteps": []
 				}
 			},
@@ -355,7 +397,10 @@
 					"key": "python:S1656",
 					"name": "Variables should not be self-assigned",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "3min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "3min"
+					},
 					"remediationSteps": []
 				}
 			},
@@ -371,7 +416,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -394,7 +442,10 @@
 					"key": "python:S4830",
 					"name": "Server certificates should be verified during SSL/TLS connections",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "aiohttp",
@@ -441,7 +492,10 @@
 					"key": "python:S4830",
 					"name": "Server certificates should be verified during SSL/TLS connections",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "aiohttp",
@@ -488,7 +542,10 @@
 					"key": "python:S4830",
 					"name": "Server certificates should be verified during SSL/TLS connections",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "aiohttp",
@@ -535,7 +592,10 @@
 					"key": "php:S1780",
 					"name": "Closing tag \"?>\" should be omitted on files containing only PHP",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "2min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -558,7 +618,10 @@
 					"key": "python:S3776",
 					"name": "Cognitive Complexity of functions should not be too high",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "5min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -581,7 +644,10 @@
 					"key": "Web:S6819",
 					"name": "Prefer tag over ARIA role",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": []
 				}
 			},
@@ -597,7 +663,10 @@
 					"key": "python:S1172",
 					"name": "Unused function parameters should be removed",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -620,7 +689,10 @@
 					"key": "Web:S6853",
 					"name": "Label elements should have a text label and an associated control",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -643,7 +715,10 @@
 					"key": "Web:S6853",
 					"name": "Label elements should have a text label and an associated control",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -666,7 +741,10 @@
 					"key": "Web:S6853",
 					"name": "Label elements should have a text label and an associated control",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -689,7 +767,10 @@
 					"key": "Web:S6853",
 					"name": "Label elements should have a text label and an associated control",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -712,7 +793,10 @@
 					"key": "Web:S6853",
 					"name": "Label elements should have a text label and an associated control",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -735,7 +819,10 @@
 					"key": "Web:S6853",
 					"name": "Label elements should have a text label and an associated control",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -758,7 +845,10 @@
 					"key": "Web:S6853",
 					"name": "Label elements should have a text label and an associated control",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -781,7 +871,10 @@
 					"key": "Web:S6853",
 					"name": "Label elements should have a text label and an associated control",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -804,7 +897,10 @@
 					"key": "Web:S6853",
 					"name": "Label elements should have a text label and an associated control",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -827,7 +923,10 @@
 					"key": "Web:S6851",
 					"name": "Images should have a non-redundant alternate description",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -850,7 +949,10 @@
 					"key": "python:S3776",
 					"name": "Cognitive Complexity of functions should not be too high",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "5min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -873,7 +975,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -896,7 +1001,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -919,7 +1027,10 @@
 					"key": "python:S3776",
 					"name": "Cognitive Complexity of functions should not be too high",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "5min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -942,7 +1053,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -965,7 +1079,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -988,7 +1105,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1011,7 +1131,10 @@
 					"key": "python:S3776",
 					"name": "Cognitive Complexity of functions should not be too high",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "5min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1034,7 +1157,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1057,7 +1183,10 @@
 					"key": "python:S3776",
 					"name": "Cognitive Complexity of functions should not be too high",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "5min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1080,7 +1209,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1103,7 +1235,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1126,7 +1261,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1149,7 +1287,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1172,7 +1313,10 @@
 					"key": "python:S117",
 					"name": "Local variable and function parameter names should comply with a naming convention",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "2min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1195,7 +1339,10 @@
 					"key": "Web:S6819",
 					"name": "Prefer tag over ARIA role",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": []
 				}
 			},
@@ -1211,7 +1358,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1234,7 +1384,10 @@
 					"key": "python:S117",
 					"name": "Local variable and function parameter names should comply with a naming convention",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "2min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1257,7 +1410,10 @@
 					"key": "Web:S6819",
 					"name": "Prefer tag over ARIA role",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": []
 				}
 			},
@@ -1273,7 +1429,10 @@
 					"key": "python:S3776",
 					"name": "Cognitive Complexity of functions should not be too high",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "5min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1296,7 +1455,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1319,7 +1481,10 @@
 					"key": "python:S3776",
 					"name": "Cognitive Complexity of functions should not be too high",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "5min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1342,7 +1507,10 @@
 					"key": "python:S1066",
 					"name": "Mergeable \"if\" statements should be combined",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1365,7 +1533,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1388,7 +1559,10 @@
 					"key": "python:S125",
 					"name": "Sections of code should not be commented out",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": []
 				}
 			},
@@ -1404,7 +1578,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1427,7 +1604,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1450,7 +1630,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1473,7 +1656,10 @@
 					"key": "Web:S5256",
 					"name": "Tables should have headers",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "2min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1496,7 +1682,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1519,7 +1708,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1542,7 +1734,10 @@
 					"key": "Web:S6850",
 					"name": "Heading elements should have accessible content",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1565,7 +1760,10 @@
 					"key": "python:S1066",
 					"name": "Mergeable \"if\" statements should be combined",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1588,7 +1786,10 @@
 					"key": "python:S6779",
 					"name": "Flask secret keys should not be disclosed",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "30min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "30min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1611,7 +1812,10 @@
 					"key": "python:S1192",
 					"name": "String literals should not be duplicated",
 					"description": "No description available",
-					"remediation": { "func": "LINEAR_OFFSET", "constantCost": "2min" },
+					"remediation": {
+						"func": "LINEAR_OFFSET",
+						"constantCost": "2min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
@@ -1634,7 +1838,10 @@
 					"key": "python:S6903",
 					"name": "Using timezone-aware \"datetime\" objects should be preferred over using \"datetime.datetime.utcnow\" and \"datetime.datetime.utcfromtimestamp\"",
 					"description": "No description available",
-					"remediation": { "func": "CONSTANT_ISSUE", "constantCost": "5min" },
+					"remediation": {
+						"func": "CONSTANT_ISSUE",
+						"constantCost": "5min"
+					},
 					"remediationSteps": [
 						{
 							"context": "General",
