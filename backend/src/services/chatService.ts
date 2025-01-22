@@ -122,31 +122,6 @@ export class ChatService {
 	`;
 	}
 
-	async processMessage(message: string, useRAG: boolean): Promise<string> {
-		if (!useRAG) {
-			const systemMessage = `
-			You are a cybersecurity assistant specialized in analyzing website vulnerabilities. 
-				Your key responsibilities are:
-				1. Prompt users for a domain name or URL when they inquire about website security assessments.
-				2. If a domain or URL is provided, analyze and return insights on common vulnerabilities, potential risks, and recommendations.
-				3. Provide general guidance for cybersecurity-related queries and suggest tools or frameworks for assessments when needed.
-
-				Format the response in markdown with clear sections and bullet points for readability.
-			`;
-
-			const messages: ChatCompletionMessageParam[] = [
-				{ role: "system", content: systemMessage },
-				{ role: "user", content: message },
-			];
-
-			return this.openai.chat(messages);
-		}
-
-		const docs: Document[] = await this.pinecone.similaritySearch(message);
-
-		return this.openai.generateRagAnswer(docs, message);
-	}
-
 	async processScanSummary(scanResults: ScanResults) {
 		const prompt = this.createSummaryPrompt(scanResults);
 		const messages: ChatCompletionMessageParam[] = [
@@ -186,12 +161,9 @@ export class ChatService {
 			return this.openai.chatStream(messages);
 		}
 
-		const docs = await this.pinecone.similaritySearch(message);
-		const context = docs.map((doc) => doc.pageContent).join("\n\n");
-		return this.openai.chatStream([
-			{ role: "system", content: `Use this context to answer: ${context}` },
-			{ role: "user", content: message },
-		]);
+		const docs: Document[] = await this.pinecone.similaritySearch(message);
+
+		return this.openai.generateRagAnswer(docs);
 	}
 
 	async generateDetailedSummary(scanResult: ScanResults): Promise<string> {
