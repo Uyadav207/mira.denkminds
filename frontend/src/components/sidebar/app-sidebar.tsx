@@ -22,8 +22,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<ChatHistory />
 			</SidebarContent>
 			<SidebarFooter>
-				<Logout />
 				<NewChat />
+				<Logout />
 			</SidebarFooter>
 			<SidebarRail />
 		</Sidebar>

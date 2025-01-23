@@ -43,7 +43,7 @@ import ScanIssuesDetails from "./pages/static-scans/ScanIssuesDetails";
 const App = () => {
 	return (
 		<>
-			<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+			<ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
 				<Toaster />
 				<Router>
 					<Routes>
