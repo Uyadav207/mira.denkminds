@@ -1,7 +1,7 @@
 {
 	"message": "Scan completed successfully",
-	"projectKey": "TIWAP",
-	"sonarUrl": "http://localhost:9000/dashboard?id=TIWAP",
+	"projectKey": "Juice-Shop",
+	"sonarUrl": "http://localhost:9000/dashboard?id=Juice-Shop",
 	"report": {
 		"metrics": {
 			"coverage": "0.0",
@@ -21,7 +21,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'vulnerabilities/under-construction.html' 8 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 199,
 				"tags": ["design"],
 				"rule": {
@@ -47,7 +47,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"Invalid Credentials\" 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 213,
 				"tags": ["design"],
 				"rule": {
@@ -73,7 +73,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Refactor this function to reduce its Cognitive Complexity from 24 to the 15 allowed.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 806,
 				"tags": ["brain-overload"],
 				"rule": {
@@ -99,7 +99,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 856,
 				"tags": ["brain-overload"],
 				"rule": {
@@ -125,7 +125,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"vulnerabilities/insecure-deserialization.html\" 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 878,
 				"tags": ["design"],
 				"rule": {
@@ -151,7 +151,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Don't use `datetime.datetime.utcnow` to create this datetime object.",
-				"component": "TIWAP:helper/auth.py",
+				"component": "Juice-Shop:helper/auth.py",
 				"line": 12,
 				"tags": ["datetime", "pitfall"],
 				"rule": {
@@ -177,7 +177,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Don't use `datetime.datetime.utcnow` to create this datetime object.",
-				"component": "TIWAP:helper/auth.py",
+				"component": "Juice-Shop:helper/auth.py",
 				"line": 29,
 				"tags": ["datetime", "pitfall"],
 				"rule": {
@@ -203,7 +203,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Don't use `datetime.datetime.utcnow` to create this datetime object.",
-				"component": "TIWAP:helper/auth.py",
+				"component": "Juice-Shop:helper/auth.py",
 				"line": 30,
 				"tags": ["datetime", "pitfall"],
 				"rule": {
@@ -229,7 +229,7 @@
 				"type": "VULNERABILITY",
 				"severity": "CRITICAL",
 				"message": "Don't use a JWT token without verifying its signature.",
-				"component": "TIWAP:helper/auth.py",
+				"component": "Juice-Shop:helper/auth.py",
 				"line": 39,
 				"tags": ["cwe", "privacy"],
 				"rule": {
@@ -267,7 +267,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Don't use `datetime.datetime.utcnow` to create this datetime object.",
-				"component": "TIWAP:helper/auth.py",
+				"component": "Juice-Shop:helper/auth.py",
 				"line": 48,
 				"tags": ["datetime", "pitfall"],
 				"rule": {
@@ -293,7 +293,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Don't use `datetime.datetime.utcnow` to create this datetime object.",
-				"component": "TIWAP:helper/auth.py",
+				"component": "Juice-Shop:helper/auth.py",
 				"line": 49,
 				"tags": ["datetime", "pitfall"],
 				"rule": {
@@ -319,7 +319,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "Remove the unused local variable \"e\".",
-				"component": "TIWAP:vulnerabilities/SQLi.py",
+				"component": "Juice-Shop:vulnerabilities/SQLi.py",
 				"line": 157,
 				"tags": ["unused"],
 				"rule": {
@@ -345,7 +345,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'vulnerabilities/no-sql-injection.html' 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 200,
 				"tags": ["design"],
 				"rule": {
@@ -371,7 +371,7 @@
 				"type": "BUG",
 				"severity": "MAJOR",
 				"message": "Remove or correct this useless self-assignment.",
-				"component": "TIWAP:helper/mongodb_manager.py",
+				"component": "Juice-Shop:helper/mongodb_manager.py",
 				"line": 20,
 				"tags": ["convention", "confusing"],
 				"rule": {
@@ -390,7 +390,7 @@
 				"type": "BUG",
 				"severity": "MAJOR",
 				"message": "Remove or correct this useless self-assignment.",
-				"component": "TIWAP:helper/mongodb_manager.py",
+				"component": "Juice-Shop:helper/mongodb_manager.py",
 				"line": 40,
 				"tags": ["convention", "confusing"],
 				"rule": {
@@ -409,7 +409,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'https://0.0.0.0:5001/api/stock/product?product=' 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 723,
 				"tags": ["design"],
 				"rule": {
@@ -435,7 +435,7 @@
 				"type": "VULNERABILITY",
 				"severity": "CRITICAL",
 				"message": "Enable server certificate validation on this SSL/TLS connection.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 731,
 				"tags": ["cwe", "privacy", "ssl"],
 				"rule": {
@@ -485,7 +485,7 @@
 				"type": "VULNERABILITY",
 				"severity": "CRITICAL",
 				"message": "Enable server certificate validation on this SSL/TLS connection.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 723,
 				"tags": ["cwe", "privacy", "ssl"],
 				"rule": {
@@ -535,7 +535,7 @@
 				"type": "VULNERABILITY",
 				"severity": "CRITICAL",
 				"message": "Enable server certificate validation on this SSL/TLS connection.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 728,
 				"tags": ["cwe", "privacy", "ssl"],
 				"rule": {
@@ -585,7 +585,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "Remove this closing tag \"?>\".",
-				"component": "TIWAP:uploads/test.php",
+				"component": "Juice-Shop:uploads/test.php",
 				"line": 1,
 				"tags": ["bad-practice", "per"],
 				"rule": {
@@ -611,7 +611,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 279,
 				"tags": ["brain-overload"],
 				"rule": {
@@ -637,7 +637,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MAJOR",
 				"message": "Use <dialog> instead of the dialog role to ensure accessibility across all devices.",
-				"component": "TIWAP:templates/vulnerabilities/no-sql-injection.html",
+				"component": "Juice-Shop:templates/vulnerabilities/no-sql-injection.html",
 				"line": 35,
 				"tags": ["accessibility"],
 				"rule": {
@@ -656,7 +656,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MAJOR",
 				"message": "Remove the unused function parameter \"password\".",
-				"component": "TIWAP:vulnerabilities/NoSQL.py",
+				"component": "Juice-Shop:vulnerabilities/NoSQL.py",
 				"line": 9,
 				"tags": ["unused"],
 				"rule": {
@@ -682,7 +682,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "A form label must be associated with a control.",
-				"component": "TIWAP:templates/settings.html",
+				"component": "Juice-Shop:templates/settings.html",
 				"line": 70,
 				"tags": ["accessibility"],
 				"rule": {
@@ -708,7 +708,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "A form label must be associated with a control.",
-				"component": "TIWAP:templates/vulnerabilities/blind-sql-injection.html",
+				"component": "Juice-Shop:templates/vulnerabilities/blind-sql-injection.html",
 				"line": 31,
 				"tags": ["accessibility"],
 				"rule": {
@@ -734,7 +734,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "A form label must be associated with a control.",
-				"component": "TIWAP:templates/vulnerabilities/csrf.html",
+				"component": "Juice-Shop:templates/vulnerabilities/csrf.html",
 				"line": 23,
 				"tags": ["accessibility"],
 				"rule": {
@@ -760,7 +760,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "A form label must be associated with a control.",
-				"component": "TIWAP:templates/vulnerabilities/directory-traversal.html",
+				"component": "Juice-Shop:templates/vulnerabilities/directory-traversal.html",
 				"line": 13,
 				"tags": ["accessibility"],
 				"rule": {
@@ -786,7 +786,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "A form label must be associated with a control.",
-				"component": "TIWAP:templates/vulnerabilities/dom-xss.html",
+				"component": "Juice-Shop:templates/vulnerabilities/dom-xss.html",
 				"line": 13,
 				"tags": ["accessibility"],
 				"rule": {
@@ -812,7 +812,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "A form label must be associated with a control.",
-				"component": "TIWAP:templates/vulnerabilities/html-injection.html",
+				"component": "Juice-Shop:templates/vulnerabilities/html-injection.html",
 				"line": 13,
 				"tags": ["accessibility"],
 				"rule": {
@@ -838,7 +838,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "A form label must be associated with a control.",
-				"component": "TIWAP:templates/vulnerabilities/sensitive-data-exposure-medium.html",
+				"component": "Juice-Shop:templates/vulnerabilities/sensitive-data-exposure-medium.html",
 				"line": 13,
 				"tags": ["accessibility"],
 				"rule": {
@@ -864,7 +864,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "A form label must be associated with a control.",
-				"component": "TIWAP:templates/vulnerabilities/sql-injection.html",
+				"component": "Juice-Shop:templates/vulnerabilities/sql-injection.html",
 				"line": 31,
 				"tags": ["accessibility"],
 				"rule": {
@@ -890,7 +890,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "A form label must be associated with a control.",
-				"component": "TIWAP:templates/vulnerabilities/stored-html-injection.html",
+				"component": "Juice-Shop:templates/vulnerabilities/stored-html-injection.html",
 				"line": 13,
 				"tags": ["accessibility"],
 				"rule": {
@@ -916,7 +916,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "Remove redundant word \"image\" from the \"alt\" attribute of your \"img\" tag.",
-				"component": "TIWAP:templates/vulnerabilities/directory-traversal.html",
+				"component": "Juice-Shop:templates/vulnerabilities/directory-traversal.html",
 				"line": 23,
 				"tags": ["accessibility"],
 				"rule": {
@@ -942,7 +942,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 530,
 				"tags": ["brain-overload"],
 				"rule": {
@@ -968,7 +968,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'settings.html' 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 112,
 				"tags": ["design"],
 				"rule": {
@@ -994,7 +994,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"Try Harder\" 9 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 406,
 				"tags": ["design"],
 				"rule": {
@@ -1020,7 +1020,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Refactor this function to reduce its Cognitive Complexity from 37 to the 15 allowed.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 615,
 				"tags": ["brain-overload"],
 				"rule": {
@@ -1046,7 +1046,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"vulnerabilities/directory-traversal.html\" 10 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 621,
 				"tags": ["design"],
 				"rule": {
@@ -1072,7 +1072,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"/Images\" 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 625,
 				"tags": ["design"],
 				"rule": {
@@ -1098,7 +1098,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'vulnerabilities/brute-force.html' 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 583,
 				"tags": ["design"],
 				"rule": {
@@ -1124,7 +1124,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 472,
 				"tags": ["brain-overload"],
 				"rule": {
@@ -1150,7 +1150,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'vulnerabilities/html-injection.html' 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 475,
 				"tags": ["design"],
 				"rule": {
@@ -1176,7 +1176,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 679,
 				"tags": ["brain-overload"],
 				"rule": {
@@ -1202,7 +1202,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'vulnerabilities/insecure-file-upload.html' 5 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 533,
 				"tags": ["design"],
 				"rule": {
@@ -1228,7 +1228,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"No file selected!\" 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 539,
 				"tags": ["design"],
 				"rule": {
@@ -1254,7 +1254,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"File uploaded successfully!\" 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 544,
 				"tags": ["design"],
 				"rule": {
@@ -1280,7 +1280,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'vulnerabilities/sql-injection.html' 6 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 140,
 				"tags": ["design"],
 				"rule": {
@@ -1306,7 +1306,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "Rename this local variable \"usernameId\" to match the regular expression ^[_a-z][a-z0-9_]*$.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 187,
 				"tags": ["convention"],
 				"rule": {
@@ -1332,7 +1332,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MAJOR",
 				"message": "Use <dialog> instead of the dialog role to ensure accessibility across all devices.",
-				"component": "TIWAP:templates/vulnerabilities/blind-sql-injection.html",
+				"component": "Juice-Shop:templates/vulnerabilities/blind-sql-injection.html",
 				"line": 52,
 				"tags": ["accessibility"],
 				"rule": {
@@ -1351,7 +1351,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"SELECT userid, username FROM users WHERE userid='%s'\" 4 times.",
-				"component": "TIWAP:vulnerabilities/SQLi.py",
+				"component": "Juice-Shop:vulnerabilities/SQLi.py",
 				"line": 40,
 				"tags": ["design"],
 				"rule": {
@@ -1377,7 +1377,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MINOR",
 				"message": "Rename this local variable \"usernameId\" to match the regular expression ^[_a-z][a-z0-9_]*$.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 158,
 				"tags": ["convention"],
 				"rule": {
@@ -1403,7 +1403,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MAJOR",
 				"message": "Use <dialog> instead of the dialog role to ensure accessibility across all devices.",
-				"component": "TIWAP:templates/vulnerabilities/sql-injection.html",
+				"component": "Juice-Shop:templates/vulnerabilities/sql-injection.html",
 				"line": 52,
 				"tags": ["accessibility"],
 				"rule": {
@@ -1422,7 +1422,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Refactor this function to reduce its Cognitive Complexity from 17 to the 15 allowed.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 395,
 				"tags": ["brain-overload"],
 				"rule": {
@@ -1448,7 +1448,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"<script>\" 4 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 405,
 				"tags": ["design"],
 				"rule": {
@@ -1474,7 +1474,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Refactor this function to reduce its Cognitive Complexity from 21 to the 15 allowed.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 445,
 				"tags": ["brain-overload"],
 				"rule": {
@@ -1500,7 +1500,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MAJOR",
 				"message": "Merge this if statement with the enclosing one.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 460,
 				"tags": ["clumsy"],
 				"rule": {
@@ -1526,7 +1526,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'vulnerabilities/ssrf.html' 4 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 714,
 				"tags": ["design"],
 				"rule": {
@@ -1552,7 +1552,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MAJOR",
 				"message": "Remove this commented out code.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 794,
 				"tags": ["unused"],
 				"rule": {
@@ -1571,7 +1571,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'vulnerabilities/ssti.html' 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 772,
 				"tags": ["design"],
 				"rule": {
@@ -1597,7 +1597,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"File not Found\" 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 633,
 				"tags": ["design"],
 				"rule": {
@@ -1623,7 +1623,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'vulnerabilities/csrf.html' 5 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 683,
 				"tags": ["design"],
 				"rule": {
@@ -1649,7 +1649,7 @@
 				"type": "BUG",
 				"severity": "MAJOR",
 				"message": "Add \"<th>\" headers to this \"<table>\".",
-				"component": "TIWAP:templates/settings.html",
+				"component": "Juice-Shop:templates/settings.html",
 				"line": 15,
 				"tags": ["accessibility", "wcag2-a"],
 				"rule": {
@@ -1675,7 +1675,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'vulnerabilities/sensitive-data-exposure-medium.html' 9 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 284,
 				"tags": ["design"],
 				"rule": {
@@ -1701,7 +1701,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal \"Invalid ID\" 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 309,
 				"tags": ["design"],
 				"rule": {
@@ -1727,7 +1727,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MAJOR",
 				"message": "Headings must have content and the content must be accessible by a screen reader.",
-				"component": "TIWAP:templates/vulnerabilities/xml-external-entities.html",
+				"component": "Juice-Shop:templates/vulnerabilities/xml-external-entities.html",
 				"line": 20,
 				"tags": ["accessibility"],
 				"rule": {
@@ -1753,7 +1753,7 @@
 				"type": "CODE_SMELL",
 				"severity": "MAJOR",
 				"message": "Merge this if statement with the enclosing one.",
-				"component": "TIWAP:helper/db_manager.py",
+				"component": "Juice-Shop:helper/db_manager.py",
 				"line": 31,
 				"tags": ["clumsy"],
 				"rule": {
@@ -1779,7 +1779,7 @@
 				"type": "VULNERABILITY",
 				"severity": "BLOCKER",
 				"message": "Don't disclose \"Flask\" secret keys.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 29,
 				"tags": ["cwe", "flask"],
 				"rule": {
@@ -1805,7 +1805,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Define a constant instead of duplicating this literal 'index.html' 3 times.",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 55,
 				"tags": ["design"],
 				"rule": {
@@ -1831,7 +1831,7 @@
 				"type": "CODE_SMELL",
 				"severity": "CRITICAL",
 				"message": "Don't use `datetime.datetime.utcnow` to create this datetime object.",
-				"component": "TIWAP:helper/auth.py",
+				"component": "Juice-Shop:helper/auth.py",
 				"line": 13,
 				"tags": ["datetime", "pitfall"],
 				"rule": {
@@ -1859,7 +1859,7 @@
 				"status": "TO_REVIEW",
 				"message": "\"password\" detected here, review this potentially hard-coded credential.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:helper/mongodb_manager.py",
+				"component": "Juice-Shop:helper/mongodb_manager.py",
 				"line": 68
 			},
 			{
@@ -1867,7 +1867,7 @@
 				"status": "TO_REVIEW",
 				"message": "\"password\" detected here, review this potentially hard-coded credential.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:helper/mongodb_manager.py",
+				"component": "Juice-Shop:helper/mongodb_manager.py",
 				"line": 69
 			},
 			{
@@ -1875,7 +1875,7 @@
 				"status": "TO_REVIEW",
 				"message": "Review this potentially hard-coded password.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:init-db.js",
+				"component": "Juice-Shop:init-db.js",
 				"line": 8
 			},
 			{
@@ -1883,7 +1883,7 @@
 				"status": "TO_REVIEW",
 				"message": "Review this potentially hard-coded password.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:init-db.js",
+				"component": "Juice-Shop:init-db.js",
 				"line": 12
 			},
 			{
@@ -1891,7 +1891,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 106
 			},
 			{
@@ -1899,7 +1899,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 136
 			},
 			{
@@ -1907,7 +1907,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 165
 			},
 			{
@@ -1915,7 +1915,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 194
 			},
 			{
@@ -1923,7 +1923,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 222
 			},
 			{
@@ -1931,7 +1931,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 242
 			},
 			{
@@ -1939,7 +1939,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 277
 			},
 			{
@@ -1947,7 +1947,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 305
 			},
 			{
@@ -1955,7 +1955,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 322
 			},
 			{
@@ -1963,7 +1963,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 339
 			},
 			{
@@ -1971,7 +1971,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 356
 			},
 			{
@@ -1979,7 +1979,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 366
 			},
 			{
@@ -1987,7 +1987,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 393
 			},
 			{
@@ -1995,7 +1995,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 419
 			},
 			{
@@ -2003,7 +2003,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 443
 			},
 			{
@@ -2011,7 +2011,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 470
 			},
 			{
@@ -2019,7 +2019,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 513
 			},
 			{
@@ -2027,7 +2027,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 528
 			},
 			{
@@ -2035,7 +2035,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 578
 			},
 			{
@@ -2043,7 +2043,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 601
 			},
 			{
@@ -2051,7 +2051,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 613
 			},
 			{
@@ -2059,7 +2059,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 677
 			},
 			{
@@ -2067,7 +2067,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 708
 			},
 			{
@@ -2075,7 +2075,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 768
 			},
 			{
@@ -2083,7 +2083,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 804
 			},
 			{
@@ -2091,7 +2091,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure allowing safe and unsafe HTTP methods is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 854
 			},
 			{
@@ -2099,7 +2099,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure disabling CSRF protection is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 28
 			},
 			{
@@ -2107,7 +2107,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure disabling auto-escaping feature is safe here.",
 				"vulnerabilityProbability": "HIGH",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 40
 			},
 			{
@@ -2115,7 +2115,7 @@
 				"status": "TO_REVIEW",
 				"message": "Copying recursively might inadvertently add sensitive data to the container. Make sure it is safe here.",
 				"vulnerabilityProbability": "MEDIUM",
-				"component": "TIWAP:Dockerfile",
+				"component": "Juice-Shop:Dockerfile",
 				"line": 4
 			},
 			{
@@ -2123,7 +2123,7 @@
 				"status": "TO_REVIEW",
 				"message": "The \"python\" image runs with \"root\" as the default user. Make sure it is safe here.",
 				"vulnerabilityProbability": "MEDIUM",
-				"component": "TIWAP:Dockerfile",
+				"component": "Juice-Shop:Dockerfile",
 				"line": 1
 			},
 			{
@@ -2131,7 +2131,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure that using this pseudorandom number generator is safe here.",
 				"vulnerabilityProbability": "MEDIUM",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 760
 			},
 			{
@@ -2139,7 +2139,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure creating this cookie without the \"secure\" flag is safe.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 848
 			},
 			{
@@ -2147,7 +2147,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure creating this cookie without the \"secure\" flag is safe.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 880
 			},
 			{
@@ -2155,7 +2155,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure creating this cookie without the \"secure\" flag is safe.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 898
 			},
 			{
@@ -2163,7 +2163,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure this debug feature is deactivated before delivering the code in production.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 913
 			},
 			{
@@ -2171,7 +2171,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure that hashing data is safe here.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:helper/db_manager.py",
+				"component": "Juice-Shop:helper/db_manager.py",
 				"line": 47
 			},
 			{
@@ -2179,7 +2179,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure that hashing data is safe here.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:helper/db_manager.py",
+				"component": "Juice-Shop:helper/db_manager.py",
 				"line": 55
 			},
 			{
@@ -2187,7 +2187,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure that hashing data is safe here.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:helper/mongodb_manager.py",
+				"component": "Juice-Shop:helper/mongodb_manager.py",
 				"line": 45
 			},
 			{
@@ -2195,7 +2195,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure that hashing data is safe here.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:vulnerabilities/SQLi.py",
+				"component": "Juice-Shop:vulnerabilities/SQLi.py",
 				"line": 151
 			},
 			{
@@ -2203,7 +2203,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure creating this cookie without the \"HttpOnly\" flag is safe.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 848
 			},
 			{
@@ -2211,7 +2211,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure creating this cookie without the \"HttpOnly\" flag is safe.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 880
 			},
 			{
@@ -2219,7 +2219,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure creating this cookie without the \"HttpOnly\" flag is safe.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:app.py",
+				"component": "Juice-Shop:app.py",
 				"line": 898
 			},
 			{
@@ -2227,7 +2227,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure not using resource integrity feature is safe here.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:templates/dashboard_layout.html",
+				"component": "Juice-Shop:templates/dashboard_layout.html",
 				"line": 20
 			},
 			{
@@ -2235,7 +2235,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure not using resource integrity feature is safe here.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:templates/dashboard_layout.html",
+				"component": "Juice-Shop:templates/dashboard_layout.html",
 				"line": 21
 			},
 			{
@@ -2243,7 +2243,7 @@
 				"status": "TO_REVIEW",
 				"message": "Make sure not using resource integrity feature is safe here.",
 				"vulnerabilityProbability": "LOW",
-				"component": "TIWAP:templates/vulnerabilities/xml-external-entities.html",
+				"component": "Juice-Shop:templates/vulnerabilities/xml-external-entities.html",
 				"line": 24
 			}
 		]
