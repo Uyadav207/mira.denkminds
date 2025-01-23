@@ -131,15 +131,17 @@ const UserScans: React.FC = () => {
 						<Badge
 							className={`${
 								scan.scanType === "Passive Scan"
-									? "bg-yellow-500"
-									: "bg-green-500"
+									? "bg-yellow-100 text-yellow-500 hover:none"
+									: "bg-green-100 text-green-500 hover:none"
 							}`}
 						>
 							{scan.scanType}
 						</Badge>
 					</div>
 					<div className="flex justify-evenly gap-4">
-						<Badge variant="destructive">{scan.totalIssues}</Badge>
+						<Badge className="bg-red-100 text-red-500">
+							{scan.totalIssues}
+						</Badge>
 						<span className="text-sm text-gray-400">
 							{calculateTimeDifference({
 								_creationTime: scan._creationTime,

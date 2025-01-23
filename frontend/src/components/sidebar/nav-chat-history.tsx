@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 
-import { ChevronRight, MessageSquareCode, User2 } from "lucide-react";
+import {
+	ArrowRight,
+	ChevronRight,
+	MessageSquareCode,
+	TrendingUpDown,
+	User2,
+} from "lucide-react";
 import {
 	Folder,
 	Home,
 	MessageCircle,
 	MoreHorizontal,
 	Trash2,
-	ScanText,
 } from "lucide-react";
 import {
 	SidebarGroup,
@@ -87,7 +92,7 @@ const renderCategory = (
 					onClick={() => navigate(`/chatbot/${chat._id}`)}
 				>
 					<div className="flex items-center">
-						<MessageCircle className="h-4 w-4 text-[#7156DB]" />
+						<MessageCircle className="h-4 w-4" />
 						<span className="flex-grow truncate">{chat.title}</span>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
@@ -182,11 +187,14 @@ export default function ChatHistory() {
 		<>
 			<SidebarGroup>
 				<SidebarMenu>
-					<Collapsible defaultOpen className="group/collapsible">
+					<Collapsible
+						defaultOpen={false}
+						className="group/collapsible"
+					>
 						<SidebarMenuItem>
 							<CollapsibleTrigger asChild>
 								<SidebarMenuButton tooltip="Dashboard">
-									<Home className="h-4 w-4 text-[#7156DB]" />
+									<Home className="h-4 w-4" />
 									<span>Dashboard</span>
 									<ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
 								</SidebarMenuButton>
@@ -196,14 +204,19 @@ export default function ChatHistory() {
 									{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 									<a onClick={() => navigate("/recent-scan")}>
 										<SidebarMenuButton tooltip="Scans">
-											<ScanText className="h-4 w-4 text-[#7156DB]" />
+											<TrendingUpDown className="h-4 w-4" />
 											<span>Dynamic Scans</span>
 										</SidebarMenuButton>
 									</a>
-									{/* biome-ignore lint/a11y/useValidAnchor: not needed  */}
-									<a onClick={() => navigate("/recent-static-scans")}>
+
+									<a
+										// biome-ignore lint/a11y/useValidAnchor: <explanation>
+										onClick={() =>
+											navigate("/recent-static-scans")
+										}
+									>
 										<SidebarMenuButton tooltip="Scans">
-											<ScanText className="h-4 w-4 text-[#7156DB]" />
+											<ArrowRight className="h-4 w-4" />
 											<span>Static Scans</span>
 										</SidebarMenuButton>
 									</a>
@@ -215,7 +228,7 @@ export default function ChatHistory() {
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/accounts")}>
 							<SidebarMenuButton tooltip="Accounts">
-								<User2 className="h-4 w-4 text-[#7156DB]" />
+								<User2 className="h-4 w-4" />
 								<span>Accounts</span>
 							</SidebarMenuButton>
 						</a>
@@ -224,7 +237,7 @@ export default function ChatHistory() {
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/reports")}>
 							<SidebarMenuButton tooltip="Reports">
-								<Folder className="h-4 w-4 text-[#7156DB]" />
+								<Folder className="h-4 w-4" />
 								<span>Reports</span>
 							</SidebarMenuButton>
 
@@ -249,7 +262,9 @@ export default function ChatHistory() {
 									<SidebarMenuItem>
 										<div className="mt-10 flex flex-col items-center justify-center">
 											<MessageSquareCode />
-											{state === "expanded" && <p>No recent chats</p>}
+											{state === "expanded" && (
+												<p>No recent chats</p>
+											)}
 										</div>
 									</SidebarMenuItem>
 								) : (

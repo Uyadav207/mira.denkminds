@@ -18,11 +18,11 @@ export function NewChat() {
 			<SidebarMenuItem>
 				<SidebarMenuButton
 					tooltip="New Chat"
-					className="flex bg-secondary justify-center border border-sidebar"
+					className="flex bg-black text-white justify-center hover:bg-black hover:text-white dark:bg-white dark:text-black dark:hover:bg-white dark:hover:text-black"
 					onClick={handleNewChat}
 				>
-					<Plus className="text-[#7156DB]" />
-					<span className="text-[#7156DB]">New Chat</span>
+					<Plus />
+					<span>New Chat</span>
 				</SidebarMenuButton>
 			</SidebarMenuItem>
 		</SidebarMenu>
