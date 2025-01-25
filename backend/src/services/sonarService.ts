@@ -22,12 +22,28 @@ export class SonarService {
 		return this.SONAR_URL;
 	}
 
-	async cloneRepository(githubUrl: string): Promise<string> {
+	async cloneRepository(
+		githubUrl: string,
+		accessToken?: string,
+	): Promise<string> {
 		const tempDir = `/tmp/${githubUrl.split("/").pop()?.replace(".git", "") || "repo"}`;
+
 		if (fs.existsSync(tempDir)) {
 			await fs.remove(tempDir);
 		}
-		await git().clone(githubUrl, tempDir);
+
+		const gitClient = git();
+
+		if (accessToken) {
+			const authenticatedUrl = githubUrl.replace(
+				"https://",
+				`https://${accessToken}@`,
+			);
+			await gitClient.clone(authenticatedUrl, tempDir);
+		} else {
+			await gitClient.clone(githubUrl, tempDir);
+		}
+
 		return tempDir;
 	}
 
@@ -136,7 +152,6 @@ export class SonarService {
 							);
 							const fullRuleDetails = ruleResponse.data.rule;
 
-							//  remediation steps
 							const remediationSteps =
 								fullRuleDetails.descriptionSections
 									?.filter(
