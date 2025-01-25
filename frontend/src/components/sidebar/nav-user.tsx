@@ -17,6 +17,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarSeparator,
 	useSidebar,
 } from "../../components/ui/sidebar";
 
@@ -24,6 +25,7 @@ import type { User } from "../../types/user";
 import useStore from "../../store/store";
 import { Dialog } from "../dialog";
 import { useState } from "react";
+import { Logout } from "./logout";
 
 export function NavUser() {
 	const { isMobile } = useSidebar();
@@ -92,6 +94,12 @@ export function NavUser() {
 											{user?.email}
 										</span>
 									</div>
+								</div>
+							</DropdownMenuLabel>
+							<SidebarSeparator />
+							<DropdownMenuLabel className="p-0 font-normal">
+								<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+									<Logout />
 								</div>
 							</DropdownMenuLabel>
 						</DropdownMenuContent>

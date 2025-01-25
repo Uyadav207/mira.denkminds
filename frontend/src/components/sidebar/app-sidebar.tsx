@@ -8,7 +8,6 @@ import {
 	SidebarRail,
 	SidebarSeparator,
 } from "../ui/sidebar";
-import { Logout } from "./logout";
 import ChatHistory from "./nav-chat-history";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -23,7 +22,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			</SidebarContent>
 			<SidebarFooter>
 				<NewChat />
-				<Logout />
 			</SidebarFooter>
 			<SidebarRail />
 		</Sidebar>
