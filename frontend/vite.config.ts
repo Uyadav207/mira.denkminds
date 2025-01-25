@@ -16,9 +16,13 @@ export default defineConfig({
 		},
 	},
 	server: {
+		host: true,
 		port: 3000,
 		fs: {
 			allow: [".."],
+		},
+		cors: {
+			origin: ["http://mira-denkminds.duckdns.org"],
 		},
 	},
 	define: {

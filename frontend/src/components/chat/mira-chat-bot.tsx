@@ -27,7 +27,7 @@ import useStore from "../../store/store";
 import useChatActionStore from "../../store/chatActions";
 
 // svgs
-import mira_logo from "../../assets/mira_logo.png"; // Add this line to import mira_logo
+import mira_logo from "../../assets/Mira_logo.png";
 import MiraAvatar from "../../assets/Mira.svg";
 import { MoreHorizontal, SendIcon } from "lucide-react";
 

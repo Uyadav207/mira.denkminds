@@ -14,18 +14,28 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 		{
 			target: ".sidebar-section",
 			content:
-				"Dashboard Secton Contains all the information about the Scanned Websites and Recent Scans.Scan Section shows all in detail information about the Scans done on the Websites.",
+				"The sidebar provides quick access to the Dashboard,Scans,FAQ's and Reports sections. Use this to navigate through the application's main features.",
 		},
 
 		{
 			target: ".chat-history-section",
 			content:
-				"Displayes all the recent chats from newst to oldest chats and conversations.",
+				"This section displays a chronological history of all your recent conversations, with the newest chats appearing at the top.",
+		},
+		{
+			target: ".dashboard-section",
+			content:
+				"The dashboard gives you an overview of your recent scanned websites with static and dynamic scanning and key insights from completed scans.",
 		},
 		{
 			target: ".chat-input",
 			content:
-				"Type your Questions here and get the answers from the Chatbot.Also you can scan your website directly with MIRA.",
+				"Here, you can type your questions or commands to interact with the chatbot. You can also initiate a website scan directly by entering the URL.",
+		},
+		{
+			target: ".reports-section",
+			content:
+				"The reports section provides detailed analyses and summaries of your scanned websites and chat summaries, including performance metrics and security insights.",
 		},
 	]);
 

@@ -9,7 +9,7 @@ import {
 } from "../ui/sidebar";
 import useChatActionStore from "../../store/chatActions";
 import Tutorial from "../tutorial/Tutorial";
-import {  useState } from "react";
+import { useState } from "react";
 // import { Button } from "../ui/button";
 
 export function NewChat() {
