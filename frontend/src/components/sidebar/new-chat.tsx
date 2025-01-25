@@ -9,7 +9,7 @@ import {
 } from "../ui/sidebar";
 import useChatActionStore from "../../store/chatActions";
 import Tutorial from "../tutorial/Tutorial";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 // import { Button } from "../ui/button";
 
 export function NewChat() {
@@ -19,13 +19,13 @@ export function NewChat() {
 	const [runTutorial, setRunTutorial] = useState(false);
 
 	// Check if the user is new or if they have seen the tutorial before
-	useEffect(() => {
-		const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
-		if (!hasSeenTutorial) {
-			// If the user hasn't seen the tutorial, show it automatically on the first login
-			setRunTutorial(true);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	const hasSeenTutorial = localStorage.getItem("hasSeenTutorial");
+	// 	if (!hasSeenTutorial) {
+	// 		// If the user hasn't seen the tutorial, show it automatically on the first login
+	// 		setRunTutorial(true);
+	// 	}
+	// }, []);
 
 	// Handle the "Take a Tutorial" button click
 	const handleTakeTutorial = () => {
