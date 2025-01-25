@@ -21,6 +21,9 @@ export default defineConfig({
 		fs: {
 			allow: [".."],
 		},
+		cors: {
+			origin: ["http://mira-denkminds.duckdns.org"],
+		},
 	},
 	define: {
 		"process.env": process.env,
