@@ -2,11 +2,11 @@ import react from "@vitejs/plugin-react";
 import { defineConfig, loadEnv } from "vite";
 
 export default defineConfig(({ mode }) => {
+	// Load the appropriate .env file
 	const env = loadEnv(mode, process.cwd(), "");
-	const BASE_URL = env.VITE_BASE_URL || "/";
 
 	return {
-		base: BASE_URL,
+		base: "/", // The base path; typically "/" for most Vercel setups
 		plugins: [react()],
 		resolve: {
 			alias: {
@@ -26,8 +26,13 @@ export default defineConfig(({ mode }) => {
 				allow: [".."],
 			},
 		},
+		build: {
+			outDir: "dist", // Output directory for production builds
+		},
 		define: {
-			"process.env": env,
+			"process.env": {}, // Avoid exposing all process.env variables
+			__VITE_BACKEND_BASE_URL__: JSON.stringify(env.VITE_BACKEND_BASE_URL), // Expose your backend base URL
+			__VITE_CONVEX_URL__: JSON.stringify(env.VITE_CONVEX_URL), // Expose Convex Cloud URL
 		},
 	};
 });
