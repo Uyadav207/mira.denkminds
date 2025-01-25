@@ -20,7 +20,7 @@ export function Logout() {
 				<SidebarMenuItem>
 					<SidebarMenuButton
 						tooltip="Log out"
-						className="flex bg-black text-white justify-center hover:bg-black hover:text-white dark:bg-white dark:text-black dark:hover:bg-white dark:hover:text-black"
+						className="flex bg-red-100 text-red-500 justify-center hover:bg-red-500 hover:text-white"
 						onClick={() => setDialogOpen(true)}
 					>
 						<LogOut />

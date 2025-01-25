@@ -37,6 +37,8 @@ import { ChatSummaries } from "./components/PDF/ChatSummaries";
 import ScanHotspots from "./pages/static-scans/ScanHotspots";
 import ScanIssues from "./pages/static-scans/ScanIssues";
 import ScanIssuesDetails from "./pages/static-scans/ScanIssuesDetails";
+import { FAQs } from "./pages/FAQs";
+import Subscription from "./pages/Subscription";
 
 // import { PrintableTemplate } from "./components/pdf/PrintableTemplate";
 
@@ -139,6 +141,11 @@ const App = () => {
 							<Route
 								path="/file/:fileId"
 								element={<FileView />}
+							/>
+							<Route path="/faqs" element={<FAQs />} />
+							<Route
+								path="/subscription"
+								element={<Subscription />}
 							/>
 						</Route>
 						<Route path="*" element={<NotFound />} />

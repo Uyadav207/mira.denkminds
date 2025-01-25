@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 
 import {
 	ArrowRight,
+	BadgeEuroIcon,
 	ChevronRight,
+	Lightbulb,
+	LucideSettings2,
 	MessageSquareCode,
 	TrendingUpDown,
-	User2,
+	VenetianMask,
 } from "lucide-react";
 import {
 	Folder,
@@ -186,6 +189,7 @@ export default function ChatHistory() {
 	return (
 		<>
 			<SidebarGroup>
+				<SidebarGroupLabel>Application</SidebarGroupLabel>
 				<SidebarMenu>
 					<Collapsible
 						defaultOpen={false}
@@ -226,15 +230,6 @@ export default function ChatHistory() {
 					</Collapsible>
 					<SidebarMenuItem>
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
-						<a onClick={() => navigate("/accounts")}>
-							<SidebarMenuButton tooltip="Accounts">
-								<User2 className="h-4 w-4" />
-								<span>Accounts</span>
-							</SidebarMenuButton>
-						</a>
-					</SidebarMenuItem>
-					<SidebarMenuItem>
-						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/reports")}>
 							<SidebarMenuButton tooltip="Reports">
 								<Folder className="h-4 w-4" />
@@ -243,6 +238,47 @@ export default function ChatHistory() {
 
 							{/* Calculate Length of the no of reports array */}
 							<SidebarMenuBadge>{reportCount}</SidebarMenuBadge>
+						</a>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+						<a onClick={() => navigate("/accounts")}>
+							<SidebarMenuButton tooltip="Preferences">
+								<LucideSettings2 className="h-4 w-4" />
+								<span>Preferences</span>
+							</SidebarMenuButton>
+						</a>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+						<a onClick={() => navigate("/subscription")}>
+							<SidebarMenuButton tooltip="Preferences">
+								<BadgeEuroIcon className="h-4 w-4" />
+								<span>Subscription</span>
+								<SidebarMenuBadge>
+									<span className="text-xs bg-green-100 text-green-500 px-2 py-0.5 rounded border border-green-500">
+										Free Trial
+									</span>
+								</SidebarMenuBadge>
+							</SidebarMenuButton>
+						</a>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+						<a onClick={() => navigate("/faqs")}>
+							<SidebarMenuButton tooltip="FAQs">
+								<Lightbulb className="h-5 w-5" />
+								<span>FAQs</span>
+							</SidebarMenuButton>
+						</a>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
+						<a onClick={() => navigate("/subscription")}>
+							<SidebarMenuButton tooltip="Preferences">
+								<VenetianMask className="h-4 w-4" />
+								<span>About denkMinds</span>
+							</SidebarMenuButton>
 						</a>
 					</SidebarMenuItem>
 				</SidebarMenu>
