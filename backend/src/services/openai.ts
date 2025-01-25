@@ -71,35 +71,49 @@ export class OpenAIService {
 			.join("\n\n");
 	}
 
-	async generateAnswer(
+	async generateRagAnswer(
 		documents: Document[],
-		question: string,
-	): Promise<string> {
+	): Promise<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>> {
 		const formattedContext = this.preprocessContext(documents);
+		console.log(formattedContext);
 
-		const response = await this.client.chat.completions.create({
+		const stream = await this.client.chat.completions.create({
 			model: "gpt-3.5-turbo",
 			messages: [
 				{
 					role: "system",
 					content: `You are a cyber security assistant specializing in CVE analysis. Your task is to:
-						1. Analyze the provided CVE data carefully
+						1. Analyze the provided CVE data carefully.
 						2. For questions about specific CVEs, only use information explicitly stated in the context
-						3. If a CVE is not found in the context, clearly state that no information is available
+						3. If a CVE is not found in the context, clearly state that no information is not yet available or use your knowledge to suggest an answer.
 						4. When providing severity or CVSS scores, always cite the specific CVE ID
 						5. Include relevant references when available
-						6. Format numbers and technical details precisely as they appear in the data`,
+						6. Format numbers and technical details precisely as they appear in the data
+						
+						If the user asks for latest CVEs in brief provide the details from the Context:
+						If no data can be retrieved, provide a general response about the lack of information or skip accordingly
+						
+						Please provide:
+						1. CVEID: The CVE ID of the vulnerability
+						2. Date Published: The date the CVE was published
+						3. Description: Human understandable description of the vulnerability
+						4. Risk Analysis: Break down the findings by risk level only based on severity.
+						5. Remediation Steps: Provide steps if any or use your knowledge to suggest steps
+
+						Format the response in markdown with clear sections and bullet points for readability.
+
+						`,
 				},
 				{
 					role: "user",
-					content: `Context:\n${formattedContext}\n\nQuestion: ${question}\n\nProvide a detailed answer based solely on the above context.`,
+					content: `Context:\n${formattedContext}`,
 				},
 			],
-			temperature: 0.3, // Lower temperature for more focused responses
-			max_tokens: 500, // Adjust based on your needs
+			stream: true,
+			temperature: 0.3,
 		});
 
-		return response.choices[0].message.content || "Unable to generate response";
+		return stream;
 	}
 
 	async generateSummary(prompt: string): Promise<string> {

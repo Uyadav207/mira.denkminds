@@ -8,7 +8,7 @@ import {
 	// useSidebar,
 } from "../ui/sidebar";
 import useChatActionStore from "../../store/chatActions";
-import Tutorial from "../tutorial/tutorial";
+import Tutorial from "../tutorial/Tutorial";
 import { useEffect, useState } from "react";
 // import { Button } from "../ui/button";
 

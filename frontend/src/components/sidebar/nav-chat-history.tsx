@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
 
-import { ChevronRight, MessageSquareCode, User2 } from "lucide-react";
+import {
+	ArrowRight,
+	ChevronRight,
+	MessageSquareCode,
+	TrendingUpDown,
+	User2,
+} from "lucide-react";
 import {
 	Folder,
 	Home,
 	MessageCircle,
 	MoreHorizontal,
 	Trash2,
-	ScanText,
 } from "lucide-react";
 import {
 	SidebarGroup,
@@ -87,7 +92,7 @@ const renderCategory = (
 					onClick={() => navigate(`/chatbot/${chat._id}`)}
 				>
 					<div className="flex items-center">
-						<MessageCircle className="h-4 w-4 text-[#7156DB]" />
+						<MessageCircle className="h-4 w-4" />
 						<span className="flex-grow truncate">{chat.title}</span>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
@@ -180,16 +185,16 @@ export default function ChatHistory() {
 
 	return (
 		<>
-			<SidebarGroup>
+			<SidebarGroup className="sidebar-section">
 				<SidebarMenu>
-					<Collapsible defaultOpen className="group/collapsible">
+					<Collapsible
+						defaultOpen={false}
+						className="group/collapsible"
+					>
 						<SidebarMenuItem>
 							<CollapsibleTrigger asChild>
-								<SidebarMenuButton
-									tooltip="Dashboard"
-									className="dashboard-button"
-								>
-									<Home className="h-4 w-4 text-[#7156DB]" />
+								<SidebarMenuButton tooltip="Dashboard">
+									<Home className="h-4 w-4" />
 									<span>Dashboard</span>
 									<ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
 								</SidebarMenuButton>
@@ -198,12 +203,21 @@ export default function ChatHistory() {
 								<SidebarMenuSub>
 									{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 									<a onClick={() => navigate("/recent-scan")}>
-										<SidebarMenuButton
-											tooltip="Scans"
-											className="scans-button"
-										>
-											<ScanText className="h-4 w-4 text-[#7156DB]" />
-											<span>Scans</span>
+										<SidebarMenuButton tooltip="Scans">
+											<TrendingUpDown className="h-4 w-4" />
+											<span>Dynamic Scans</span>
+										</SidebarMenuButton>
+									</a>
+
+									<a
+										// biome-ignore lint/a11y/useValidAnchor: <explanation>
+										onClick={() =>
+											navigate("/recent-static-scans")
+										}
+									>
+										<SidebarMenuButton tooltip="Scans">
+											<ArrowRight className="h-4 w-4" />
+											<span>Static Scans</span>
 										</SidebarMenuButton>
 									</a>
 								</SidebarMenuSub>
@@ -213,11 +227,8 @@ export default function ChatHistory() {
 					<SidebarMenuItem>
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/accounts")}>
-							<SidebarMenuButton
-								tooltip="Accounts"
-								className="accounts-button"
-							>
-								<User2 className="h-4 w-4 text-[#7156DB]" />
+							<SidebarMenuButton tooltip="Accounts">
+								<User2 className="h-4 w-4" />
 								<span>Accounts</span>
 							</SidebarMenuButton>
 						</a>
@@ -225,11 +236,8 @@ export default function ChatHistory() {
 					<SidebarMenuItem>
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/reports")}>
-							<SidebarMenuButton
-								tooltip="Reports"
-								className="reports-button"
-							>
-								<Folder className="h-4 w-4 text-[#7156DB]" />
+							<SidebarMenuButton tooltip="Reports">
+								<Folder className="h-4 w-4" />
 								<span>Reports</span>
 							</SidebarMenuButton>
 
@@ -240,7 +248,7 @@ export default function ChatHistory() {
 				</SidebarMenu>
 			</SidebarGroup>
 			<SidebarSeparator />
-			<div className="max-h-[70vh] overflow-y-scroll scrollbar-grey">
+			<div className="chat-history-section max-h-[70vh] overflow-y-scroll scrollbar-grey">
 				<SidebarGroup>
 					{recentChats?.length > 0 && (
 						<SidebarGroupLabel>Recent Chats</SidebarGroupLabel>

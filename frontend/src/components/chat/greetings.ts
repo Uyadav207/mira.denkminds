@@ -15,5 +15,5 @@ export const funkyGreeting = (timeZone: string): string => {
 	if (hour >= 18 && hour < 22) {
 		return "🌆 Good Evening";
 	}
-	return "Happy Late Night";
+	return "🌃 Happy Late Night";
 };

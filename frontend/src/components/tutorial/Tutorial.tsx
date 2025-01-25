@@ -12,29 +12,20 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 	// const [isRunning, setIsRunning] = useState(false);
 	const [steps] = useState<Step[]>([
 		{
-			target: ".dashboard-button",
+			target: ".sidebar-section",
 			content:
-				"Dashboard Secton Contains all the information about the Scanned Websites and Recent Scans.",
+				"Dashboard Secton Contains all the information about the Scanned Websites and Recent Scans.Scan Section shows all in detail information about the Scans done on the Websites.",
 		},
 
 		{
-			target: ".scans-button",
+			target: ".chat-history-section",
 			content:
-				"Scan Section shows all in detail information about the Scans done on the Websites.",
+				"Displayes all the recent chats from newst to oldest chats and conversations.",
 		},
 		{
 			target: ".chat-input",
 			content:
 				"Type your Questions here and get the answers from the Chatbot.Also you can scan your website directly with MIRA.",
-		},
-		{
-			target: ".accounts-button",
-			content: "Click here to change your settings like Update Profile data.",
-		},
-		{
-			target: ".reports-button",
-			content:
-				"Save the Reports and Chat Summaries in PDF format and Access them later.",
 		},
 	]);
 

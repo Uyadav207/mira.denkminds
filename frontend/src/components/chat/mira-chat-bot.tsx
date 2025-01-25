@@ -281,7 +281,7 @@ const MiraChatBot: React.FC = () => {
 		}
 	};
 
-	const processPrompt = async (userMessage: Message) => {
+	const processPrompt = async (userMessage: Message, useRag?: boolean) => {
 		const lowerPrompt = userMessage.message.toLowerCase().trim();
 		const extractURLs = (text: string): string[] => {
 			return text.match(URL_PATTERN) || [];
@@ -378,7 +378,7 @@ const MiraChatBot: React.FC = () => {
 				setIsLoading(true);
 				const responseStream = (await chatApis.chat({
 					message: userMessage.message,
-					useRAG: false,
+					useRAG: useRag,
 				})) as StreamResponse;
 				setIsLoading(false);
 				streamChatResponse(
@@ -1158,11 +1158,11 @@ const MiraChatBot: React.FC = () => {
 		}
 	};
 
-	const handleActionSend = (action: string) => {
-		handleSend(action);
+	const handleActionSend = (action: string, useRAG?: boolean) => {
+		handleSend(action, useRAG);
 	};
 
-	const handleSend = async (message?: string) => {
+	const handleSend = async (message?: string, useRAG?: boolean) => {
 		const finalMessage = message || input.trim();
 		if (finalMessage) {
 			const userMessage: Message = {
@@ -1184,12 +1184,12 @@ const MiraChatBot: React.FC = () => {
 						sender: userMessage.sender,
 						message: userMessage.message,
 					});
-					processPrompt(userMessage);
+					processPrompt(userMessage, useRAG);
 				} catch (error) {
 					return error;
 				}
 			} else {
-				processPrompt(userMessage);
+				processPrompt(userMessage, useRAG);
 			}
 		}
 	};
@@ -1277,35 +1277,33 @@ const MiraChatBot: React.FC = () => {
 
 	return (
 		<div className="flex justify-center">
-			<div className="flex flex-col space-y-3 sm:w-3/4 md:w-4/5 lg:w-3/5 h-[90vh] rounded-lg">
+			<div className="flex flex-col space-y-3 sm:w-3/4 md:w-4/5 lg:w-3/5 h-[89vh] rounded-lg">
 				{messages?.length === 0 ? (
-					<>
-						<div className="flex flex-col items-center w-full h-1/3">
-							<motion.div
-								className="w-full max-w-2/4 aspect-w-1 aspect-h-1 justify-center mb-10"
-								initial={{ opacity: 0, scale: 0.8 }}
-								animate={{ opacity: 1, scale: 1 }}
-								transition={{ duration: 0.25 }}
-							>
-								<img
-									src={MiraAvatar}
-									alt="Avatar"
-									className="flex w-auto h-full object-cover justify-self-center mt-10"
-								/>
-							</motion.div>
+					<div className="flex flex-col items-center justify-center w-full lg:h-1/3 md:h-1sm:h-full p-4 sm:p-8">
+						<motion.div
+							className="w-full max-w-xs sm:max-w-2xl aspect-w-1 aspect-h-1 justify-center mb-6 sm:mb-10"
+							initial={{ opacity: 0, scale: 0.8 }}
+							animate={{ opacity: 1, scale: 1 }}
+							transition={{ duration: 0.25 }}
+						>
+							<img
+								src={MiraAvatar}
+								alt="Avatar"
+								className="w-auto h-auto object-cover justify-self-center"
+							/>
+						</motion.div>
 
-							<motion.div
-								className="flex text-center text-2xl sm:text-3xl font-semibold mt-auto space-x-3 mb-6 mx-auto"
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ delay: 0.3 }}
-							>
-								<span className="flex items-center justify-between font-serif text-4xl mb-3 font-thin">
-									{`${greeting}, ${user?.firstName || "User"}`}
-								</span>
-							</motion.div>
-						</div>
-					</>
+						<motion.div
+							className="flex flex-col items-center text-center text-xl sm:text-3xl font-semibold mt-4 sm:mt-6 space-y-2 sm:space-y-3"
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 0.3 }}
+						>
+							<span className="font-serif text-2xl sm:text-4xl font-thin">
+								{`${greeting}, ${user?.firstName || "User"}`}
+							</span>
+						</motion.div>
+					</div>
 				) : chatsLoader ? (
 					<div className="flex items-center justify-center w-full h-full">
 						<Spinner />
@@ -1505,7 +1503,10 @@ const MiraChatBot: React.FC = () => {
 									whileHover={{ scale: 1.05 }} // Hover animation
 									whileTap={{ scale: 0.95 }} // Tap animation
 									onClick={() => {
-										handleActionSend(actionCard.title);
+										handleActionSend(
+											actionCard.title,
+											actionCard.useRAG,
+										);
 									}}
 								>
 									<actionCard.icon className="h-5 w-5 text-[#7156DB]" />
