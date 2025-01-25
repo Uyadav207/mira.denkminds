@@ -14,7 +14,7 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 		{
 			target: ".sidebar-section",
 			content:
-				"Step 1: The sidebar provides quick access to the Dashboard,Scans,FAQ's and Reports sections. Use this to navigate through the application's main features.",
+				"<strong>Step 1: </strong>The sidebar provides quick access to the Dashboard,Scans,FAQ's and Reports sections. Use this to navigate through the application's main features.",
 		},
 
 		{
