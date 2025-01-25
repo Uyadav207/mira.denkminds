@@ -1,12 +1,32 @@
 {
 	"rewrites": [
 		{
-			"source": "/:path*",
-			"destination": "http://34.60.226.88:8000/:path*"
+			"source": "/auth/:path*",
+			"destination": "http://34.60.226.88:8000/auth/:path*"
+		},
+		{
+			"source": "/users/:path*",
+			"destination": "http://34.60.226.88:8000/users/:path*"
+		},
+		{
+			"source": "/chat/:path*",
+			"destination": "http://34.60.226.88:8000/chat/:path*"
+		},
+		{
+			"source": "/rag/:path*",
+			"destination": "http://34.60.226.88:8000/rag/:path*"
+		},
+		{
+			"source": "/reports/:path*",
+			"destination": "http://34.60.226.88:8000/reports/:path*"
+		},
+		{
+			"source": "/zap/:path*",
+			"destination": "http://34.60.226.88:8000/zap/:path*"
 		},
 		{
 			"source": "/(.*)",
-			"destination": "/"
+			"destination": "/$1"
 		}
 	]
 }
