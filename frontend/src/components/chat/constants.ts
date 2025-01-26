@@ -8,7 +8,7 @@ const URL_PATTERN =
 const GITHUB_URL_PATTERN =
 	/(https?:\/\/)?(www\.)?github\.com\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9_-]+)(\/(tree|blob)\/[a-zA-Z0-9-]+)?/;
 
-	const REPORT_GENERATION = ["summary", "generation", "report", "analysis"];
+const REPORT_GENERATION = ["summary", "generation", "report", "analysis"];
 const NEGATION_PATTERN = /\b(do not|don't|no need to|stop|avoid)\b/i;
 const REPORT_KEYWORDS = ["report", "generate report", "summary", "summarize"];
 const NEGATION_PATTERNS = [

@@ -93,8 +93,12 @@ const MiraChatBot: React.FC = () => {
 	//store actions
 
 	const { user } = useStore();
-	const { scanResponse, setScanResponse, scanSastResponse, setScanSastResponse } =
-		useScanStore();
+	const {
+		scanResponse,
+		setScanResponse,
+		scanSastResponse,
+		setScanSastResponse,
+	} = useScanStore();
 	const {
 		targetUrl,
 		fetchChatsRegurlarly,
@@ -290,7 +294,7 @@ const MiraChatBot: React.FC = () => {
 			return text.match(URL_PATTERN) || [];
 		};
 		const hasURL = URL_PATTERN.test(lowerPrompt);
-		const isGitHubURL = GITHUB_URL_PATTERN.test(lowerPrompt);	
+		const isGitHubURL = GITHUB_URL_PATTERN.test(lowerPrompt);
 		const hasNegation = NEGATION_PATTERNS.some((pattern) =>
 			pattern.test(lowerPrompt),
 		);
@@ -316,7 +320,7 @@ const MiraChatBot: React.FC = () => {
 			streamChatResponse(userMessage, responseStream);
 		} else if (isGitHubURL) {
 			const urls = extractURLs(userMessage.message);
-			setTargetUrl(urls[0]);	
+			setTargetUrl(urls[0]);
 			const manualMessage =
 				"Thank you for providing the URL. Please select type of repository.";
 			const botMessage: Message = {
@@ -344,7 +348,12 @@ const MiraChatBot: React.FC = () => {
 				type: "none",
 				id: botMessage.id,
 			});
-			requestHumanApproval("github-scan", manualMessage, "none", botMessage.id);
+			requestHumanApproval(
+				"github-scan",
+				manualMessage,
+				"none",
+				botMessage.id,
+			);
 		} else if (hasURL) {
 			const urls = extractURLs(userMessage.message);
 			setTargetUrl(urls[0]);
@@ -402,7 +411,12 @@ const MiraChatBot: React.FC = () => {
 				type: "none",
 				id: botMessage.id,
 			});
-			requestHumanApproval("report", manualMessage, "none", botMessage.id);
+			requestHumanApproval(
+				"report",
+				manualMessage,
+				"none",
+				botMessage.id,
+			);
 		} else {
 			try {
 				setIsLoading(true);
@@ -411,7 +425,10 @@ const MiraChatBot: React.FC = () => {
 					useRAG: useRag,
 				})) as StreamResponse;
 				setIsLoading(false);
-				streamChatResponse(userMessage, responseStream as StreamResponse);
+				streamChatResponse(
+					userMessage,
+					responseStream as StreamResponse,
+				);
 			} catch (error) {
 				return error;
 			}
@@ -497,7 +514,7 @@ const MiraChatBot: React.FC = () => {
 				"Select or create a folder where you want to save the scan report.";
 			const folders = foldersList.map((folder) => {
 				if (folder.type === "folder") {
-					return { ...folder, type: "scan-sast-summary" }; 
+					return { ...folder, type: "scan-sast-summary" };
 				}
 				return folder; // Return the folder unchanged if type is not "folder"
 			});
@@ -518,7 +535,8 @@ const MiraChatBot: React.FC = () => {
 			approvalMessage = "Please enter the file name for the report";
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "sast-input") {
-			approvalMessage = "Please enter the access token of github repository";
+			approvalMessage =
+				"Please enter the access token of github repository";
 			setHumanInTheLoopMessage(approvalMessage);
 		}
 		const approvalMessageObject: Message = {
@@ -586,9 +604,16 @@ const MiraChatBot: React.FC = () => {
 					type: "none",
 					id: botMessage.id,
 				});
-				requestHumanApproval("standards", manualMessage, "none", botMessage.id);
+				requestHumanApproval(
+					"standards",
+					manualMessage,
+					"none",
+					botMessage.id,
+				);
 			} catch {
-				addBotMessage("An error occurred while processing your request.");
+				addBotMessage(
+					"An error occurred while processing your request.",
+				);
 			}
 		} else if (type === "github-scan") {
 			setScanType(action);
@@ -604,7 +629,8 @@ const MiraChatBot: React.FC = () => {
 						message: userMessage.message,
 					});
 					//message to pop after HIT
-					const manualMessage = "Thank you for selecting type of repository.";
+					const manualMessage =
+						"Thank you for selecting type of repository.";
 					const botMessage: Message = {
 						id: uuidv4(),
 						message: manualMessage,
@@ -632,7 +658,9 @@ const MiraChatBot: React.FC = () => {
 						botMessage.id,
 					);
 				} catch {
-					addBotMessage("An error occurred while processing your request.");
+					addBotMessage(
+						"An error occurred while processing your request.",
+					);
 				}
 			} else {
 				try {
@@ -657,8 +685,7 @@ const MiraChatBot: React.FC = () => {
 							payload = {
 								githubUrl: targetUrl as string,
 								repoType: "public",
-								userId: user?.id
-
+								userId: user?.id,
 							};
 						} else {
 							payload = {
@@ -678,10 +705,15 @@ const MiraChatBot: React.FC = () => {
 						// Create the progress animation promise
 						const progressAnimation = (async () => {
 							for (let i = 0; i < totalSteps; i++) {
-								await new Promise((resolve) => setTimeout(resolve, stepDelay));
+								await new Promise((resolve) =>
+									setTimeout(resolve, stepDelay),
+								);
 								setProgress(
 									(prevProgress) =>
-										Math.min(prevProgress + 100 / totalSteps, 95), // Stop at 95% until API completes
+										Math.min(
+											prevProgress + 100 / totalSteps,
+											95,
+										), // Stop at 95% until API completes
 								);
 							}
 						})();
@@ -697,13 +729,16 @@ const MiraChatBot: React.FC = () => {
 							`Scan completed successfully. Found **${response.data.issues.length}** issues and **${response.data.hotspots.length}** hotspots.`,
 						);
 					} catch (error) {
-						addBotMessage("An error occurred while processing your request.");
+						addBotMessage(
+							"An error occurred while processing your request.",
+						);
 						return error;
 					} finally {
 						setIsScanLoading(false);
 					}
 
-					const manualMessage = "Do you want to generate a brief summary?";
+					const manualMessage =
+						"Do you want to generate a brief summary?";
 					const botMessage: Message = {
 						id: uuidv4(),
 						message: manualMessage,
@@ -733,7 +768,9 @@ const MiraChatBot: React.FC = () => {
 						botMessage.id,
 					);
 				} catch {
-					addBotMessage("An error occurred while processing your request.");
+					addBotMessage(
+						"An error occurred while processing your request.",
+					);
 				}
 			}
 		} else if (type === "standards") {
@@ -766,9 +803,15 @@ const MiraChatBot: React.FC = () => {
 					// Create the progress animation promise
 					const progressAnimation = (async () => {
 						for (let i = 0; i < totalSteps; i++) {
-							await new Promise((resolve) => setTimeout(resolve, stepDelay));
+							await new Promise((resolve) =>
+								setTimeout(resolve, stepDelay),
+							);
 							setProgress(
-								(prevProgress) => Math.min(prevProgress + 100 / totalSteps, 95), // Stop at 95% until API completes
+								(prevProgress) =>
+									Math.min(
+										prevProgress + 100 / totalSteps,
+										95,
+									), // Stop at 95% until API completes
 							);
 						}
 					})();
@@ -785,13 +828,16 @@ const MiraChatBot: React.FC = () => {
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
 					);
 				} catch (error) {
-					addBotMessage("An error occurred while processing your request.");
+					addBotMessage(
+						"An error occurred while processing your request.",
+					);
 					return error;
 				} finally {
 					setIsScanLoading(false);
 				}
 
-				const manualMessage = "Do you want to generate a brief summary?";
+				const manualMessage =
+					"Do you want to generate a brief summary?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -821,7 +867,9 @@ const MiraChatBot: React.FC = () => {
 					botMessage.id,
 				);
 			} catch {
-				addBotMessage("An error occurred while processing your request.");
+				addBotMessage(
+					"An error occurred while processing your request.",
+				);
 			}
 		} else if (type === "report") {
 			if (action === "Chat Summary Report") {
@@ -926,7 +974,12 @@ const MiraChatBot: React.FC = () => {
 					type: "none",
 					id: botMessage.id,
 				});
-				requestHumanApproval("standards", manualMessage, "none", botMessage.id);
+				requestHumanApproval(
+					"standards",
+					manualMessage,
+					"none",
+					botMessage.id,
+				);
 			}
 		} else if (type === "scan-summary") {
 			// Folder selection
@@ -1060,9 +1113,12 @@ const MiraChatBot: React.FC = () => {
 				// Create the progress animation promise
 				const progressAnimation = (async () => {
 					for (let i = 0; i < totalSteps; i++) {
-						await new Promise((resolve) => setTimeout(resolve, stepDelay));
+						await new Promise((resolve) =>
+							setTimeout(resolve, stepDelay),
+						);
 						setProgress(
-							(prevProgress) => Math.min(prevProgress + 100 / totalSteps, 95), // Stop at 95% until API completes
+							(prevProgress) =>
+								Math.min(prevProgress + 100 / totalSteps, 95), // Stop at 95% until API completes
 						);
 					}
 				})();
@@ -1136,9 +1192,12 @@ const MiraChatBot: React.FC = () => {
 				// Create the progress animation promise
 				const progressAnimation = (async () => {
 					for (let i = 0; i < totalSteps; i++) {
-						await new Promise((resolve) => setTimeout(resolve, stepDelay));
+						await new Promise((resolve) =>
+							setTimeout(resolve, stepDelay),
+						);
 						setProgress(
-							(prevProgress) => Math.min(prevProgress + 100 / totalSteps, 95), // Stop at 95% until API completes
+							(prevProgress) =>
+								Math.min(prevProgress + 100 / totalSteps, 95), // Stop at 95% until API completes
 						);
 					}
 				})();
@@ -1171,7 +1230,7 @@ const MiraChatBot: React.FC = () => {
 			} finally {
 				setIsScanLoading(false);
 			}
-		} 
+		}
 	};
 	const streamChatResponse = async (
 		userMessage: Message,
@@ -1257,7 +1316,8 @@ const MiraChatBot: React.FC = () => {
 
 				await streamChatResponse(userMessage, responseStream);
 
-				const manualMessage = "Do you want to save this as a detailed report?";
+				const manualMessage =
+					"Do you want to save this as a detailed report?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -1280,7 +1340,12 @@ const MiraChatBot: React.FC = () => {
 					type: "save",
 					id: botMessage.id,
 				});
-				requestHumanApproval("approval", manualMessage, "save", botMessage.id);
+				requestHumanApproval(
+					"approval",
+					manualMessage,
+					"save",
+					botMessage.id,
+				);
 			} catch (error) {
 				return error;
 			}
@@ -1304,7 +1369,8 @@ const MiraChatBot: React.FC = () => {
 
 				await streamChatResponse(userMessage, responseStream);
 
-				const manualMessage = "Do you want to save this as a detailed report?";
+				const manualMessage =
+					"Do you want to save this as a detailed report?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -1367,7 +1433,12 @@ const MiraChatBot: React.FC = () => {
 				type: "none",
 				id: botMessage.id,
 			});
-			requestHumanApproval("folder", manualMessage, "none", botMessage.id);
+			requestHumanApproval(
+				"folder",
+				manualMessage,
+				"none",
+				botMessage.id,
+			);
 		} else if (confirmType === "save-chat-summary") {
 			await saveChatMessage({
 				humanInTheLoopId: userMessage.id,
@@ -1440,7 +1511,12 @@ const MiraChatBot: React.FC = () => {
 				id: botMessage.id,
 			});
 
-			requestHumanApproval("folder-sast", manualMessage, "none", botMessage.id);
+			requestHumanApproval(
+				"folder-sast",
+				manualMessage,
+				"none",
+				botMessage.id,
+			);
 		}
 	};
 
@@ -1661,13 +1737,16 @@ const MiraChatBot: React.FC = () => {
 									>
 										<HumanInTheLoopApproval
 											key={message.id}
-											message={humanInTheLoopMessage || ""}
+											message={
+												humanInTheLoopMessage || ""
+											}
 											onCancel={cancelAction}
 											confirmType={confirmType || ""}
 											onConfirm={yesClicked}
 										/>
 									</motion.div>
-								) : actionType === "input" || actionType === "sast-input" ? (
+								) : actionType === "input" ||
+									actionType === "sast-input" ? (
 									<motion.div
 										key={message.id}
 										initial={{ opacity: 0, y: 50 }}
@@ -1677,10 +1756,14 @@ const MiraChatBot: React.FC = () => {
 									>
 										<HumanInTheLoopInput
 											key={message.id}
-											message={humanInTheLoopMessage || ""}
+											message={
+												humanInTheLoopMessage || ""
+											}
 											onConfirm={handleFileCreation}
 											setShowInfo={setShowInfo}
-											requestHumanInLoop={requestHumanInLoop ?? null}
+											requestHumanInLoop={
+												requestHumanInLoop ?? null
+											}
 										/>
 									</motion.div>
 								) : (
@@ -1694,7 +1777,9 @@ const MiraChatBot: React.FC = () => {
 										<HumanInTheLoopOptions
 											key={message.id}
 											setShowInfo={setShowInfo}
-											question={humanInTheLoopMessage || ""}
+											question={
+												humanInTheLoopMessage || ""
+											}
 											actionPrompts={actionPrompts || []}
 											onConfirm={confirmAction}
 										/>

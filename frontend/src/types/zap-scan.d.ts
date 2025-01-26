@@ -5,11 +5,11 @@ export interface Alert {
 }
 
 export type ScanState = {
-		scanResponse: ScanResult;
-		setScanResponse: (scanResponse: ScanResult) => void;
-		scanSastResponse: SonarScanReport;
-		setScanSastResponse: (scanSastResponse: SonarScanReport) => void;
-	};
+	scanResponse: ScanResult;
+	setScanResponse: (scanResponse: ScanResult) => void;
+	scanSastResponse: SonarScanReport;
+	setScanSastResponse: (scanSastResponse: SonarScanReport) => void;
+};
 
 export interface ProcessedFinding {
 	name: string;

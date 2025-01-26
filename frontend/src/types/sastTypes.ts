@@ -6,26 +6,26 @@ export interface RemediationStep {
 }
 
 export interface Issue {
+	key: string;
+	message: string;
+	severity: string;
+	component: string;
+	line: number;
+	rule: {
 		key: string;
-		message: string;
-		severity: string;
-		component: string;
-		line: number;
-		rule: {
-			key: string;
-			name: string;
-			description: string;
-			remediation: {
-				func?: string;
-				constantCost?: string;
-			};
-			remediationSteps?: RemediationStep[];
-			standards?: Array<{
-				name: string;
-				link: string;
-			}>;
+		name: string;
+		description: string;
+		remediation: {
+			func?: string;
+			constantCost?: string;
 		};
-	}
+		remediationSteps?: RemediationStep[];
+		standards?: Array<{
+			name: string;
+			link: string;
+		}>;
+	};
+}
 export interface Hotspot {
 	key: string;
 	status: string;

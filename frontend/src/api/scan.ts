@@ -15,7 +15,7 @@ interface githubScanPayload {
 	githubUrl: string;
 	repoType: string;
 	accessToken?: string;
-	userId: string | null | undefined
+	userId: string | null | undefined;
 }
 
 const scan = (payload: scanPayload) =>
