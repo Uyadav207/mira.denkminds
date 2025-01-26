@@ -53,13 +53,7 @@ export function FolderView({ files }: FolderViewProps) {
 			(event.type === "keydown" &&
 				(event as React.KeyboardEvent).key === "Enter")
 		) {
-			// if (file.reportType === "chatSummaryReport") {
-			// 	console.log("file", file._id);
-
-			// 	navigate(`/chat/${file._id}`, { state: { file } });
-			// } else {
 			navigate(`/file/${file._id}`, { state: { file } });
-			// }
 		}
 	};
 

@@ -37,7 +37,6 @@ export function ChatSummaries() {
 		if (fetchedSummaries && fetchedSummaries.length > 0) {
 			setSummaries(fetchedSummaries);
 		} else {
-			// console.log("No summaries found for userId");
 		}
 	}, [fetchedSummaries]);
 

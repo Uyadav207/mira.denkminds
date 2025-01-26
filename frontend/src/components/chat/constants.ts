@@ -5,6 +5,9 @@ import AnalyseIcon from "../../assets/AnalyseIcon.svg";
 
 const URL_PATTERN =
 	/(?:(?:https?:\/\/)|(?:www\.))?(?:[a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(?:[a-zA-Z]{2,}|[a-zA-Z0-9-]+\.[a-zA-Z]{2,})(?::\d{1,5})?(?:\/[^\s]*)?/g;
+const GITHUB_URL_PATTERN =
+	/(https?:\/\/)?(www\.)?github\.com\/([a-zA-Z0-9-]+)\/([a-zA-Z0-9_-]+)(\/(tree|blob)\/[a-zA-Z0-9-]+)?/;
+
 const REPORT_GENERATION = ["summary", "generation", "report", "analysis"];
 const NEGATION_PATTERN = /\b(do not|don't|no need to|stop|avoid)\b/i;
 const REPORT_KEYWORDS = ["report", "generate report", "summary", "summarize"];
@@ -88,6 +91,21 @@ const SCANTYPES = [
 	},
 ];
 
+const GITHUB_SCAN = [
+	{
+		id: "1",
+		name: "Private Repository",
+		type: "github-scan",
+		description: "",
+	},
+	{
+		id: "2",
+		name: "Public Repository",
+		type: "github-scan",
+		description: "",
+	},
+];
+
 const REPORTS = [
 	{
 		id: "1",
@@ -155,4 +173,6 @@ export {
 	REPORT_KEYWORDS,
 	NEGATION_PATTERNS,
 	CLARIFICATION_PATTERNS,
+	GITHUB_URL_PATTERN,
+	GITHUB_SCAN,
 };
