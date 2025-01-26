@@ -2,7 +2,6 @@ import {
 	AlertTriangleIcon,
 	CheckCircle,
 	Code2,
-	Lightbulb,
 	DockIcon,
 	Search,
 	Github,
@@ -16,8 +15,8 @@ export const actionCards = [
 		color: "text-purple-500",
 	},
 	{
-		title: "Get Cyber Tips ",
-		icon: Lightbulb,
+		title: "Scan Github URL",
+		icon: Github,
 		useRAG: false,
 		color: "text-yellow-500",
 	},
