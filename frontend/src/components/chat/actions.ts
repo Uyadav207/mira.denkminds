@@ -5,6 +5,7 @@ import {
 	Lightbulb,
 	DockIcon,
 	Search,
+	Github,
 } from "lucide-react";
 
 export const actionCards = [

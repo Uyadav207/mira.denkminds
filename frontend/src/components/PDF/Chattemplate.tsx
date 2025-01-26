@@ -33,12 +33,9 @@ export function ChatTemplate() {
 	const navigate = useNavigate();
 	// const { chatReportId } = useParams<{ chatReportId: string }>();
 	// const { chatReportId } = useParams<{ chatReportId: string }>();
-	// console.log("fileId", chatReportId);
 
 	// useEffect(() => {
 	// 	if (chatReportId) {
-	// 		console.log("fileId", chatReportId);
-
 	// 	}
 	// }, [chatReportId]);
 
