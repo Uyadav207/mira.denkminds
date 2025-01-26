@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState, useEffect } from "react";
-import Joyride, { type Step } from "react-joyride";
-// import { Button } from "../ui/button";
+import Joyride, { type Step, type CallBackProps } from "react-joyride";
+// import { Button } from "@components/ui/button"
 
 interface TutorialProps {
 	run: boolean;
@@ -9,38 +9,61 @@ interface TutorialProps {
 }
 
 const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
-	// const [isRunning, setIsRunning] = useState(false);
 	const [steps] = useState<Step[]>([
 		{
 			target: ".sidebar-section",
-			content:
-				"Step 1: The sidebar provides quick access to the Dashboard,Scans,FAQ's and Reports sections. Use this to navigate through the application's main features.",
+			content: (
+				<div>
+					<strong>Step 1:</strong> The sidebar provides quick access
+					to the Dashboard, Scans, FAQ's and Reports sections. Use
+					this to navigate through the application's main features.
+				</div>
+			),
 		},
-
 		{
 			target: ".chat-history-section",
-			content:
-				"Step 2: This section displays a chronological history of all your recent conversations, with the newest chats appearing at the top.",
+			content: (
+				<div>
+					<strong>Step 2:</strong> This section displays a
+					chronological history of all your recent conversations, with
+					the newest chats appearing at the top.
+				</div>
+			),
 		},
 		{
 			target: ".dashboard-section",
-			content:
-				"Step 3: The dashboard gives you an overview of your recent scanned websites with static and dynamic scanning and key insights from completed scans.",
+			content: (
+				<div>
+					<strong>Step 3:</strong> The dashboard gives you an overview
+					of your recent scanned websites with static and dynamic
+					scanning and key insights from completed scans.
+				</div>
+			),
 		},
 		{
 			target: ".chat-input",
-			content:
-				"Step 4: Here, you can type your questions or commands to interact with the chatbot. You can also initiate a website scan directly by entering the URL.",
+			content: (
+				<div>
+					<strong>Step 4:</strong> Here, you can type your questions
+					or commands to interact with the chatbot. You can also
+					initiate a website scan directly by entering the URL.
+				</div>
+			),
 		},
 		{
 			target: ".reports-section",
-			content:
-				"Step 5: The reports section provides detailed analyses and summaries of your scanned websites and chat summaries, including performance metrics and security insights.",
+			content: (
+				<div>
+					<strong>Step 5:</strong> The reports section provides
+					detailed analyses and summaries of your scanned websites and
+					chat summaries, including performance metrics and security
+					insights.
+				</div>
+			),
 		},
 	]);
 
 	useEffect(() => {
-		// Check if all target elements exist in the DOM
 		const checkTargetsExist = () => {
 			return steps.every(
 				(step) =>
@@ -49,42 +72,78 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 			);
 		};
 
-		// Wait until all target elements exist before running the tutorial
 		const interval = setInterval(() => {
 			if (checkTargetsExist()) {
 				clearInterval(interval);
-				// setRun(false);
 			}
-		}, 100); // Check every 100ms
+		}, 100);
 
 		return () => clearInterval(interval);
 	}, [steps]);
 
+	const handleJoyrideCallback = (data: CallBackProps) => {
+		const { status, type } = data;
+		if (
+			status === "finished" ||
+			status === "skipped" ||
+			type === "tour:end"
+		) {
+			onExit();
+		}
+	};
+
 	return (
 		<div>
-			{/* <button className="tutorial-button" onClick={() => setRun(true)} >Start Tutorial</button> */}
 			<Joyride
 				steps={steps}
 				run={run}
 				continuous
 				showSkipButton
+				scrollToFirstStep
+				spotlightPadding={0}
+				spotlightClicks={true}
+				disableOverlayClose={true}
 				styles={{
 					options: {
 						zIndex: 10000,
+						primaryColor: "#272278",
+						arrowColor: "#fff",
+						backgroundColor: "#fff",
+						overlayColor: "rgba(0, 0, 0, 0.5)",
+						spotlightShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+						beaconSize: 36,
+					},
+					tooltip: {
+						padding: "10px",
+						borderRadius: "8px",
+						boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
 					},
 					buttonNext: {
 						backgroundColor: "#272278",
+						color: "#fff",
+						padding: "10px 15px",
+						borderRadius: "4px",
+						fontWeight: "bold",
 					},
 					buttonBack: {
 						color: "#272278",
+						marginRight: "10px",
+					},
+					buttonSkip: {
+						color: "#272278",
+					},
+					spotlight: {
+						// backgroundColor: "transparent",
+						// boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 0, 0, 0.5)",
+						// borderRadius: "9999px",
+						padding: "10px",
 					},
 				}}
-				callback={(data) => {
-					const { status } = data;
-					if (status === "finished" || status === "skipped") {
-						onExit();
-					}
+				locale={{
+					last: "End Tutorial",
+					skip: "Skip Tutorial",
 				}}
+				callback={handleJoyrideCallback}
 			/>
 		</div>
 	);

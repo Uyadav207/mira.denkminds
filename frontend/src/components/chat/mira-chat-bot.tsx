@@ -1449,7 +1449,7 @@ const MiraChatBot: React.FC = () => {
 						initial={{ width: "70%" }}
 						animate={{ width: input ? "80%" : "70%" }}
 						transition={{ duration: 0.3 }}
-						className="flex items-center rounded-2xl px-4 py-2 relativ bg-secondary"
+						className=" chat-input flex items-center rounded-2xl px-4 py-2 relativ bg-secondary"
 					>
 						{/* Textarea */}
 						<textarea
@@ -1465,7 +1465,7 @@ const MiraChatBot: React.FC = () => {
 									handleSend();
 								}
 							}}
-							className={`chat-input flex-1 resize-none text-sm bg-secondary border-none shadow-none rounded-full focus-visible:outline-none focus:ring-0 h-15 p-2 px-4 text-gray
+							className={` flex-1 resize-none text-sm bg-secondary border-none shadow-none rounded-full focus-visible:outline-none focus:ring-0 h-15 p-2 px-4 text-gray
                                 ${(isLoading || !!pendingAction) && "cursor-not-allowed"}
                                 `}
 							placeholder="Ask Mira..."
