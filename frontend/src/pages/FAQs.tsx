@@ -1,4 +1,3 @@
-// import Image from "next/image"
 import {
 	Accordion,
 	AccordionContent,
@@ -32,7 +31,6 @@ export function FAQs() {
 							<AccordionTrigger>Who is MIRA?</AccordionTrigger>
 							<AccordionContent>
 								<div className="flex flex-col items-center space-y-4">
-									{/* <Image src="/placeholder.svg?height=200&width=300" alt="MIRA AI" width={300} height={200} /> */}
 									<p>
 										MIRA is an AI-driven chatbot designed to
 										support developers by offering real-time
@@ -237,7 +235,6 @@ export function FAQs() {
 							</AccordionTrigger>
 							<AccordionContent>
 								<div className="flex flex-col items-center space-y-4">
-									{/* <Image src="/placeholder.svg?height=200&width=300" alt="Report Generation" width={300} height={200} /> */}
 									<p>
 										To generate a report, go to the
 										<span className="bg-yellow-100 px-1 rounded">
@@ -264,7 +261,6 @@ export function FAQs() {
 							</AccordionTrigger>
 							<AccordionContent>
 								<div className="flex flex-col items-center space-y-4">
-									{/* <Image src="/placeholder.svg?height=200&width=300" alt="Data Security" width={300} height={200} /> */}
 									<p>
 										MIRA uses trusted external tools like
 										<span className="bg-yellow-100 px-1 rounded">
