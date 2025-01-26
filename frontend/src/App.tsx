@@ -24,9 +24,6 @@ import { RecentStaticScans } from "./pages/static-scans/RecentStaticScans";
 // 	files: [], // Add your mock files here
 //   };
 
-//   const handleBack = () => {
-// 	console.log("Back to previous view");
-//   };
 import { FileView } from "./components/file";
 import PrivateRoute from "./components/privateRoutes";
 import { NotFound } from "./pages/NotFound";
