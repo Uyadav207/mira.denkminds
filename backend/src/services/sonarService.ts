@@ -76,7 +76,7 @@ export class SonarService {
 		});
 	}
 
-	private async waitForTaskCompletion(taskId: string): Promise<void> {
+	public async waitForTaskCompletion(taskId: string): Promise<void> {
 		const taskApiUrl = `${this.SONAR_URL}/api/ce/task?id=${taskId}`;
 		const authHeader = `Basic ${Buffer.from(`${this.SONAR_TOKEN}:`).toString("base64")}`;
 
@@ -92,8 +92,8 @@ export class SonarService {
 		}
 	}
 
-	private async ensureReportAvailability(projectKey: string): Promise<void> {
-		const reportApiUrl = `${this.SONAR_URL}/api/measures/component?component=${projectKey}&metricKeys=bugs`;
+	public async ensureReportAvailability(projectKey: string): Promise<void> {
+		const reportApiUrl = `${this.SONAR_URL}/api/measures/component?component=${projectKey}&metricKeys=bugs,vulnerabilities,code_smells,coverage`;
 		const authHeader = `Basic ${Buffer.from(`${this.SONAR_TOKEN}:`).toString("base64")}`;
 
 		while (true) {
@@ -101,8 +101,13 @@ export class SonarService {
 				const response = await axios.get(reportApiUrl, {
 					headers: { Authorization: authHeader },
 				});
-				if (response.data.component) break;
-			} catch {}
+				if (
+					response.data.component?.measures &&
+					response.data.component.measures.length > 0
+				) {
+					break;
+				}
+			} catch (error) {}
 			await new Promise((resolve) => setTimeout(resolve, 5000));
 		}
 	}

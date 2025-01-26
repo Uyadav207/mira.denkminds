@@ -56,9 +56,14 @@ export class SonarController {
 					400,
 				);
 			}
-
 			await this.sonarService.cloneRepository(githubUrl, accessToken);
-			await this.sonarService.runSonarScanner(repoName, localPath);
+			const taskId = await this.sonarService.runSonarScanner(
+				repoName,
+				localPath,
+			);
+
+			await this.sonarService.waitForTaskCompletion(taskId);
+			await this.sonarService.ensureReportAvailability(repoName);
 
 			const sonarReport = await this.sonarService.fetchSonarReport(repoName);
 
