@@ -7,7 +7,15 @@ import {
 } from "../components/ui/accordion";
 import { Card, CardContent, CardHeader, CardTitle } from "@components/ui/card";
 import { Button } from "../components/ui/button";
-import { CheckCircle, Code, FileText, Globe, Radar, Shield, Zap } from "lucide-react";
+import {
+	CheckCircle,
+	Code,
+	FileText,
+	Globe,
+	Radar,
+	Shield,
+	Zap,
+} from "lucide-react";
 
 export function FAQs() {
 	return (
@@ -143,67 +151,86 @@ export function FAQs() {
 							</AccordionContent>
 						</AccordionItem>
 						<AccordionItem value="item-4">
-              <AccordionTrigger>What compliance standards are covered by MIRA?</AccordionTrigger>
-              <AccordionContent>
-                <div className="flex flex-col items-center space-y-4">
-                  <p className="text-center mb-2">MIRA covers a wide range of compliance standards, including:</p>
-                  <div className="grid grid-cols-2 gap-3 w-full max-w-md">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-red-100 hover:bg-red-200 text-red-800"
-                    >
-                      <CheckCircle className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-xs font-semibold">OWASP</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-800"
-                    >
-                      <CheckCircle className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-xs font-semibold">PCI DSS</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-blue-100 hover:bg-blue-200 text-blue-800"
-                    >
-                      <CheckCircle className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-xs font-semibold">ISO 27001-A</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-green-100 hover:bg-green-200 text-green-800"
-                    >
-                      <CheckCircle className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-xs font-semibold">NIST CSF</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-purple-100 hover:bg-purple-200 text-purple-800"
-                    >
-                      <CheckCircle className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-xs font-semibold">GDPR</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-pink-100 hover:bg-pink-200 text-pink-800"
-                    >
-                      <CheckCircle className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-xs font-semibold">HIPAA</span>
-                    </Button>
-                  </div>
-                  <p className="text-center mt-2 text-sm">
-                    MIRA's comprehensive coverage ensures that your applications meet various industry-standard security
-                    and privacy requirements.
-                  </p>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
+							<AccordionTrigger>
+								What compliance standards are covered by MIRA?
+							</AccordionTrigger>
+							<AccordionContent>
+								<div className="flex flex-col items-center space-y-4">
+									<p className="text-center mb-2">
+										MIRA covers a wide range of compliance
+										standards, including:
+									</p>
+									<div className="grid grid-cols-2 gap-3 w-full max-w-md">
+										<Button
+											variant="outline"
+											size="sm"
+											className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-red-100 hover:bg-red-200 text-red-800"
+										>
+											<CheckCircle className="h-4 w-4 flex-shrink-0" />
+											<span className="text-xs font-semibold">
+												OWASP
+											</span>
+										</Button>
+										<Button
+											variant="outline"
+											size="sm"
+											className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-yellow-100 hover:bg-yellow-200 text-yellow-800"
+										>
+											<CheckCircle className="h-4 w-4 flex-shrink-0" />
+											<span className="text-xs font-semibold">
+												PCI DSS
+											</span>
+										</Button>
+										<Button
+											variant="outline"
+											size="sm"
+											className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-blue-100 hover:bg-blue-200 text-blue-800"
+										>
+											<CheckCircle className="h-4 w-4 flex-shrink-0" />
+											<span className="text-xs font-semibold">
+												ISO 27001-A
+											</span>
+										</Button>
+										<Button
+											variant="outline"
+											size="sm"
+											className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-green-100 hover:bg-green-200 text-green-800"
+										>
+											<CheckCircle className="h-4 w-4 flex-shrink-0" />
+											<span className="text-xs font-semibold">
+												NIST CSF
+											</span>
+										</Button>
+										<Button
+											variant="outline"
+											size="sm"
+											className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-purple-100 hover:bg-purple-200 text-purple-800"
+										>
+											<CheckCircle className="h-4 w-4 flex-shrink-0" />
+											<span className="text-xs font-semibold">
+												GDPR
+											</span>
+										</Button>
+										<Button
+											variant="outline"
+											size="sm"
+											className="h-8 py-0 px-3 flex items-center justify-start space-x-2 bg-pink-100 hover:bg-pink-200 text-pink-800"
+										>
+											<CheckCircle className="h-4 w-4 flex-shrink-0" />
+											<span className="text-xs font-semibold">
+												HIPAA
+											</span>
+										</Button>
+									</div>
+									<p className="text-center mt-2 text-sm">
+										MIRA's comprehensive coverage ensures
+										that your applications meet various
+										industry-standard security and privacy
+										requirements.
+									</p>
+								</div>
+							</AccordionContent>
+						</AccordionItem>
 						<AccordionItem value="item-5">
 							<AccordionTrigger>
 								How do I generate a report?
@@ -213,12 +240,18 @@ export function FAQs() {
 									{/* <Image src="/placeholder.svg?height=200&width=300" alt="Report Generation" width={300} height={200} /> */}
 									<p>
 										To generate a report, go to the
-										<span className="bg-yellow-100 px-1 rounded">"Reports"</span>  section from the navigation
-										menu. Select the type of report you want
-										to generate, specify the date range and
-										other parameters, and click <span className="bg-yellow-100 px-1 rounded">"Generate
-										Report"</span> . The report will be displayed on
-										the screen and can be downloaded in PDF
+										<span className="bg-yellow-100 px-1 rounded">
+											"Reports"
+										</span>{" "}
+										section from the navigation menu. Select
+										the type of report you want to generate,
+										specify the date range and other
+										parameters, and click{" "}
+										<span className="bg-yellow-100 px-1 rounded">
+											"Generate Report"
+										</span>{" "}
+										. The report will be displayed on the
+										screen and can be downloaded in PDF
 										format.
 									</p>
 								</div>
@@ -234,12 +267,18 @@ export function FAQs() {
 									{/* <Image src="/placeholder.svg?height=200&width=300" alt="Data Security" width={300} height={200} /> */}
 									<p>
 										MIRA uses trusted external tools like
-										<span className="bg-yellow-100 px-1 rounded">ZAP</span> and{" "}
-                    <span className="bg-yellow-100 px-1 rounded">SonarQube</span>with secure API keys.
-										All data is processed securely and is
-										not shared with third parties, ensuring
-										complete confidentiality of your
-										application data.
+										<span className="bg-yellow-100 px-1 rounded">
+											ZAP
+										</span>{" "}
+										and{" "}
+										<span className="bg-yellow-100 px-1 rounded">
+											SonarQube
+										</span>
+										with secure API keys. All data is
+										processed securely and is not shared
+										with third parties, ensuring complete
+										confidentiality of your application
+										data.
 									</p>
 								</div>
 							</AccordionContent>
