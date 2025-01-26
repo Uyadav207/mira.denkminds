@@ -188,14 +188,14 @@ export default function ChatHistory() {
 
 	return (
 		<>
-			<SidebarGroup>
+			<SidebarGroup className="sidebar-section">
 				<SidebarGroupLabel>Application</SidebarGroupLabel>
 				<SidebarMenu>
 					<Collapsible
 						defaultOpen={false}
 						className="group/collapsible"
 					>
-						<SidebarMenuItem>
+						<SidebarMenuItem className="dashboard-section">
 							<CollapsibleTrigger asChild>
 								<SidebarMenuButton tooltip="Dashboard">
 									<Home className="h-4 w-4" />
@@ -228,7 +228,7 @@ export default function ChatHistory() {
 							</CollapsibleContent>
 						</SidebarMenuItem>
 					</Collapsible>
-					<SidebarMenuItem>
+					<SidebarMenuItem className="reports-section">
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/reports")}>
 							<SidebarMenuButton tooltip="Reports">
@@ -284,7 +284,7 @@ export default function ChatHistory() {
 				</SidebarMenu>
 			</SidebarGroup>
 			<SidebarSeparator />
-			<div className="max-h-[70vh] overflow-y-scroll scrollbar-grey">
+			<div className="chat-history-section max-h-[70vh] overflow-y-scroll scrollbar-grey">
 				<SidebarGroup>
 					{recentChats?.length > 0 && (
 						<SidebarGroupLabel>Recent Chats</SidebarGroupLabel>
