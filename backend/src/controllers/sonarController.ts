@@ -6,7 +6,11 @@ export class SonarController {
 
 	async scanRepository(c: Context): Promise<Response> {
 		try {
-			const { githubUrl, repoType, accessToken } = await c.req.json();
+			const { userId, githubUrl, repoType, accessToken } = await c.req.json();
+
+			if (!userId) {
+				return c.json({ error: "UserId is required" }, 400);
+			}
 
 			if (!githubUrl) {
 				return c.json({ error: "GitHub URL is required" }, 400);
@@ -52,19 +56,30 @@ export class SonarController {
 					400,
 				);
 			}
-
 			await this.sonarService.cloneRepository(githubUrl, accessToken);
+			const taskId = await this.sonarService.runSonarScanner(
+				repoName,
+				localPath,
+			);
 
-			await this.sonarService.runSonarScanner(repoName, localPath);
+			await this.sonarService.waitForTaskCompletion(taskId);
+			await this.sonarService.ensureReportAvailability(repoName);
 
-			const report = await this.sonarService.fetchSonarReport(repoName);
+			const sonarReport = await this.sonarService.fetchSonarReport(repoName);
 
-			return c.json({
+			const { metrics, issues, hotspots } = sonarReport;
+
+			const responsePayload = {
 				message: "Scan completed successfully",
+				userId,
 				projectKey: repoName,
-				sonarUrl: `${this.sonarService.getSonarUrl()}/dashboard?id=${repoName}`,
-				report,
-			});
+				repoType,
+				metrics,
+				issues,
+				hotspots,
+			};
+
+			return c.json(responsePayload);
 		} catch (error) {
 			if (error instanceof Error) {
 				console.error("Error during repository scan:", error.message);

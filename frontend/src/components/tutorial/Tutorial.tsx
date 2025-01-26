@@ -133,9 +133,7 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 						color: "#272278",
 					},
 					spotlight: {
-						// backgroundColor: "transparent",
-						// boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 0, 0, 0.5)",
-						// borderRadius: "9999px",
+						
 						padding: "10px",
 					},
 				}}

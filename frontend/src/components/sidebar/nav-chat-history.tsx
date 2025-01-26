@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import {
 	ArrowRight,
 	BadgeEuroIcon,
+	BinocularsIcon,
 	ChevronRight,
 	Lightbulb,
 	LucideSettings2,
@@ -47,6 +48,7 @@ import {
 } from "../ui/collapsible";
 import { showSuccessToast } from "../toaster";
 import "./customScrollbar.css";
+import Tutorial from "../tutorial/Tutorial";
 
 const ChatSkeleton = () => {
 	return (
@@ -186,6 +188,39 @@ export default function ChatHistory() {
 			!isWithinLast30Days(new Date(chat.createdAt)),
 	);
 
+	const [runTutorial, setRunTutorial] = useState(false);
+
+	// Handle the "Take a Tutorial" button click
+	const handleTakeTutorial = () => {
+		setRunTutorial(true);
+	};
+
+	// Handle tutorial exit (mark the tutorial as seen)
+	const handleExitTutorial = () => {
+		localStorage.setItem("hasSeenTutorial", "true"); // Store in localStorage that the user has seen the tutorial
+		setRunTutorial(false); // Hide the tutorial after exit
+	};
+
+	type PlanType = "free" | "pro" | "cyber" | "unknown";
+	const [type] = useState<PlanType>("pro"); // Change this to "free", "cyber", or "pro"
+
+	let colorClasses = "";
+	let label = "";
+
+	if (type === "free") {
+		colorClasses = "bg-green-200 text-green-500 border-green-200";
+		label = "Free Trial";
+	} else if (type === "pro") {
+		colorClasses = "bg-purple-200 text-purple-500 border-purple-200";
+		label = "Pro Plan";
+	} else if (type === "cyber") {
+		colorClasses = "bg-red-200 text-red-500 border-red-200";
+		label = "Cyber Security";
+	} else {
+		colorClasses = "bg-gray-200 text-gray-500 border-gray-200";
+		label = "Unknown";
+	}
+
 	return (
 		<>
 			<SidebarGroup className="sidebar-section">
@@ -256,8 +291,10 @@ export default function ChatHistory() {
 								<BadgeEuroIcon className="h-4 w-4" />
 								<span>Subscription</span>
 								<SidebarMenuBadge>
-									<span className="text-xs bg-green-100 text-green-500 px-2 py-0.5 rounded border border-green-500">
-										Free Trial
+									<span
+										className={`text-xs px-2 py-0.5 rounded border ${colorClasses}`}
+									>
+										{label}
 									</span>
 								</SidebarMenuBadge>
 							</SidebarMenuButton>
@@ -272,6 +309,14 @@ export default function ChatHistory() {
 							</SidebarMenuButton>
 						</a>
 					</SidebarMenuItem>
+					<SidebarMenuButton
+						tooltip="Tutorial"
+						onClick={handleTakeTutorial}
+					>
+						<BinocularsIcon />
+						<span>Tutorial</span>
+					</SidebarMenuButton>
+					<Tutorial run={runTutorial} onExit={handleExitTutorial} />
 					<SidebarMenuItem>
 						{/* biome-ignore lint/a11y/useValidAnchor: <explanation> */}
 						<a onClick={() => navigate("/subscription")}>

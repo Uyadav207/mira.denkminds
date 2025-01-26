@@ -1,3 +1,5 @@
+import type { SonarScanReport } from "./sastTypes";
+
 export interface Alert {
 	risk?: "High" | "Medium" | "Low" | "Informational";
 }
@@ -5,6 +7,8 @@ export interface Alert {
 export type ScanState = {
 	scanResponse: ScanResult;
 	setScanResponse: (scanResponse: ScanResult) => void;
+	scanSastResponse: SonarScanReport;
+	setScanSastResponse: (scanSastResponse: SonarScanReport) => void;
 };
 
 export interface ProcessedFinding {

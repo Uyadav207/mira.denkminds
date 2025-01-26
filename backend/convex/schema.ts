@@ -81,4 +81,63 @@ export default defineSchema({
 		confidence: v.string(),
 		reference: v.string(),
 	}).index("by_vulnerabilityId", ["vulnerabilityId"]),
+
+	staticScans: defineTable({
+		userId: v.string(),
+		repoType: v.string(),
+		projectKey: v.string(),
+		metrics: v.optional(
+			v.object({
+				coverage: v.string(),
+				bugs: v.string(),
+				reliability_rating: v.string(),
+				code_smells: v.string(),
+				duplicated_lines_density: v.string(),
+				security_rating: v.string(),
+				ncloc: v.string(),
+				vulnerabilities: v.string(),
+				security_hotspots_reviewed: v.string(),
+				software_quality_maintainability_rating: v.string(),
+			}),
+		),
+		createdAt: v.number(),
+	}).index("by_userId", ["userId"]),
+
+	hotspotList: defineTable({
+		staticScanId: v.id("staticScans"),
+		message: v.string(),
+		vulnerabilityProbability: v.string(),
+		component: v.string(),
+		line: v.number(),
+		review_status: v.boolean(),
+	}).index("by_staticScanId", ["staticScanId"]),
+
+	issueList: defineTable({
+		staticScanId: v.id("staticScans"),
+		message: v.string(),
+		component: v.string(),
+		line: v.number(),
+		severity: v.string(),
+		tags: v.array(v.string()),
+	}).index("by_staticScanId", ["staticScanId"]),
+
+	issueInfo: defineTable({
+		issueId: v.id("issueList"),
+		message: v.string(),
+		component: v.string(),
+		line: v.number(),
+		severity: v.string(),
+		rule: v.object({
+			key: v.string(),
+			name: v.string(),
+			remediationSteps: v.array(
+				v.object({
+					context: v.string(),
+					description: v.string(),
+					problemCodeSnippet: v.string(),
+					remediationCodeSnippet: v.string(),
+				}),
+			),
+		}),
+	}).index("by_issueId", ["issueId"]),
 });
