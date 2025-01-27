@@ -113,7 +113,6 @@ const UserScans: React.FC = () => {
 			<h2 className="text-xl font-semibold mb-4 p-4 flex">
 				Recent Scans ({scans.length})
 			</h2>
-			
 
 			{scans.map((scan: UserScan) => (
 				// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
@@ -172,7 +171,6 @@ const UserScans: React.FC = () => {
 				</div>
 			))}
 		</div>
-		
 	);
 };
 
