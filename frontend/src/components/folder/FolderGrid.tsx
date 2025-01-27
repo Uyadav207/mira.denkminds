@@ -7,7 +7,7 @@ import {
 	DropdownMenuTrigger,
 	DropdownMenuContent,
 	DropdownMenuItem,
-} from "@radix-ui/react-dropdown-menu";
+} from "@components/ui/dropdown-menu";
 import { showSuccessToast } from "../toaster";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -47,35 +47,52 @@ export function FolderGrid({
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
 				{folders.map((folder, index) => (
-					<Button
+					<div
 						key={`${folder.id}-${index}`}
-						variant="outline"
-						className="h-32 w-full flex flex-col items-center justify-center gap-2 hover:bg-sidebar relative"
+						className="relative group"
 						onClick={() => onFolderClick(folder.id)}
+						onKeyUp={(e) => {
+							if (e.key === "Enter" || e.key === " ") {
+								onFolderClick(folder.id);
+							}
+						}}
 					>
-						<FolderCheck className="h-10 w-10" />
-						<span>{folder.name}</span>
+						<Button
+							variant="outline"
+							className="h-32 w-full flex flex-col items-center justify-center gap-2 hover:bg-sidebar"
+						>
+							<FolderCheck className="h-10 w-10" />
+							<span>{folder.name}</span>
+						</Button>
 						<DropdownMenu>
-							<DropdownMenuTrigger className="absolute top-2 right-2 flex items-center justify-center p-2">
-								<EllipsisVertical className="h-5 w-5 text-sidebar-foreground" />
-							</DropdownMenuTrigger>
-							<DropdownMenuContent
-								align="end"
-								className="w-48 bg-sidebar shadow-lg rounded-md py-1"
-							>
-								<DropdownMenuItem
-									// Uncomment and implement deletion logic as needed
-									onClick={(e: React.MouseEvent) => {
-										deleteReportFolder(folder.id, e);
-									}}
-									className="flex items-center space-x-2 text-red-600"
+							<DropdownMenuTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon"
+									className="absolute top-2 right-2 opacity-100 transition-opacity"
+									onClick={(
+										e: React.MouseEvent<HTMLButtonElement>,
+									) => e.stopPropagation()}
 								>
-									<Trash2 className="h-4 w-4" />
+									<EllipsisVertical className="h-5 w-5 text-sidebar-foreground" />
+									<span className="sr-only">
+										Open folder menu
+									</span>
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end" className="w-48">
+								<DropdownMenuItem
+									onClick={(e: React.MouseEvent) =>
+										deleteReportFolder(folder.id, e)
+									}
+									className="text-red-600"
+								>
+									<Trash2 className="h-4 w-4 mr-2" />
 									<span>Delete</span>
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
-					</Button>
+					</div>
 				))}
 			</div>
 		</div>
