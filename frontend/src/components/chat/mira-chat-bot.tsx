@@ -1857,7 +1857,7 @@ const MiraChatBot: React.FC = () => {
 						initial={{ width: "70%" }}
 						animate={{ width: input ? "80%" : "70%" }}
 						transition={{ duration: 0.3 }}
-						className="flex items-center rounded-2xl px-4 py-2 relativ bg-secondary"
+						className=" chat-input flex items-center rounded-2xl px-4 py-2 relativ bg-secondary"
 					>
 						{/* Textarea */}
 						<textarea
@@ -1873,7 +1873,7 @@ const MiraChatBot: React.FC = () => {
 									handleSend();
 								}
 							}}
-							className={`chat-input flex-1 resize-none text-sm bg-secondary border-none shadow-none rounded-full focus-visible:outline-none focus:ring-0 h-15 p-2 px-4 text-gray
+							className={` flex-1 resize-none text-sm bg-secondary border-none shadow-none rounded-full focus-visible:outline-none focus:ring-0 h-15 p-2 px-4 text-gray
                                 ${(isLoading || !!pendingAction) && "cursor-not-allowed"}
                                 `}
 							placeholder="Ask Mira..."
@@ -1898,7 +1898,7 @@ const MiraChatBot: React.FC = () => {
 				</div>
 
 				{messages.length === 0 ? (
-					<div className="flex flex-col items-center gap-6 px-4">
+					<div className="flex flex-col items-center gap-4 px-4">
 						<motion.div
 							className="flex flex-wrap justify-center items-center gap-4"
 							layout // Ensures smooth animation for layout changes
@@ -1917,7 +1917,9 @@ const MiraChatBot: React.FC = () => {
 										);
 									}}
 								>
-									<actionCard.icon className="h-5 w-5 text-[#7156DB]" />
+									<actionCard.icon
+										className={`h-5 w-5 ${actionCard.color}`}
+									/>
 									<span className="text-sm font-medium">
 										{actionCard.title}
 									</span>
@@ -1960,7 +1962,9 @@ const MiraChatBot: React.FC = () => {
 												handleActionSend(moreCard.title)
 											}
 										>
-											<moreCard.icon className="h-5 w-5 text-[#7156DB]" />
+											<moreCard.icon
+												className={`h-5 w-5 ${moreCard.color}`}
+											/>
 											<span className="text-sm font-medium">
 												{moreCard.title}
 											</span>
