@@ -5,16 +5,18 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogFooter,
+	DialogDescription,
 } from "../ui/dialog";
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
+import { Label } from "@components/ui/label";
 import type { RequestHumanInLoop } from "../../types/chats";
 
 interface CreateFolderDialogProps {
 	open: boolean;
 	humanInTheLoopAction?: RequestHumanInLoop | null | undefined;
 	onOpenChange: (open: boolean) => void;
-	onCreateFolder: (name: string, action: RequestHumanInLoop) => void;
+	onCreateFolder: (name: string, action?: RequestHumanInLoop) => void;
 }
 
 export function CreateFolderDialog({
@@ -28,6 +30,8 @@ export function CreateFolderDialog({
 		e.preventDefault();
 		if (humanInTheLoopAction) {
 			onCreateFolder(folderName, humanInTheLoopAction);
+		} else {
+			onCreateFolder(folderName);
 		}
 		setFolderName("");
 		onOpenChange(false);
@@ -38,13 +42,16 @@ export function CreateFolderDialog({
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>Create New Folder</DialogTitle>
+					<DialogDescription className="sr-only">
+						Enter a name for your new folder
+					</DialogDescription>
 				</DialogHeader>
 				<form onSubmit={handleSubmit}>
 					<div className="grid gap-4 py-4">
 						<div className="grid gap-2">
-							<label htmlFor="name">Folder Name</label>
+							<Label htmlFor="folderName">Folder Name</Label>
 							<Input
-								id="name"
+								id="folderName"
 								value={folderName}
 								onChange={(
 									e: React.ChangeEvent<HTMLInputElement>,

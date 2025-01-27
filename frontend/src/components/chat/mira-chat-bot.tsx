@@ -232,7 +232,7 @@ const MiraChatBot: React.FC = () => {
 
 	const handleCreateFolder = async (
 		name: string,
-		action: RequestHumanInLoop,
+		action: RequestHumanInLoop | null | undefined,
 	) => {
 		if (
 			foldersList.some(
@@ -254,7 +254,7 @@ const MiraChatBot: React.FC = () => {
 			folderName: newFolder.name,
 			userId: String(user?.id),
 		});
-		if (response) {
+		if (response && action) {
 			setPendingAction(null);
 			addBotMessage(`Created folder ${newFolder.name} `);
 			const manualMessage = "Thank you for providing the file name";
