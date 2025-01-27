@@ -38,7 +38,7 @@ const Tooltip: React.FC<TooltipProps> = ({ message, children, className }) => {
 			{children}
 			<span className="pointer-events-none absolute -top-16 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-black px-2 py-1 text-black opacity-0 transition group-hover:opacity-100">
 				{message}
-				<span className="absolute left-1/2 top-full -translate-x-1/2 border-[6px] border-t-black border-x-transparent border-b-transparent"/>
+				<span className="absolute left-1/2 top-full -translate-x-1/2 border-[6px] border-t-black border-x-transparent border-b-transparent" />
 				<div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center">
 					<ArrowDown
 						className="text-black animate-bounce"

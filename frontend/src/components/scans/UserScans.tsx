@@ -113,6 +113,8 @@ const UserScans: React.FC = () => {
 			<h2 className="text-xl font-semibold mb-4 p-4 flex">
 				Recent Scans ({scans.length})
 			</h2>
+			
+
 			{scans.map((scan: UserScan) => (
 				// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 				<div
@@ -122,7 +124,7 @@ const UserScans: React.FC = () => {
 				>
 					<div className="flex items-center space-x-3">
 						<span className="w-4 h-4 rounded-full bg-red-500" />
-						<span className="text-[#7156DB] hover:underline">
+						<span className="text-[#7156DB] hover:underline truncate">
 							{scan.targetUrl}
 						</span>
 						<Badge variant="secondary">
@@ -139,10 +141,10 @@ const UserScans: React.FC = () => {
 						</Badge>
 					</div>
 					<div className="flex justify-evenly gap-4">
-						<Badge className="bg-red-100 text-red-500">
+						<Badge className="bg-red-100 text-red-500 hidden sm:block">
 							{scan.totalIssues}
 						</Badge>
-						<span className="text-sm text-gray-400">
+						<span className="text-sm text-gray-400 hidden sm:block">
 							{calculateTimeDifference({
 								_creationTime: scan._creationTime,
 							})}
@@ -170,6 +172,7 @@ const UserScans: React.FC = () => {
 				</div>
 			))}
 		</div>
+		
 	);
 };
 
