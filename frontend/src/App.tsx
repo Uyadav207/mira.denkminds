@@ -46,7 +46,7 @@ const App = () => {
 				<Toaster />
 				<Router>
 					<Routes>
-						{/* <Route path="/" element={<Home />} /> */}
+						<Route path="/" element={<Auth />} />
 						<Route path="/login" element={<Auth />} />
 						<Route path="/register" element={<Auth />} />
 						<Route
