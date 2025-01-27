@@ -15,6 +15,7 @@ import {
 } from "../../components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 import { ModeToggle } from "../theme/mode-toggle";
+import { HelpMenu } from "../chat/help-menu";
 
 export function Layout() {
 	const location = useLocation();
@@ -74,6 +75,9 @@ export function Layout() {
 						Project {new Date().getFullYear()}
 					</p>
 				</div>
+
+				{/* Add the help button here */}
+				<HelpMenu />
 			</SidebarInset>
 		</SidebarProvider>
 	);
