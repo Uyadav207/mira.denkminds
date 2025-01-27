@@ -12,6 +12,7 @@ import { Button } from "../components/ui/button";
 
 import { Link } from "react-router-dom";
 import { ModeToggle } from "../components/theme/mode-toggle";
+import { HelpMenu } from "../components/chat/help-menu";
 
 const TermsOfService: React.FC = () => {
 	const navigate = useNavigate(); // Initialize the navigate hook
@@ -180,6 +181,7 @@ const TermsOfService: React.FC = () => {
 					Project {new Date().getFullYear()}
 				</p>
 			</div>
+			<HelpMenu />
 		</>
 	);
 };

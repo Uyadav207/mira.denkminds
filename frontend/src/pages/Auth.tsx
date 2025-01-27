@@ -16,6 +16,7 @@ import { createLoginResponseBody } from "../utils/auth-helper";
 import MiraLogo from "../assets/MiraLogo.svg";
 import { ModeToggle } from "../components/theme/mode-toggle";
 import { Button } from "../components/ui/button";
+import { HelpMenu } from "../components/chat/help-menu";
 
 export default function Auth() {
 	const navigate = useNavigate();
@@ -37,7 +38,9 @@ export default function Auth() {
 			setIsLoading(true);
 
 			if (formType === "login") {
-				const loginData = createLoginResponseBody(data as LoginApiPayloadType);
+				const loginData = createLoginResponseBody(
+					data as LoginApiPayloadType,
+				);
 				const response = await authApis.login(loginData);
 				const result = response.data;
 				setToken(result.token);
@@ -57,10 +60,10 @@ export default function Auth() {
 	};
 
 	const logout = useStore((state) => state.logout);
-		const handleLogout = () => {
-			logout();
-			navigate('/login');
-		};
+	const handleLogout = () => {
+		logout();
+		navigate("/login");
+	};
 
 	return (
 		<>
@@ -83,7 +86,9 @@ export default function Auth() {
 							</h1>
 						</div>
 						<div className="mt-10 flex justify-center space-y-4">
-							<p className="text-lg italic">Powered by denkMinds</p>
+							<p className="text-lg italic">
+								Powered by denkMinds
+							</p>
 						</div>
 					</div>
 				</div>
@@ -111,7 +116,11 @@ export default function Auth() {
 								</div>
 								<div className="space-y-4">
 									<DynamicForm
-										fields={formType === "login" ? loginFields : registerFields}
+										fields={
+											formType === "login"
+												? loginFields
+												: registerFields
+										}
 										onSubmit={handleSubmit}
 										submitButton={{
 											displayName:
@@ -138,7 +147,10 @@ export default function Auth() {
 
 									<p className="text-center text-sm text-muted-foreground">
 										By clicking continue, you agree to our{" "}
-										<Link to="/terms" className="underline hover:text-primary">
+										<Link
+											to="/terms"
+											className="underline hover:text-primary"
+										>
 											Terms of Service
 										</Link>{" "}
 										and{" "}
@@ -167,10 +179,16 @@ export default function Auth() {
 											? "Don't have an account?"
 											: "Already have an account?"}{" "}
 										<Link
-											to={formType === "login" ? "/register" : "/login"}
+											to={
+												formType === "login"
+													? "/register"
+													: "/login"
+											}
 											className="underline underline-offset-4 hover:text-primary"
 										>
-											{formType === "login" ? "Register" : "Log in"}
+											{formType === "login"
+												? "Register"
+												: "Log in"}
 										</Link>
 									</p>
 								</div>
@@ -181,7 +199,9 @@ export default function Auth() {
 							<div className="space-y-6">
 								<div className="space-y-2 text-center">
 									<h2 className="text-3xl font-bold">
-										{isLoggedIn ? `Hey, ${user?.firstName}` : "Welcome to MIRA"}
+										{isLoggedIn
+											? `Hey, ${user?.firstName}`
+											: "Welcome to MIRA"}
 									</h2>
 									{!isLoggedIn && (
 										<p className="text-muted-foreground">
@@ -193,13 +213,15 @@ export default function Auth() {
 								<div className="space-y-4">
 									{isLoggedIn ? (
 										<>
-										<Button
-											className="w-full"
-											onClick={() => navigate("/chatbot")}
-										>
-											Back to application
-										</Button>
-										<Button
+											<Button
+												className="w-full"
+												onClick={() =>
+													navigate("/chatbot")
+												}
+											>
+												Back to application
+											</Button>
+											<Button
 												variant="outline"
 												className="w-full"
 												onClick={handleLogout}
@@ -211,14 +233,18 @@ export default function Auth() {
 										<>
 											<Button
 												className="w-full"
-												onClick={() => navigate("/register")}
+												onClick={() =>
+													navigate("/register")
+												}
 											>
 												Create an account
 											</Button>
 											<Button
 												variant="outline"
 												className="w-full"
-												onClick={() => navigate("/login")}
+												onClick={() =>
+													navigate("/login")
+												}
 											>
 												Sign in
 											</Button>
@@ -257,6 +283,7 @@ export default function Auth() {
 					</div>
 				</div>
 			</div>
+			<HelpMenu />
 		</>
 	);
 }

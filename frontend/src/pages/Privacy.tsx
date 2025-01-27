@@ -9,6 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "../components/ui/card";
+import { HelpMenu } from "../components/chat/help-menu";
 
 const PrivacyPolicy: React.FC = () => {
 	const navigate = useNavigate(); // Initialize the navigate hook
@@ -239,6 +240,7 @@ const PrivacyPolicy: React.FC = () => {
 					Project {new Date().getFullYear()}
 				</p>
 			</div>
+			<HelpMenu />
 		</>
 	);
 };

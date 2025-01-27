@@ -133,7 +133,6 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 						color: "#272278",
 					},
 					spotlight: {
-						
 						padding: "10px",
 					},
 				}}
