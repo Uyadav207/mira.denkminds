@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "Subscription" AS ENUM ('FREE', 'INTERMEDIATE', 'PRO');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -9,6 +12,7 @@ CREATE TABLE "User" (
     "password" TEXT,
     "authProvider" TEXT NOT NULL DEFAULT 'email',
     "supabaseId" TEXT,
+    "subscription" "Subscription" NOT NULL DEFAULT 'FREE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

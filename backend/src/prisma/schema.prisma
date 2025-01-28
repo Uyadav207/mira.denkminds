@@ -25,9 +25,16 @@ model User {
     lastName      String
     avatar        String?
     email         String   @unique
-    password      String?  
+    password      String?
     authProvider  String   @default("email")
-    supabaseId    String?  @unique 
+    supabaseId    String?  @unique
+    subscription  Subscription @default(FREE) 
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
+}
+
+enum Subscription {
+    FREE     // Default subscription tier
+    INTERMEDIATE  // Intermediate subscription tier
+    PRO      // Professional subscription tier
 }
