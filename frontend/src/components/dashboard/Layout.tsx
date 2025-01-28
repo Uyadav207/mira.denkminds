@@ -68,9 +68,9 @@ export function Layout() {
 
 				{/* Our Component for mira will render here */}
 
-				<div className="flex flex-col min-h-[90vh]">
+				<div className="flex flex-col min-h-[90vh] justify-between">
 					<Outlet />
-					<p className="text-center text-gray-500 text-wrap text-xs mt-1">
+					<p className="text-center text-gray-500 text-wrap text-xs">
 						Copyright &copy; Mira, a product of denkMinds, Planspiel
 						Project {new Date().getFullYear()}
 					</p>
