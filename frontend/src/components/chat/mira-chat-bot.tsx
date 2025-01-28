@@ -784,6 +784,18 @@ const MiraChatBot: React.FC = () => {
 
 					setProgress(100);
 					setScanResponse(response.data);
+
+					const { filteredAlerts } = response.data;
+
+					const cveList: string[] = [];
+					for (const finding of filteredAlerts) {
+						if (Array.isArray(finding.cve_id) && finding.cve_id.length > 0) {
+							cveList.push(...finding.cve_id);
+						}
+					}
+					// const uniqueCveList = [...new Set(cveList)];
+					// // console.log(uniqueCveList);
+
 					addBotMessage(
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,
 					);
@@ -858,7 +870,7 @@ const MiraChatBot: React.FC = () => {
 					action as string,
 				);
 				const manualMessage =
-					"Do you want to save this as a detailed Chat Summary report?";
+					"Do you want to save this as a detailed Chat Summary report with an email?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
