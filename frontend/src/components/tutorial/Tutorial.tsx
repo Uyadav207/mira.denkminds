@@ -1,7 +1,7 @@
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Joyride, { type Step, type CallBackProps } from "react-joyride";
-// import { Button } from "@components/ui/button"
+// import CustomBeacon from "./CustomBeacon"
 
 interface TutorialProps {
 	run: boolean;
@@ -63,6 +63,12 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 		},
 	]);
 
+	const [isRunning, setIsRunning] = useState(run);
+
+	useEffect(() => {
+		setIsRunning(run);
+	}, [run]);
+
 	useEffect(() => {
 		const checkTargetsExist = () => {
 			return steps.every(
@@ -81,22 +87,56 @@ const Tutorial: React.FC<TutorialProps> = ({ run, onExit }) => {
 		return () => clearInterval(interval);
 	}, [steps]);
 
-	const handleJoyrideCallback = (data: CallBackProps) => {
-		const { status, type } = data;
-		if (
-			status === "finished" ||
-			status === "skipped" ||
-			type === "tour:end"
-		) {
-			onExit();
+	const handleJoyrideCallback = useCallback(
+		(data: CallBackProps) => {
+			const { status, type } = data;
+			if (
+				status === "finished" ||
+				status === "skipped" ||
+				type === "tour:end"
+			) {
+				setIsRunning(false);
+				onExit();
+			}
+		},
+		[onExit],
+	);
+	//   const startTutorial = () => {
+	//     setIsRunning(true);
+	//   };
+
+	const handleClickOutside = useCallback(
+		(event: MouseEvent) => {
+			const target = event.target as HTMLElement;
+			const isTooltipClick = target.closest(".react-joyride__tooltip");
+			const isBeaconClick = target.closest(".react-joyride__beacon");
+
+			if (!isTooltipClick && !isBeaconClick) {
+				setIsRunning(false);
+				onExit();
+			}
+		},
+		[onExit],
+	);
+
+	useEffect(() => {
+		if (isRunning) {
+			document.addEventListener("click", handleClickOutside);
+		} else {
+			document.removeEventListener("click", handleClickOutside);
 		}
-	};
+
+		return () => {
+			document.removeEventListener("click", handleClickOutside);
+		};
+	}, [isRunning, handleClickOutside]);
 
 	return (
 		<div>
 			<Joyride
 				steps={steps}
-				run={run}
+				run={isRunning}
+				// beaconComponent={CustomBeacon}
 				continuous
 				showSkipButton
 				scrollToFirstStep
