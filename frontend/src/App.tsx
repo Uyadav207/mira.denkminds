@@ -16,14 +16,6 @@ import { ApiScans } from "./pages/scans/ApiScans";
 import Vulnerabilities from "./pages/scans/vulnerabilities/vulnerabilities";
 import Urls from "./pages/scans/VulnerableUrls/Urls";
 import { RecentStaticScans } from "./pages/static-scans/RecentStaticScans";
-// import TemplateContentPage from "./components/PDF/TemplateContentPage";
-
-// const mockFolder = {
-// 	id: "folder1",
-// 	name: "Sample Folder",
-// 	files: [], // Add your mock files here
-//   };
-
 import { FileView } from "./components/file";
 import PrivateRoute from "./components/privateRoutes";
 import { NotFound } from "./pages/NotFound";
@@ -35,9 +27,7 @@ import ScanHotspots from "./pages/static-scans/ScanHotspots";
 import ScanIssues from "./pages/static-scans/ScanIssues";
 import ScanIssuesDetails from "./pages/static-scans/ScanIssuesDetails";
 import { FAQs } from "./pages/FAQs";
-import Subscription from "./pages/Subscription";
-
-// import { PrintableTemplate } from "./components/pdf/PrintableTemplate";
+import Subscriptions from "./pages/Subscriptions";
 
 const App = () => {
 	return (
@@ -59,31 +49,14 @@ const App = () => {
 							path="/auth/callback"
 							element={<AuthCallback />}
 						/>
-						{/* <Route
-								path="/chatbot/:chatId?"
-								element={<Chatbot />}
-							/> */}
-
-						{/* <Route path="/template/:templateId" element={<TemplateContentPage />} /> */}
-
-						{/* <Route
-								path="/chatbot/:chatId?"
-								element={<Chatbot />}
-							/> */}
-
-						{/* <Route path="/template/:templateId" element={<TemplateContentPage />} /> */}
-
 						<Route
 							element={
 								<PrivateRoute>
+									{" "}
 									<Layout />
 								</PrivateRoute>
 							}
 						>
-							{/* <Route
-								path="/printtemplate"
-								element={<PrintableTemplate />}
-							/> */}
 							<Route
 								path="/chat/:_id"
 								element={<ChatTemplate />}
@@ -142,7 +115,7 @@ const App = () => {
 							<Route path="/faqs" element={<FAQs />} />
 							<Route
 								path="/subscription"
-								element={<Subscription />}
+								element={<Subscriptions />}
 							/>
 						</Route>
 						<Route path="*" element={<NotFound />} />

@@ -201,21 +201,34 @@ export default function ChatHistory() {
 		setRunTutorial(false); // Hide the tutorial after exit
 	};
 
-	type PlanType = "free" | "pro" | "cyber" | "unknown";
-	const [type] = useState<PlanType>("pro"); // Change this to "free", "cyber", or "pro"
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const sub = (user as any)?.subscription;
+
+	const [type] = useState<string>(() => {
+		switch (sub) {
+			case "FREE":
+				return "free";
+			case "PRO":
+				return "pro";
+			case "INTERMEDIATE":
+				return "intermediate";
+			default:
+				return "unknown";
+		}
+	});
 
 	let colorClasses = "";
 	let label = "";
 
 	if (type === "free") {
 		colorClasses = "bg-green-200 text-green-500 border-green-200";
-		label = "Free Trial";
+		label = "Free";
 	} else if (type === "pro") {
 		colorClasses = "bg-purple-200 text-purple-500 border-purple-200";
-		label = "Pro Plan";
-	} else if (type === "cyber") {
+		label = "Pro";
+	} else if (type === "intermediate") {
 		colorClasses = "bg-red-200 text-red-500 border-red-200";
-		label = "Cyber Security";
+		label = "Intermediate";
 	} else {
 		colorClasses = "bg-gray-200 text-gray-500 border-gray-200";
 		label = "Unknown";

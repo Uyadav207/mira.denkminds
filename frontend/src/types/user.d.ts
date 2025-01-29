@@ -6,6 +6,7 @@ export interface User {
 	avatar: string | null;
 	username: string;
 	authProvider: string;
+	subscription?: string | null;
 }
 
 export type Password = {

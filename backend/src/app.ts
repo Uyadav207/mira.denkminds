@@ -9,6 +9,7 @@ import { reportRoutes } from "./routes/reportRoutes";
 import { zapRoutes } from "./routes/zapRoutes";
 import { chatRoutes } from "./routes/chatRoute";
 import { ragRoutes } from "./routes/rag";
+import { paymentRoutes } from "./routes/paymentRoutes";
 
 const app = new Hono();
 
@@ -27,7 +28,7 @@ app.route("/chat", chatRoutes);
 app.route("/rag", ragRoutes);
 app.route("/reports", reportRoutes);
 app.route("/zap", zapRoutes);
-
 app.route("/reports", reportRoutes);
+app.route("/subscription", paymentRoutes);
 
 export default app;
