@@ -109,7 +109,10 @@ const renderCategory = (
 								className="w-[160px] bg-white shadow-lg rounded-md border border-gray-200"
 							>
 								<DropdownMenuItem
-									onClick={() => handleDelete(chat._id)}
+									onClick={(e: Event) => {
+										e.stopPropagation();
+										handleDelete(chat._id);
+									}}
 									className="text-red-600 flex items-center gap-2 hover:bg-red-50 cursor-pointer"
 								>
 									<Trash2 className="mr-2 h-4 w-4" />
@@ -143,6 +146,7 @@ export default function ChatHistory() {
 	const handleDelete = async (chatId: string) => {
 		try {
 			const result = await deleteChatById({ chatId });
+
 			showSuccessToast(result.message);
 		} catch (error) {
 			if (error instanceof Error) {

@@ -38,6 +38,7 @@ declare module "@components/ui/avatar";
 declare module "@components/ui/sidebar-menu-item";
 declare module "@components/ui/collapsible";
 declare module "@components/ui/input-otp";
+declare module "@components/ui/toaster";
 
 // Custom components
 declare module "@components/inputs/dynamic-form";
@@ -69,4 +70,5 @@ declare module "@/lib/utils";
 
 // hooks
 declare module "@hooks/use-mobile";
+declare module "@hooks/use-toast";
 declare module "@lib/supabase";
