@@ -41,11 +41,14 @@ export default function Subscription() {
 		setMessage(""); // Reset message
 		localStorage.setItem("plan_key", planKey);
 		try {
-			const response = await fetch(`${BASE_URL}/subscription/api/payment`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ plan: planKey }),
-			});
+			const response = await fetch(
+				`${BASE_URL}/subscription/api/payment`,
+				{
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ plan: planKey }),
+				},
+			);
 
 			const data = await response.json();
 			if (data.url) {
@@ -90,7 +93,9 @@ export default function Subscription() {
 
 	return (
 		<div className="container mx-auto px-8 py-16">
-			<h1 className="text-4xl font-bold text-center mb-12">Choose Your Plan</h1>
+			<h1 className="text-4xl font-bold text-center mb-12">
+				Choose Your Plan
+			</h1>
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 				{SUBSCRIPTION_PLANS.map((plan, index) => (
 					<Card
@@ -99,13 +104,17 @@ export default function Subscription() {
 						className={`flex flex-col ${index === 1 ? "md:scale-105" : ""} hover:shadow-lg transition-all duration-300`}
 					>
 						<CardHeader>
-							<CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+							<CardTitle className="text-2xl font-bold">
+								{plan.name}
+							</CardTitle>
 							<CardDescription className="text-xl font-semibold">
 								{plan.price}/month
 							</CardDescription>
 						</CardHeader>
 						<CardContent className="flex-grow">
-							<p className="text-muted-foreground mb-4">{plan.description}</p>
+							<p className="text-muted-foreground mb-4">
+								{plan.description}
+							</p>
 							<ul className="space-y-2">
 								{plan.features.map((feature, featureIndex) => (
 									<li
@@ -140,7 +149,9 @@ export default function Subscription() {
 
 			{/* Show success message */}
 			{message && (
-				<div className="mt-4 text-center text-lg font-bold">{message}</div>
+				<div className="mt-4 text-center text-lg font-bold">
+					{message}
+				</div>
 			)}
 		</div>
 	);
