@@ -13,48 +13,14 @@ import { showErrorToast, showSuccessToast } from "../toaster";
 import useStore from "../../store/store";
 import { BASE_URL } from "../../api/config.backend";
 
-const plans = [
-	{
-		name: "Free Trial",
-		price: "€0",
-		description: "Perfect for trying out our services",
-		features: ["Basic feature set", "3 Chats", "Limited Support"],
-		cta: "Start Free Trial",
-		planKey: "free",
-	},
-	{
-		name: "Intermediate",
-		price: "€10",
-		description: "Great for small teams and growing businesses",
-		features: [
-			"All Free Trial features",
-			"Limited Chat using GPT 3.5 Turbo",
-			"Priority email support",
-			"Advanced Cyber Security LLM",
-		],
-		cta: "Upgrade to Intermediate",
-		planKey: "intermediate",
-	},
-	{
-		name: "Professional",
-		price: "$39.99",
-		description: "For larger teams with advanced needs",
-		features: [
-			"All Intermediate features",
-			"Unlimited Chats",
-			"24/7 phone support",
-			"Custom integrations",
-			"Expert Cyber Security LLM",
-		],
-		cta: "Get Pro",
-		planKey: "pro",
-	},
-];
+import { SUBSCRIPTION_PLANS } from "./constants";
+import { useNavigate } from "react-router-dom";
 
 export default function Subscription() {
 	const [loading, setLoading] = useState(false);
 	const [message, setMessage] = useState("");
 	const { user, setUser } = useStore();
+	const navigate = useNavigate();
 
 	// Check if there's a session ID in the URL after Stripe redirects to the success URL
 	useEffect(() => {
@@ -126,12 +92,12 @@ export default function Subscription() {
 	};
 
 	return (
-		<div className="container mx-auto px-4 py-16">
+		<div className="container mx-auto px-8 py-16">
 			<h1 className="text-4xl font-bold text-center mb-12">
 				Choose Your Plan
 			</h1>
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-				{plans.map((plan, index) => (
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+				{SUBSCRIPTION_PLANS.map((plan, index) => (
 					<Card
 						// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 						key={index}
@@ -157,6 +123,7 @@ export default function Subscription() {
 										className="flex items-center"
 									>
 										<Check className="mr-2 h-4 w-4 text-green-500" />
+
 										<span>{feature}</span>
 									</li>
 								))}
@@ -166,10 +133,14 @@ export default function Subscription() {
 							<Button
 								className="w-full"
 								variant={index === 1 ? "default" : "outline"}
-								onClick={() => handleCheckout(plan.planKey)}
+								onClick={() =>
+									index === 1
+										? handleCheckout(plan.planKey)
+										: navigate("/chatbot")
+								}
 								disabled={loading}
 							>
-								{loading ? "Processing..." : plan.cta}
+								{index && loading ? "Processing..." : plan.cta}
 							</Button>
 						</CardFooter>
 					</Card>
