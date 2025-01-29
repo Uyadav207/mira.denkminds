@@ -142,8 +142,8 @@ const MiraChatBot: React.FC = () => {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
+		setChatsLoader(true);
 		if (chatIdParam) {
-			setChatsLoader(true);
 			setFetchChatsRegurlarly(true);
 			setCreatedChatId(chatIdParam);
 			if (isValidChatId !== undefined) {
@@ -158,6 +158,7 @@ const MiraChatBot: React.FC = () => {
 				}
 			}
 		} else {
+			setChatsLoader(false);
 			setMessages([]);
 		}
 	}, [chatIdParam, isValidChatId]);
