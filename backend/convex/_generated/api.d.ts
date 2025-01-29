@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as chats from "../chats.js";
 import type * as reports from "../reports.js";
+import type * as sastScans from "../sastScans.js";
 import type * as scans from "../scans.js";
 import type * as summaries from "../summaries.js";
 import type * as vulnerabilities from "../vulnerabilities.js";
@@ -31,6 +32,7 @@ import type * as vulnerabilityInfo from "../vulnerabilityInfo.js";
 declare const fullApi: ApiFromModules<{
   chats: typeof chats;
   reports: typeof reports;
+  sastScans: typeof sastScans;
   scans: typeof scans;
   summaries: typeof summaries;
   vulnerabilities: typeof vulnerabilities;
