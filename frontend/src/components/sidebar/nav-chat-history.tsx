@@ -109,7 +109,10 @@ const renderCategory = (
 								className="w-[160px] bg-white shadow-lg rounded-md border border-gray-200"
 							>
 								<DropdownMenuItem
-									onClick={() => handleDelete(chat._id)}
+									onClick={(e: Event) => {
+										e.stopPropagation();
+										handleDelete(chat._id);
+									}}
 									className="text-red-600 flex items-center gap-2 hover:bg-red-50 cursor-pointer"
 								>
 									<Trash2 className="mr-2 h-4 w-4" />
@@ -239,10 +242,7 @@ export default function ChatHistory() {
 			<SidebarGroup className="sidebar-section">
 				<SidebarGroupLabel>Application</SidebarGroupLabel>
 				<SidebarMenu>
-					<Collapsible
-						defaultOpen={false}
-						className="group/collapsible"
-					>
+					<Collapsible defaultOpen={false} className="group/collapsible">
 						<SidebarMenuItem className="dashboard-section">
 							<CollapsibleTrigger asChild>
 								<SidebarMenuButton tooltip="Dashboard">
@@ -263,9 +263,7 @@ export default function ChatHistory() {
 
 									<a
 										// biome-ignore lint/a11y/useValidAnchor: <explanation>
-										onClick={() =>
-											navigate("/recent-static-scans")
-										}
+										onClick={() => navigate("/recent-static-scans")}
 									>
 										<SidebarMenuButton tooltip="Scans">
 											<ArrowRight className="h-4 w-4" />
@@ -322,10 +320,7 @@ export default function ChatHistory() {
 							</SidebarMenuButton>
 						</a>
 					</SidebarMenuItem>
-					<SidebarMenuButton
-						tooltip="Tutorial"
-						onClick={handleTakeTutorial}
-					>
+					<SidebarMenuButton tooltip="Tutorial" onClick={handleTakeTutorial}>
 						<BinocularsIcon />
 						<span>Tutorial</span>
 					</SidebarMenuButton>
@@ -356,9 +351,7 @@ export default function ChatHistory() {
 									<SidebarMenuItem>
 										<div className="mt-10 flex flex-col items-center justify-center">
 											<MessageSquareCode />
-											{state === "expanded" && (
-												<p>No recent chats</p>
-											)}
+											{state === "expanded" && <p>No recent chats</p>}
 										</div>
 									</SidebarMenuItem>
 								) : (
