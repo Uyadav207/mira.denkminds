@@ -32,13 +32,14 @@ import MiraAvatar from "../../assets/Mira.svg";
 import { MoreHorizontal, SendIcon } from "lucide-react";
 
 // types
+import type { TriggerAgentData } from "../../types/agent";
+import type { Folder, FolderItem, FolderType } from "../../types/reports";
 import type {
 	Message,
 	ChatHistory,
 	Info,
 	RequestHumanInLoop,
 } from "../../types/chats";
-import type { Folder, FolderItem, FolderType } from "../../types/reports";
 
 //constants
 import { scanApis } from "../../api/scan";
@@ -59,8 +60,9 @@ import { isReportRequest } from "./helpers";
 import { actionCards, moreCards } from "./actions";
 import { CreateFolderDialog } from "../folder/CreateFolderDialog";
 import { HumanInTheLoopInput } from "./human-in-the-loop-input";
-import { funkyGreeting } from "./greetings";
-import { showErrorToast } from "../toaster";
+import { getGreeting } from "./greetings";
+import { showErrorToast, showInfoToast, showSuccessToast } from "../toaster";
+import { agentApi } from "../../api/agent";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -86,9 +88,6 @@ const MiraChatBot: React.FC = () => {
 	const chatId = chatIdParam;
 
 	const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-	// Get the funky greeting based on the detected time zone
-	const greeting = funkyGreeting(timeZone);
 
 	//store actions
 
@@ -120,6 +119,8 @@ const MiraChatBot: React.FC = () => {
 		setChatSummaryContent,
 	} = useChatActionStore();
 
+	// Get greeting based on the detected time zone
+	const greeting = getGreeting(timeZone);
 	const saveChatMessage = useMutation(api.chats.saveChatMessage);
 	const saveChat = useMutation(api.chats.saveChat);
 	const saveFile = useMutation(api.reports.addReport);
@@ -168,7 +169,6 @@ const MiraChatBot: React.FC = () => {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: all dependencies not needed
 	useEffect(() => {
-		// setMessages(null);
 		if (chatData) {
 			const chatHistory: Message[] = chatData.map(
 				(chat: ChatHistory): Message => ({
@@ -776,7 +776,7 @@ const MiraChatBot: React.FC = () => {
 						}
 					})();
 
-					// Run both the animation and API call
+					// Running both the animation and API call
 					const [response] = await Promise.all([
 						scanApis.scanWithProgress(payload),
 						progressAnimation,
@@ -793,8 +793,26 @@ const MiraChatBot: React.FC = () => {
 							cveList.push(...finding.cve_id);
 						}
 					}
-					// const uniqueCveList = [...new Set(cveList)];
-					// // console.log(uniqueCveList);
+					const uniqueCveList = [...new Set(cveList)];
+
+					const agentPayload: TriggerAgentData = {
+						emailId: user?.email || "",
+						cveIds: uniqueCveList,
+					};
+
+					// Running ai agent API in background
+					void (async () => {
+						try {
+							showInfoToast("Processed CVEs and triggering AI Agent");
+							await agentApi.triggerAgent(agentPayload);
+							showSuccessToast(
+								"Please check your email for the Vulnerability Insights.",
+							);
+						} catch (error) {
+							showErrorToast("Agent trigger failed. Please try again.");
+							return error;
+						}
+					})();
 
 					addBotMessage(
 						`Scan completed using **${response.data.complianceStandardUrl}**. Found **${response.data.totals.totalIssues}** vulnerabilities.`,

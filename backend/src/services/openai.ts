@@ -118,7 +118,7 @@ export class OpenAIService {
 
 	async generateSummary(prompt: string): Promise<string> {
 		const response = await this.client.completions.create({
-			model: "gpt-4",
+			model: "gpt-3.5-turbo",
 			prompt: prompt,
 		});
 		return response.choices[0].text || "";

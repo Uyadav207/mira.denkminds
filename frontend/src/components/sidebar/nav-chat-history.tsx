@@ -242,7 +242,10 @@ export default function ChatHistory() {
 			<SidebarGroup className="sidebar-section">
 				<SidebarGroupLabel>Application</SidebarGroupLabel>
 				<SidebarMenu>
-					<Collapsible defaultOpen={false} className="group/collapsible">
+					<Collapsible
+						defaultOpen={false}
+						className="group/collapsible"
+					>
 						<SidebarMenuItem className="dashboard-section">
 							<CollapsibleTrigger asChild>
 								<SidebarMenuButton tooltip="Dashboard">
@@ -263,7 +266,9 @@ export default function ChatHistory() {
 
 									<a
 										// biome-ignore lint/a11y/useValidAnchor: <explanation>
-										onClick={() => navigate("/recent-static-scans")}
+										onClick={() =>
+											navigate("/recent-static-scans")
+										}
 									>
 										<SidebarMenuButton tooltip="Scans">
 											<ArrowRight className="h-4 w-4" />
@@ -320,7 +325,10 @@ export default function ChatHistory() {
 							</SidebarMenuButton>
 						</a>
 					</SidebarMenuItem>
-					<SidebarMenuButton tooltip="Tutorial" onClick={handleTakeTutorial}>
+					<SidebarMenuButton
+						tooltip="Tutorial"
+						onClick={handleTakeTutorial}
+					>
 						<BinocularsIcon />
 						<span>Tutorial</span>
 					</SidebarMenuButton>
@@ -351,7 +359,9 @@ export default function ChatHistory() {
 									<SidebarMenuItem>
 										<div className="mt-10 flex flex-col items-center justify-center">
 											<MessageSquareCode />
-											{state === "expanded" && <p>No recent chats</p>}
+											{state === "expanded" && (
+												<p>No recent chats</p>
+											)}
 										</div>
 									</SidebarMenuItem>
 								) : (

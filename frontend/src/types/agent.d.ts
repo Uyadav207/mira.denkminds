@@ -1,4 +1,4 @@
 export type TriggerAgentData = {
 	emailId: string;
-	cveIds: [];
+	cveIds: string[];
 };

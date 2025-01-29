@@ -1,4 +1,4 @@
-export const funkyGreeting = (timeZone: string): string => {
+export const getGreeting = (timeZone: string): string => {
 	const currentTime = new Date().toLocaleTimeString("en-US", {
 		timeZone,
 		hour12: false,
