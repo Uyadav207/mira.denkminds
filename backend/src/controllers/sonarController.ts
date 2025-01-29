@@ -1,5 +1,11 @@
 import type { Context } from "hono";
 import { SonarService } from "../services/sonarService";
+import { PrismaClient } from "@prisma/client";
+import { SASTScanService } from "../services/sastScanStoreService";
+import type { SonarScanReport } from "../types/sastScan";
+
+const prisma = new PrismaClient();
+const saveToConvex = new SASTScanService(prisma);
 
 export class SonarController {
 	private sonarService = new SonarService();
@@ -69,15 +75,20 @@ export class SonarController {
 
 			const { metrics, issues, hotspots } = sonarReport;
 
+			const sonarUrl = `https://sonar.yourdomain.com/dashboard?id=${repoName}`;
+
 			const responsePayload = {
 				message: "Scan completed successfully",
 				userId,
 				projectKey: repoName,
 				repoType,
-				metrics,
+				sonarUrl,
+				metrics: sonarReport.metrics as SonarScanReport["metrics"],
 				issues,
 				hotspots,
 			};
+			console.log("yooooo completed");
+			await saveToConvex.saveSonarScanToConvex(responsePayload, userId);
 
 			return c.json(responsePayload);
 		} catch (error) {
