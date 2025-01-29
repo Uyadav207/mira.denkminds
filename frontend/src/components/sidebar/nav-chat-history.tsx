@@ -230,8 +230,8 @@ export default function ChatHistory() {
 		colorClasses = "bg-purple-200 text-purple-500 border-purple-200";
 		label = "Pro";
 	} else if (type === "intermediate") {
-		colorClasses = "bg-red-200 text-red-500 border-red-200";
-		label = "Intermediate";
+		colorClasses = "bg-orange-200 text-orange-500 border-orange-200";
+		label = "Standard";
 	} else {
 		colorClasses = "bg-gray-200 text-gray-500 border-gray-200";
 		label = "Unknown";
@@ -242,7 +242,10 @@ export default function ChatHistory() {
 			<SidebarGroup className="sidebar-section">
 				<SidebarGroupLabel>Application</SidebarGroupLabel>
 				<SidebarMenu>
-					<Collapsible defaultOpen={false} className="group/collapsible">
+					<Collapsible
+						defaultOpen={false}
+						className="group/collapsible"
+					>
 						<SidebarMenuItem className="dashboard-section">
 							<CollapsibleTrigger asChild>
 								<SidebarMenuButton tooltip="Dashboard">
@@ -263,7 +266,9 @@ export default function ChatHistory() {
 
 									<a
 										// biome-ignore lint/a11y/useValidAnchor: <explanation>
-										onClick={() => navigate("/recent-static-scans")}
+										onClick={() =>
+											navigate("/recent-static-scans")
+										}
 									>
 										<SidebarMenuButton tooltip="Scans">
 											<ArrowRight className="h-4 w-4" />
@@ -320,7 +325,10 @@ export default function ChatHistory() {
 							</SidebarMenuButton>
 						</a>
 					</SidebarMenuItem>
-					<SidebarMenuButton tooltip="Tutorial" onClick={handleTakeTutorial}>
+					<SidebarMenuButton
+						tooltip="Tutorial"
+						onClick={handleTakeTutorial}
+					>
 						<BinocularsIcon />
 						<span>Tutorial</span>
 					</SidebarMenuButton>
@@ -342,7 +350,9 @@ export default function ChatHistory() {
 									<SidebarMenuItem>
 										<div className="mt-10 flex flex-col items-center justify-center">
 											<MessageSquareCode />
-											{state === "expanded" && <p>No recent chats</p>}
+											{state === "expanded" && (
+												<p>No recent chats</p>
+											)}
 										</div>
 									</SidebarMenuItem>
 								) : (
