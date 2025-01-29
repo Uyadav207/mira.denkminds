@@ -152,3 +152,123 @@ export const saveIssueInfo = mutation({
 		return { issueInfoId };
 	},
 });
+
+export const fetchSASTScansByUserId = query({
+	args: {
+		userId: v.string(),
+	},
+	handler: async (ctx, { userId }) => {
+		const scans = await ctx.db
+			.query("staticScans")
+			.withIndex("by_userId", (q) => q.eq("userId", userId))
+			.collect();
+		return scans;
+	},
+});
+
+export const fetchHotspotListByScanId = query({
+	args: {
+		staticScanId: v.id("staticScans"),
+	},
+	handler: async (ctx, { staticScanId }) => {
+		const hotspots = await ctx.db
+			.query("hotspotList")
+			.withIndex("by_staticScanId", (q) => q.eq("staticScanId", staticScanId))
+			.collect();
+		return hotspots;
+	},
+});
+
+export const fetchIssueListByScanId = query({
+	args: {
+		staticScanId: v.id("staticScans"),
+	},
+	handler: async (ctx, { staticScanId }) => {
+		const issues = await ctx.db
+			.query("issueList")
+			.withIndex("by_staticScanId", (q) => q.eq("staticScanId", staticScanId))
+			.collect();
+		return issues;
+	},
+});
+
+export const fetchIssueInfoByIssueId = query({
+	args: {
+		issueId: v.id("issueList"),
+	},
+	handler: async (ctx, { issueId }) => {
+		const issueInfo = await ctx.db
+			.query("issueInfo")
+			.withIndex("by_issueId", (q) => q.eq("issueId", issueId))
+			.collect();
+		return issueInfo;
+	},
+});
+
+export const fetchRemediationDetailsByIssueId = query({
+	args: {
+		issueId: v.id("issueList"),
+	},
+	handler: async (ctx, { issueId }) => {
+		const issueInfo = await ctx.db
+			.query("issueInfo")
+			.withIndex("by_issueId", (q) => q.eq("issueId", issueId))
+			.collect();
+
+		return issueInfo.map((info) => ({
+			rule: info.rule.key,
+			remediationSteps: info.rule.remediationSteps.map((step) => ({
+				context: step.context,
+				description: step.description,
+				problemCodeSnippet: step.problemCodeSnippet,
+				remediationCodeSnippet: step.remediationCodeSnippet,
+			})),
+		}));
+	},
+});
+
+export const deleteSASTScan = mutation({
+	args: {
+		scanId: v.id("staticScans"),
+	},
+	handler: async (ctx, { scanId }) => {
+		if (!scanId) {
+			throw new Error("scanId is required.");
+		}
+		const issues = await ctx.db
+			.query("issueList")
+			.withIndex("by_staticScanId", (q) => q.eq("staticScanId", scanId))
+			.collect();
+
+		for (const issue of issues) {
+			await ctx.db
+				.query("issueInfo")
+				.withIndex("by_issueId", (q) => q.eq("issueId", issue._id))
+				.collect()
+				.then((issueInfos) => {
+					for (const issueInfo of issueInfos) {
+						ctx.db.delete(issueInfo._id);
+					}
+				});
+		}
+
+		for (const issue of issues) {
+			await ctx.db.delete(issue._id);
+		}
+
+		const hotspots = await ctx.db
+			.query("hotspotList")
+			.withIndex("by_staticScanId", (q) => q.eq("staticScanId", scanId))
+			.collect();
+
+		for (const hotspot of hotspots) {
+			await ctx.db.delete(hotspot._id);
+		}
+		await ctx.db.delete(scanId);
+
+		return {
+			success: true,
+			message: "Scan and all related data deleted successfully.",
+		};
+	},
+});
