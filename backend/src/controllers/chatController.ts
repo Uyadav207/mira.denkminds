@@ -26,10 +26,11 @@ export class ChatController {
 
 	async chatStream(c: Context) {
 		try {
-			const { message, useRAG } = await c.req.json();
+			const { message, useRAG, previousMessages = [] } = await c.req.json();
 			const stream = await this.chatService.processMessageStream(
 				message,
 				useRAG,
+				previousMessages,
 			);
 
 			return new Response(

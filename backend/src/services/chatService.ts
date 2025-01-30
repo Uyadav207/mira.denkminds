@@ -8,6 +8,11 @@ interface Document {
 	pageContent: string;
 }
 
+interface ChatMessage {
+	role: "system" | "user" | "assistant";
+	content: string;
+}
+
 export class ChatService {
 	private static instance: ChatService;
 	private openai: OpenAIService;
@@ -266,28 +271,31 @@ export class ChatService {
 		return this.openai.chat(messages);
 	}
 
-	async processMessageStream(message: string, useRAG: boolean) {
+	async processMessageStream(
+		message: string,
+		useRAG: boolean,
+		previousMessages: ChatMessage[] = [], // Accept messages from frontend
+	) {
 		if (!useRAG) {
 			const systemMessage = `
-			You are a cybersecurity assistant specialized in analyzing website vulnerabilities. 
-				Your key responsibilities are:
-				1. Prompt users for a domain name or URL when they inquire about website security assessments.
-				2. If a domain or URL is provided, analyze and return insights on common vulnerabilities, potential risks, and recommendations.
-				3. Provide general guidance for cybersecurity-related queries and suggest tools or frameworks for assessments when needed.
-
-				Format the response in markdown with clear sections and bullet points for readability.
-			`;
+			You are a cybersecurity assistant specialized in analyzing website vulnerabilities.
+			Your key responsibilities are:
+			1. Prompt users for a domain name or URL when they inquire about website security assessments.
+			2. If a domain or URL is provided, analyze and return insights on common vulnerabilities, potential risks, and recommendations.
+			3. Provide general guidance for cybersecurity-related queries and suggest tools or frameworks for assessments when needed.
+			Format the response in markdown with clear sections and bullet points for readability.
+		  `;
 
 			const messages: ChatCompletionMessageParam[] = [
 				{ role: "system", content: systemMessage },
-				{ role: "user", content: message },
+				...previousMessages, //Sending history from frontend
+				{ role: "user", content: message }, // Add the current message
 			];
 
 			return this.openai.chatStream(messages);
 		}
 
 		const docs: Document[] = await this.pinecone.similaritySearch(message);
-
 		return this.openai.generateRagAnswer(docs);
 	}
 
