@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { Button } from "@components/ui/button";
 import { useReactToPrint } from "react-to-print";
 import { useQuery } from "convex/react";
-import { Id } from "../../convex/_generated/dataModel";
+import type { Id } from "../../convex/_generated/dataModel";
 import { api } from "../../convex/_generated/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -87,12 +87,9 @@ export function ChatTemplate() {
 
 					{/* Chat Summary Section */}
 					<div className="mt-8 print-content">
-						
 						{chatSummary ? (
 							<>
 								<div className="space-y-4">
-									
-
 									{/* Render markdown content */}
 									<ReactMarkdown rehypePlugins={[rehypeRaw]}>
 										{chatSummary.content}
@@ -101,7 +98,9 @@ export function ChatTemplate() {
 
 								<div className="text-xs text-gray-500 mt-4">
 									Report generated on:{" "}
-									{new Date(chatSummary.createdAt).toLocaleString()}
+									{new Date(
+										chatSummary.createdAt,
+									).toLocaleString()}
 								</div>
 							</>
 						) : (
@@ -114,7 +113,9 @@ export function ChatTemplate() {
 						<div className="flex justify-between items-center text-xs text-gray-500">
 							<p>© 2025 denkMinds. All rights reserved.</p>
 							<div className="flex items-center gap-4">
-								<span className="uppercase font-medium">Sensitive</span>
+								<span className="uppercase font-medium">
+									Sensitive
+								</span>
 								<span>Page 1 of 1</span>
 							</div>
 						</div>
@@ -124,4 +125,3 @@ export function ChatTemplate() {
 		</div>
 	);
 }
-
