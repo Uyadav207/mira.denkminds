@@ -128,10 +128,92 @@ export class OpenAIService {
 		messages: ChatCompletionMessageParam[],
 	): Promise<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>> {
 		const stream = await this.client.chat.completions.create({
-			model: "gpt-3.5-turbo",
+			model: "gpt-4o",
 			messages: messages,
 			stream: true,
+			temperature: 0.7,
+			tools: [
+				{
+					type: "function",
+					function: {
+						name: "select_scan_option",
+						description:
+							"Present scan options to the user for security testing.",
+						parameters: {
+							type: "object",
+							properties: {
+								question: {
+									type: "string",
+									description:
+										"The question to ask the user about scan selection.",
+								},
+								options: {
+									type: "array",
+									items: {
+										type: "string",
+										enum: ["Passive Scan", "Active Scan"], // Explicitly define allowed options
+									},
+									description: "Available scan options to choose from.",
+								},
+							},
+							required: ["question", "options"],
+						},
+					},
+				},
+				{
+					type: "function",
+					function: {
+						name: "select_general_option",
+						description:
+							"Present general options for system configuration and setup.",
+						parameters: {
+							type: "object",
+							properties: {
+								question: {
+									type: "string",
+									description: "The question about system configuration.",
+								},
+								options: {
+									type: "array",
+									items: { type: "string" },
+									description: "List of available options.",
+									minItems: 1, // Ensure at least one option is provided
+								},
+							},
+							required: ["question", "options"],
+						},
+					},
+				},
+				{
+					type: "function",
+					function: {
+						name: "approve_action",
+						description: "Request user approval for security-related actions.",
+						parameters: {
+							type: "object",
+							properties: {
+								question: {
+									type: "string",
+									description: "The security approval question.",
+								},
+								options: {
+									type: "array",
+									items: {
+										type: "string",
+										enum: ["Yes", "No"], // Explicitly define approval options
+									},
+									description: "Available response options.",
+									default: ["Yes", "No"],
+								},
+							},
+							required: ["question"],
+						},
+					},
+				},
+			],
+			tool_choice: "auto",
 		});
+
 		return stream;
 	}
 }
