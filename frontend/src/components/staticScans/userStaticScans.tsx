@@ -11,14 +11,14 @@ const UserStaticScans: React.FC = () => {
 	const metrics = Object.entries(scanData.metrics);
 
 	return (
-		<Card className="rounded-lg border p-6 bg-sidebar shadow-md">
+		<Card className="rounded-lg border p-6 bg-sidebar shadow-md w-full max-w-6xl mx-auto">
 			{/* Header */}
-			<div className="flex items-center justify-between mb-4">
+			<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
 				<div className="flex items-center space-x-2">
-					<h1 className="text-2xl font-semibold ">
+					<h1 className="text-xl sm:text-2xl font-semibold ">
 						{scanData.title}
 					</h1>
-					<Badge className="bg-gray-200 text-gray-600">
+					<Badge className="bg-gray-200 text-gray-600 text-xs sm:text-sm">
 						{scanData.visibility}
 					</Badge>
 				</div>
@@ -34,14 +34,14 @@ const UserStaticScans: React.FC = () => {
 			</div>
 
 			{/* Metadata */}
-			<div className="text-gray-500 text-sm mb-4">
+			<div className="text-gray-500 text-xs sm:text-sm mb-4">
 				Last analysis: {scanData.lastAnalysis}
 			</div>
 
 			{/* Metrics */}
-			<div className="grid grid-cols-4 gap-4 text-sm">
+			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 text-sm">
 				{metrics.slice(0, 4).map(([metric, data]) => (
-					<div key={metric} className="flex items-center space-x-2">
+					<div key={metric} className="flex items-center space-x-2 p-2 bg-white shadow-sm rounded-lg">
 						<Badge
 							className={`${
 								data.level === "E"
@@ -54,16 +54,16 @@ const UserStaticScans: React.FC = () => {
 							{data.level}
 						</Badge>
 						<div>
-							<p className="font-semibold ">{metric}</p>
-							<p className="font-bold">{data.value}</p>
+							<p className="font-semibold text-xs sm:text-sm ">{metric}</p>
+							<p className="font-bold text-sm sm:text-base">{data.value}</p>
 						</div>
 					</div>
 				))}
 			</div>
 
-			<div className="grid grid-cols-4 gap-4 text-sm mt-4">
+			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 text-sm">
 				{metrics.slice(4).map(([metric, data]) => (
-					<div key={metric} className="flex items-center space-x-2">
+					<div key={metric} className="flex items-center space-x-2 p-2 bg-white shadow-sm rounded-lg">
 						<Badge
 							className={`${
 								data.level === "E"
@@ -76,17 +76,17 @@ const UserStaticScans: React.FC = () => {
 							{data.level}
 						</Badge>
 						<div>
-							<p className="font-semibold ">{metric}</p>
-							<p className="font-bold">{data.value}</p>
+							<p className="font-semibold text-xs sm:text-sm ">{metric}</p>
+							<p className="font-bold text-sm sm:text-base">{data.value}</p>
 						</div>
 					</div>
 				))}
 			</div>
 
 			{/* Buttons */}
-			<div className="mt-6 flex justify-end space-x-4">
+			<div className="mt-6 flex flex-col sm:flex-row justify-center sm:justify-end space-y-2 sm:space-y-0 sm:space-x-4">
 				<Button
-					className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+					className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
 					onClick={() =>
 						navigate("/recent-static-scans/hotspots", {
 							state: { hotspots: response.report.issues },
@@ -96,7 +96,7 @@ const UserStaticScans: React.FC = () => {
 					View Hotspots
 				</Button>
 				<Button
-					className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+					className="w-full sm:w-auto bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
 					onClick={() =>
 						navigate("/recent-static-scans/issues", {
 							state: { issues: response.report.issues },
