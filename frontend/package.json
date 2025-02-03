@@ -64,6 +64,7 @@
 		"react-to-print": "^3.0.4",
 		"react-typed": "^2.0.12",
 		"recharts": "^2.15.0",
+		"rehype-raw": "^7.0.0",
 		"remark-gfm": "^4.0.0",
 		"tailwind-merge": "^2.5.4",
 		"tailwindcss-animate": "^1.0.7",

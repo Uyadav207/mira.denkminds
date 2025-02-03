@@ -33,7 +33,7 @@ import MiraAvatar from "../../assets/Mira.svg";
 import { MoreHorizontal, SendIcon } from "lucide-react";
 
 // types
-// import type { TriggerAgentData } from "../../types/agent";
+import type { TriggerAgentData } from "../../types/agent";
 import type { Folder, FolderItem, FolderType } from "../../types/reports";
 import type {
 	Message,
