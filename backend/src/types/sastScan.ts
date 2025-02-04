@@ -41,7 +41,6 @@ export interface SonarReport {
 		security_rating: number | string;
 		ncloc: number | string;
 		vulnerabilities: number | string;
-		security_hotspots_reviewed: number | string;
 		software_quality_maintainability_rating: number | string;
 	};
 	issues: Issue[];
@@ -90,7 +89,6 @@ export interface SonarScanReport {
 		security_rating: string;
 		ncloc: string;
 		vulnerabilities: string;
-		security_hotspots_reviewed: string;
 		software_quality_maintainability_rating: string;
 	};
 	issues: Issue[];
