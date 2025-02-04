@@ -39,16 +39,10 @@ const App = () => {
 						<Route path="/" element={<Auth />} />
 						<Route path="/login" element={<Auth />} />
 						<Route path="/register" element={<Auth />} />
-						<Route
-							path="/forgot-password"
-							element={<ForgotPassword />}
-						/>
+						<Route path="/forgot-password" element={<ForgotPassword />} />
 						<Route path="/terms" element={<TermsOfService />} />
 						<Route path="/Privacy" element={<PrivacyPolicy />} />
-						<Route
-							path="/auth/callback"
-							element={<AuthCallback />}
-						/>
+						<Route path="/auth/callback" element={<AuthCallback />} />
 						<Route
 							element={
 								<PrivateRoute>
@@ -57,24 +51,12 @@ const App = () => {
 								</PrivateRoute>
 							}
 						>
-							<Route
-								path="/chat/:_id"
-								element={<ChatTemplate />}
-							/>
-							<Route
-								path="/chatbot/:chatId?"
-								element={<Chatbot />}
-							/>
-							<Route
-								path="chat-summaries"
-								element={<ChatSummaries />}
-							/>
+							<Route path="/chat/:_id" element={<ChatTemplate />} />
+							<Route path="/chatbot/:chatId?" element={<Chatbot />} />
+							<Route path="chat-summaries" element={<ChatSummaries />} />
 
 							<Route path="/settings" element={<Settings />} />
-							<Route
-								path="/recent-scan"
-								element={<RecentScans />}
-							/>
+							<Route path="/recent-scan" element={<RecentScans />} />
 							<Route
 								path="/recent-scan/:scanId/"
 								element={<Vulnerabilities />}
@@ -88,35 +70,23 @@ const App = () => {
 								element={<RecentStaticScans />}
 							/>
 							<Route
-								path="/recent-static-scans/hotspots"
+								path="/recent-static-scans/hotspots/:staticScanId/"
 								element={<ScanHotspots />}
 							/>
 							<Route
-								path="/recent-static-scans/issues"
+								path="/recent-static-scans/issues/:staticScanId/"
 								element={<ScanIssues />}
 							/>
 							<Route
-								path="/recent-static-scans/issues/details"
+								path="/recent-static-scans/issues/:staticScanId/details/:issueId"
 								element={<ScanIssuesDetails />}
 							/>
 							<Route path="/api-scan" element={<ApiScans />} />
-							<Route
-								path="/reports/:reportId?"
-								element={<Reports />}
-							/>
-							<Route
-								path="/accounts"
-								element={<ProfileSettings />}
-							/>
-							<Route
-								path="/file/:fileId"
-								element={<FileView />}
-							/>
+							<Route path="/reports/:reportId?" element={<Reports />} />
+							<Route path="/accounts" element={<ProfileSettings />} />
+							<Route path="/file/:fileId" element={<FileView />} />
 							<Route path="/faqs" element={<FAQs />} />
-							<Route
-								path="/subscription"
-								element={<Subscriptions />}
-							/>
+							<Route path="/subscription" element={<Subscriptions />} />
 						</Route>
 						<Route path="*" element={<NotFound />} />
 					</Routes>

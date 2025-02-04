@@ -16,7 +16,6 @@ export const saveSonarScan = mutation({
 				security_rating: v.string(),
 				ncloc: v.string(),
 				vulnerabilities: v.string(),
-				security_hotspots_reviewed: v.string(),
 				software_quality_maintainability_rating: v.string(),
 			}),
 		),
@@ -270,5 +269,22 @@ export const deleteSASTScan = mutation({
 			success: true,
 			message: "Scan and all related data deleted successfully.",
 		};
+	},
+});
+
+export const deleteHotspots = mutation({
+	args: {
+		hotspotIds: v.array(v.id("hotspotList")),
+	},
+	handler: async (ctx, { hotspotIds }) => {
+		if (!hotspotIds || hotspotIds.length === 0) {
+			throw new Error("At least one hotspot ID is required.");
+		}
+
+		for (const hotspotId of hotspotIds) {
+			await ctx.db.delete(hotspotId);
+		}
+
+		return { success: true, message: "Hotspot deleted successfully." };
 	},
 });
