@@ -38,14 +38,14 @@ export class ChatController {
 					async start(controller) {
 						try {
 							let accumulatedToolCall = null;
+							let accumulatedContent = "";
 
 							for await (const chunk of stream) {
 								const delta = chunk.choices[0]?.delta;
 
-								console.log("Delta:", delta);
-
 								// Handle regular content
 								if (delta?.content) {
+									accumulatedContent += delta.content;
 									controller.enqueue(new TextEncoder().encode(delta.content));
 								}
 
@@ -60,47 +60,66 @@ export class ChatController {
 											type: toolCall.type,
 											function: {
 												name: toolCall.function?.name || "",
-												arguments: toolCall.function?.arguments || "",
+												arguments: "",
 											},
 										};
-									} else {
-										// Accumulate function arguments as they come in chunks
-										if (toolCall.function?.arguments) {
-											accumulatedToolCall.function.arguments +=
-												toolCall.function.arguments;
-										}
 									}
 
+									if (toolCall.function?.arguments) {
+										accumulatedToolCall.function.arguments +=
+											toolCall.function.arguments;
+									}
+
+									console.log(toolCall);
+
+									// Check if JSON is complete
 									if (
 										accumulatedToolCall.function.name &&
-										accumulatedToolCall.function.arguments.trim().endsWith("}")
+										accumulatedToolCall.function.arguments.trim()
 									) {
-										try {
-											const parsedArgs = JSON.parse(
-												accumulatedToolCall.function.arguments,
-											);
-											controller.enqueue(
-												new TextEncoder().encode(
-													JSON.stringify({
-														type: "tool_call",
-														data: {
-															name: accumulatedToolCall.function.name,
-															arguments: parsedArgs,
-														},
-													}),
-												),
-											);
-										} catch (e) {
-											console.error("Error parsing tool call arguments:", e);
+										const jsonString =
+											accumulatedToolCall.function.arguments.trim();
+
+										// Log the JSON string for debugging
+										// console.log("Accumulated JSON string:", jsonString);
+
+										// Check if the JSON string is complete
+										const lastChar = jsonString.slice(-1);
+										console.log("Last char:", lastChar);
+
+										if (
+											lastChar === "}" ||
+											lastChar === "]" ||
+											lastChar === "]}"
+										) {
+											try {
+												// Attempt to parse the JSON string
+												const parsedArgs = JSON.parse(jsonString);
+
+												// Send tool call response
+												const toolCallResponse = {
+													type: "tool_call",
+													data: {
+														name: accumulatedToolCall.function.name,
+														arguments: parsedArgs,
+													},
+												};
+												controller.enqueue(
+													new TextEncoder().encode(
+														JSON.stringify(toolCallResponse),
+													),
+												);
+
+												// Reset accumulator
+												accumulatedToolCall = null;
+											} catch (e) {
+												console.debug("Error parsing JSON:", e);
+											}
 										}
 									}
 								}
-
-								// Handle finish reason
-								if (chunk.choices[0]?.finish_reason) {
-									break;
-								}
 							}
+
 							controller.close();
 						} catch (error) {
 							console.error("Streaming error:", error);

@@ -32,7 +32,7 @@ import MiraAvatar from "../../assets/Mira.svg";
 import { MoreHorizontal, SendIcon } from "lucide-react";
 
 // types
-// import type { TriggerAgentData } from "../../types/agent";
+import type { TriggerAgentData } from "../../types/agent";
 import type { Folder, FolderItem, FolderType } from "../../types/reports";
 import type {
 	Message,
@@ -43,6 +43,7 @@ import type {
 
 //constants
 import { scanApis } from "../../api/scan";
+import { ragApis } from "../../api/rag";
 import useScanStore from "../../store/scanStore";
 import MarkdownViewer from "../file/MarkdownViewer";
 import {
@@ -56,16 +57,14 @@ import {
 	GITHUB_URL_PATTERN,
 	GITHUB_SCAN,
 } from "./constants";
-import { isReportRequest } from "./helpers";
+// import { isReportRequest } from "./helpers";
 import { actionCards, moreCards } from "./actions";
 import { CreateFolderDialog } from "../folder/CreateFolderDialog";
 import { HumanInTheLoopInput } from "./human-in-the-loop-input";
 import { getGreeting } from "./greetings";
-import {
-	showErrorToast,
-	// showInfoToast, showSuccessToast
-} from "../toaster";
-// import { agentApi } from "../../api/agent";
+import { showErrorToast, showInfoToast, showSuccessToast } from "../toaster";
+
+import { agentApi } from "../../api/agent";
 
 const MiraChatBot: React.FC = () => {
 	const navigate = useNavigate();
@@ -183,6 +182,7 @@ const MiraChatBot: React.FC = () => {
 					sender: chat.sender as "user" | "ai",
 				}),
 			);
+
 			setMessages(chatHistory);
 
 			setChatsLoader(false);
@@ -304,7 +304,7 @@ const MiraChatBot: React.FC = () => {
 			pattern.test(lowerPrompt),
 		);
 		const isClarification = CLARIFICATION_PATTERNS.test(lowerPrompt);
-		const reportRequest = isReportRequest(lowerPrompt);
+		// const reportRequest = isReportRequest(lowerPrompt);
 
 		if (hasNegation) {
 			setIsLoading(true);
@@ -387,34 +387,35 @@ const MiraChatBot: React.FC = () => {
 		// 	});
 		// 	requestHumanApproval("scan", manualMessage, "none", botMessage.id);
 		// }
-		else if (reportRequest) {
-			const manualMessage = "Thank you for your request.";
-			const botMessage: Message = {
-				id: uuidv4(),
-				message: manualMessage,
-				sender: "ai",
-			};
-			if (!chatId && !createdChatId) {
-				processManualMessages(userMessage, botMessage);
-			} else {
-				await saveChatMessage({
-					chatId: createdChatId
-						? (createdChatId as Id<"chats">)
-						: (chatId as Id<"chats">),
-					humanInTheLoopId: botMessage.id,
-					sender: botMessage.sender,
-					message: botMessage.message,
-				});
-			}
-			setPendingAction(botMessage.id as string);
-			setRequestHumanInLoop({
-				action: "report",
-				prompt: manualMessage,
-				type: "none",
-				id: botMessage.id,
-			});
-			requestHumanApproval("report", manualMessage, "none", botMessage.id);
-		} else {
+		// else if (reportRequest) {
+		// 	const manualMessage = "Thank you for your request.";
+		// 	const botMessage: Message = {
+		// 		id: uuidv4(),
+		// 		message: manualMessage,
+		// 		sender: "ai",
+		// 	};
+		// 	if (!chatId && !createdChatId) {
+		// 		processManualMessages(userMessage, botMessage);
+		// 	} else {
+		// 		await saveChatMessage({
+		// 			chatId: createdChatId
+		// 				? (createdChatId as Id<"chats">)
+		// 				: (chatId as Id<"chats">),
+		// 			humanInTheLoopId: botMessage.id,
+		// 			sender: botMessage.sender,
+		// 			message: botMessage.message,
+		// 		});
+		// 	}
+		// 	setPendingAction(botMessage.id as string);
+		// 	setRequestHumanInLoop({
+		// 		action: "report",
+		// 		prompt: manualMessage,
+		// 		type: "none",
+		// 		id: botMessage.id,
+		// 	});
+		// 	requestHumanApproval("report", manualMessage, "none", botMessage.id);
+		// }
+		else {
 			try {
 				setIsLoading(true);
 
@@ -466,26 +467,25 @@ const MiraChatBot: React.FC = () => {
 		);
 	};
 
-	const requestHumanApproval = (
+	const requestHumanApproval = async (
 		action: string, // action for the approval message
 		prompt: string, // prompt to show to the human
 		type?: string, // type of action to perform [none for options] [action type for approval]
 		id?: string, // id to link the approval message to the action
-		updatedOptions?: string[], // options to show to the human
+		updatedOptions?: {
+			name: string;
+			id: string;
+			type: string;
+			description: string;
+		}[], // options to show to the human
 	) => {
 		let approvalMessage = "";
 		if (action === "scan") {
 			approvalMessage = "You can choose from the following:";
 			if (updatedOptions) {
-				setActionPrompts(
-					updatedOptions.map((option) => ({
-						id: uuidv4(),
-						name: option,
-						type: "option",
-					})),
-				);
+				setActionPrompts(updatedOptions);
+				setInfo(updatedOptions);
 			}
-			// setInfo(updatedOptions);
 			setHumanInTheLoopMessage(approvalMessage);
 		} else if (action === "github-scan") {
 			approvalMessage =
@@ -548,9 +548,11 @@ const MiraChatBot: React.FC = () => {
 			approvalMessage = "Please enter the access token of github repository";
 			setHumanInTheLoopMessage(approvalMessage);
 		} else {
-			approvalMessage = "You can choose from the following:";
-			// setActionPrompts(updatedOptions);
-			// setInfo(updatedOptions);
+			approvalMessage = "You can choose from the following options";
+			if (updatedOptions) {
+				setActionPrompts(updatedOptions);
+				setInfo(updatedOptions);
+			}
 			setHumanInTheLoopMessage(approvalMessage);
 		}
 		const approvalMessageObject: Message = {
@@ -564,6 +566,7 @@ const MiraChatBot: React.FC = () => {
 
 		setActionType(action);
 		setConfirmType(type || null);
+
 		setMessages((prev) => [...prev, approvalMessageObject]);
 	};
 
@@ -916,7 +919,7 @@ const MiraChatBot: React.FC = () => {
 					action as string,
 				);
 				const manualMessage =
-					"Do you want to save this as a detailed Chat Summary report with an email?";
+					"Do you want to save this as a detailed Chat Summary report?";
 				const botMessage: Message = {
 					id: uuidv4(),
 					message: manualMessage,
@@ -1233,14 +1236,9 @@ const MiraChatBot: React.FC = () => {
 				setIsScanLoading(false);
 			}
 		} else {
-			await saveChatMessage({
-				humanInTheLoopId: userMessage.id,
-				chatId: createdChatId ? createdChatId : (chatId as Id<"chats">),
-				sender: userMessage.sender,
-				message: userMessage.message,
-			});
-
+			setPendingAction(null);
 			handleSend(userMessage.message);
+			// processPrompt(userMessage);
 		}
 	};
 
@@ -1260,28 +1258,50 @@ const MiraChatBot: React.FC = () => {
 			const decoder = new TextDecoder();
 			let accumulatedMessage = "";
 			let humanAction = "";
-			let humanOptions = "";
+			let humanOptions: { option: string; description: string }[] = [];
+			let question = "";
 
 			while (true) {
 				const { done, value } = await reader.read();
 
 				if (done) {
-					if (!accumulatedMessage) {
-						accumulatedMessage = "Waiting for input selection...";
+					if (!accumulatedMessage && humanAction !== "sendRagQuery") {
+						accumulatedMessage = question;
 					}
 
 					await completeMessage();
+
 					const botMessage: Message = {
 						id: uuidv4(),
 						message: accumulatedMessage,
 						sender: "ai",
 					};
-					handleMessagesUpdate([userMessage, botMessage]);
 
-					if (humanAction === "select_scan_option") {
+					await handleMessagesUpdate([userMessage, botMessage]);
+
+					if (humanAction === "sendRagQuery") {
+						try {
+							setIsLoading(true);
+							const response = await ragApis.sendRagQuery(question);
+							addBotMessage(response.data.answer);
+						} catch (error) {
+							return error;
+						} finally {
+							setIsLoading(false);
+						}
+					} else if (humanAction === "sendEmail") {
+						const manualMessage = "Please select either yes or no";
+						setPendingAction(botMessage.id as string);
+						requestHumanApproval(
+							"approval",
+							manualMessage,
+							"email",
+							botMessage.id,
+						);
+					} else if (humanAction === "select_scan_option") {
 						const updatedScanTypes = SCANTYPES.map((scanType, index) => ({
 							...scanType,
-							name: humanOptions[index],
+							name: humanOptions[index].option,
 						}));
 
 						const manualMessage =
@@ -1294,30 +1314,27 @@ const MiraChatBot: React.FC = () => {
 							manualMessage,
 							"none",
 							botMessage.id,
-							updatedScanTypes.map((scanType) => scanType.name),
+							updatedScanTypes,
 						);
 					} else if (humanAction === "select_general_option") {
-						const updatedScanTypes = SCANTYPES.map((scanType, index) => ({
-							...scanType,
-							type: humanOptions[index],
-							name: humanOptions[index],
+						const updatedOptions = humanOptions?.map((options, index) => ({
+							id: String(index),
+							type: options.option,
+							name: options.option,
+							description: options.description,
 						}));
 
-						const manualMessage =
-							"Thank you for providing the scan type. Please select the standard you want to scan against.";
+						// const manualMessage = humanOptions;
 
 						setPendingAction(botMessage.id as string);
 
 						requestHumanApproval(
 							"random",
-							manualMessage,
+							"Human in the loop Action Completed",
 							"none",
 							botMessage.id,
-							updatedScanTypes.map((scanType) => scanType.name),
+							updatedOptions,
 						);
-					} else if (humanAction === "approve_action") {
-						setPendingAction(botMessage.id as string);
-						requestHumanApproval("approval", "", "normal", botMessage.id);
 					}
 
 					//addd toolcall completion here
@@ -1337,6 +1354,7 @@ const MiraChatBot: React.FC = () => {
 					const chunkText = decoder.decode(value, { stream: true });
 
 					try {
+						setStreaming(true);
 						// Try to parse as JSON for tool calls
 						const parsed = JSON.parse(chunkText);
 
@@ -1345,12 +1363,13 @@ const MiraChatBot: React.FC = () => {
 
 							// Handle the options here
 							humanAction = parsed.data.name;
+
 							const options = parsed.data.arguments.options;
 
 							humanOptions = options;
-							accumulatedMessage = parsed.data.arguments.question;
-						} else {
-							accumulatedMessage += chunkText;
+
+							question = parsed.data.arguments.question;
+							accumulatedMessage = question;
 						}
 					} catch {
 						// Not JSON, use as regular text
@@ -1580,8 +1599,31 @@ const MiraChatBot: React.FC = () => {
 			});
 
 			requestHumanApproval("folder-sast", manualMessage, "none", botMessage.id);
-		} else {
-			processPrompt(userMessage);
+		} else if (confirmType === "email") {
+			const response = await ragApis.getLatestCVEs();
+			const { cveIds } = response.data;
+			const uniqueCveList = [...new Set(cveIds)];
+
+			const agentPayload: TriggerAgentData = {
+				emailId: user?.email || "",
+				cveIds: uniqueCveList as string[],
+			};
+
+			// Running ai agent API in background
+			void (async () => {
+				try {
+					showInfoToast("Processed CVEs and triggering AI Agent");
+					await agentApi.triggerAgent(agentPayload);
+					showSuccessToast(
+						"Please check your email for the Vulnerability Insights.",
+					);
+					addBotMessage("Email sent successfully. Please check your inbox");
+				} catch (error) {
+					showErrorToast("Agent trigger failed. Please try again.");
+					addBotMessage("Sorry I could not send an email. Please try again.");
+					return error;
+				}
+			})();
 		}
 	};
 
@@ -1600,7 +1642,7 @@ const MiraChatBot: React.FC = () => {
 			message: userMessage.message,
 		});
 		setChatSummaryContent("");
-		processPrompt(userMessage);
+		// processPrompt(userMessage);
 		// addBotMessage("Action cancelled. How else can I assist you?");
 	};
 
@@ -1686,6 +1728,7 @@ const MiraChatBot: React.FC = () => {
 
 	const handleMessagesUpdate = async (updatedMessages: Message[]) => {
 		const lastMessage = updatedMessages[updatedMessages.length - 1];
+		const chatId = createdChatId;
 		if (!chatId && !createdChatId) {
 			const response = await handleTitleGeneration(lastMessage.message);
 			const result = await saveChat({
@@ -1722,6 +1765,7 @@ const MiraChatBot: React.FC = () => {
 				});
 			}
 		}
+		return;
 	};
 
 	const completeMessage = async () => {

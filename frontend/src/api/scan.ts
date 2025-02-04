@@ -3,7 +3,6 @@ import type { ScanResult } from "../types/zap-scan";
 import axiosInstance from "./axios";
 import { BASE_URL } from "./config.backend";
 
-// import data from "../components/chat/testData.json";
 interface scanPayload {
 	url: string;
 	complianceStandard: string;

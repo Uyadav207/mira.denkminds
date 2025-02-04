@@ -71,13 +71,10 @@ export class OpenAIService {
 			.join("\n\n");
 	}
 
-	async generateRagAnswer(
-		documents: Document[],
-	): Promise<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>> {
+	async generateRagQueryAnswer(documents: Document[]): Promise<string> {
 		const formattedContext = this.preprocessContext(documents);
-		console.log(formattedContext);
 
-		const stream = await this.client.chat.completions.create({
+		const response = await this.client.chat.completions.create({
 			model: "gpt-3.5-turbo",
 			messages: [
 				{
@@ -95,13 +92,35 @@ export class OpenAIService {
 						
 						Please provide:
 						1. CVEID: The CVE ID of the vulnerability
-						2. Date Published: The date the CVE was published
-						3. Description: Human understandable description of the vulnerability
-						4. Risk Analysis: Break down the findings by risk level only based on severity.
-						5. Remediation Steps: Provide steps if any or use your knowledge to suggest steps
 
 						Format the response in markdown with clear sections and bullet points for readability.
 
+						`,
+				},
+				{
+					role: "user",
+					content: `Context:\n${formattedContext}`,
+				},
+			],
+			temperature: 0.3,
+		});
+
+		return response.choices[0].message.content || "";
+	}
+
+	async generateRagAnswer(
+		documents: Document[],
+	): Promise<Stream<OpenAI.Chat.Completions.ChatCompletionChunk>> {
+		const formattedContext = this.preprocessContext(documents);
+
+		const stream = await this.client.chat.completions.create({
+			model: "gpt-3.5-turbo",
+			messages: [
+				{
+					role: "system",
+					content: `Summarize the context given with the CVE IDs as heading.
+
+						Format the response in markdown with clear sections and bullet points for readability.
 						`,
 				},
 				{
@@ -131,7 +150,7 @@ export class OpenAIService {
 			model: "gpt-4o",
 			messages: messages,
 			stream: true,
-			temperature: 0.7,
+			temperature: 0.4,
 			tools: [
 				{
 					type: "function",
@@ -150,10 +169,22 @@ export class OpenAIService {
 								options: {
 									type: "array",
 									items: {
-										type: "string",
-										enum: ["Passive Scan", "Active Scan"], // Explicitly define allowed options
+										type: "object",
+										properties: {
+											option: {
+												type: "string",
+												enum: ["Passive Scan", "Active Scan"], // Explicitly define allowed options
+											},
+											description: {
+												type: "string",
+												description:
+													"Explanation of the scan option's purpose and implications",
+											},
+										},
+										required: ["option", "description"],
 									},
-									description: "Available scan options to choose from.",
+									description:
+										"Available scan options to choose from, each with a detailed description.",
 								},
 							},
 							required: ["question", "options"],
@@ -175,8 +206,22 @@ export class OpenAIService {
 								},
 								options: {
 									type: "array",
-									items: { type: "string" },
-									description: "List of available options.",
+									items: {
+										type: "object",
+										properties: {
+											option: {
+												type: "string",
+											},
+											description: {
+												type: "string",
+												description:
+													"Detailed explanation of the option's significance",
+											},
+										},
+										required: ["option", "description"],
+									},
+									description:
+										"List of available options, each with a comprehensive description.",
 									minItems: 1, // Ensure at least one option is provided
 								},
 							},
@@ -187,23 +232,40 @@ export class OpenAIService {
 				{
 					type: "function",
 					function: {
-						name: "approve_action",
-						description: "Request user approval for security-related actions.",
+						name: "sendEmail",
+						description:
+							"Activates send email agent to send an email to the user.",
 						parameters: {
 							type: "object",
 							properties: {
 								question: {
 									type: "string",
-									description: "The security approval question.",
+									description: "The question about system configuration.",
 								},
 								options: {
 									type: "array",
 									items: {
 										type: "string",
-										enum: ["Yes", "No"], // Explicitly define approval options
+										enum: ["Yes", "No"],
 									},
-									description: "Available response options.",
-									default: ["Yes", "No"],
+									description: "User response options.",
+								},
+							},
+							required: ["question", "options"],
+						},
+					},
+				},
+				{
+					type: "function",
+					function: {
+						name: "sendRagQuery",
+						description: "Triggers rag api call.",
+						parameters: {
+							type: "object",
+							properties: {
+								question: {
+									type: "string",
+									description: "The question about to ask the rag service.",
 								},
 							},
 							required: ["question"],
@@ -213,7 +275,6 @@ export class OpenAIService {
 			],
 			tool_choice: "auto",
 		});
-
 		return stream;
 	}
 }

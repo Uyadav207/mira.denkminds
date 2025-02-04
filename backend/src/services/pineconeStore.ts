@@ -49,8 +49,13 @@ export class PineconeService {
 		await this.store.addDocuments(documents);
 	}
 
+	async similaritySearchBasedQuery(query: string, k = 5): Promise<Document[]> {
+		return this.store.similaritySearch(query, k);
+	}
+
 	async similaritySearch(query: string, k = 5): Promise<Document[]> {
 		const cveMatch = query.match(/CVE-\d{4}-\d+/i);
+
 		if (cveMatch) {
 			const cveId = cveMatch[0].toUpperCase();
 			const filter = {
@@ -71,6 +76,7 @@ export class PineconeService {
 			const results = await this.store.similaritySearch("", 100, {
 				metadata: {},
 			});
+			console.log("results", results);
 
 			const latestCves = results
 				.filter((doc) => doc.metadata?.publishedDate)
@@ -83,7 +89,25 @@ export class PineconeService {
 
 			return latestCves;
 		}
+		console.log("results", query);
 
 		return this.store.similaritySearch(query, k);
+	}
+
+	async getLatestCVEs(): Promise<Document[]> {
+		const results = await this.store.similaritySearch("", 100, {
+			metadata: {},
+		});
+
+		const latestCves = results
+			.filter((doc) => doc.metadata?.publishedDate)
+			.sort(
+				(a, b) =>
+					new Date(b.metadata.publishedDate).getTime() -
+					new Date(a.metadata.publishedDate).getTime(),
+			)
+			.slice(0, 10);
+
+		return latestCves;
 	}
 }
