@@ -23,7 +23,7 @@ const HumanInTheLoopApproval: React.FC<HumanInTheLoopProps> = ({
 			<XIcon
 				onClick={() => {
 					setPendingAction(null);
-					addBotMessage("Action cancelled. How else can I help you?");
+					addBotMessage("Action cancelled?");
 				}}
 				className="h-5 w-5 cursor-pointer absolute top-2 right-2 text-gray-500 hover:text-gray-700"
 			/>
