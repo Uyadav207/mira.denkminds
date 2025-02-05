@@ -324,6 +324,7 @@ const MiraChatBot: React.FC = () => {
 			setIsLoading(false);
 			streamChatResponse(userMessage, responseStream);
 		} else if (isGitHubURL) {
+			setIsLoading(false);
 			const urls = extractURLs(userMessage.message);
 			setTargetUrl(urls[0]);
 			const manualMessage =
