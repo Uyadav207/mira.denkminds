@@ -41,7 +41,7 @@ const HumanInTheLoopOptions: React.FC<VulnerabilityStandardsProps> = ({
 			</div>
 
 			<ScrollArea className="w-full md:w-[90%] mt-4">
-				<div className="flex flex-wrap justify-start space-x-4 py-4">
+				<div className="grid grid-cols-1 w-full justify-start  py-4">
 					{actionPrompts.map((action) => (
 						<Button
 							key={action.id}

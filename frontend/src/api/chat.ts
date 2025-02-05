@@ -3,6 +3,12 @@ import { BASE_URL } from "./config.backend";
 interface ChatPayload {
 	message: string;
 	useRAG?: boolean;
+	previousMessages?: ChatMessage[];
+}
+
+interface ChatMessage {
+	role: "system" | "user";
+	content: string;
 }
 
 interface ChatOllamaPayload {

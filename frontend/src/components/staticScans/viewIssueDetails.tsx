@@ -105,7 +105,8 @@ const ViewIssuesDetails: React.FC = () => {
 						{issuesDetails.component}
 					</p>
 					<p>
-						<span className="font-bold">Line:</span> {issuesDetails.line}
+						<span className="font-bold">Line:</span>{" "}
+						{issuesDetails.line}
 					</p>
 					<p>
 						<span className="font-bold">Description:</span>{" "}
@@ -115,33 +116,22 @@ const ViewIssuesDetails: React.FC = () => {
 			</div>
 
 			<div className="bg-sidebar shadow-md mt-6 p-6 rounded-md">
-				<h2 className="text-lg font-semibold mb-4">Remediation Steps</h2>
-				{issuesDetails.rule?.remediationSteps?.map((step: RemediationStep) =>
-					step.problemCodeSnippet ? (
-						<div
-							key={step.context}
-							className="mt-4 max-w-screen-lg w-full overflow-x-auto"
-						>
-							<h3 className="text-md font-semibold mb-2">{step.context}</h3>
-							<div className="bg-sidebar rounded-lg shadow-lg p-4 mb-4">
-								<h4 className="text-sm font-semibold mb-2">
-									Problem Code Snippet
-								</h4>
-								<div className="overflow-x-auto max-w-full">
-									<SyntaxHighlighter
-										language="python"
-										style={atomDark}
-										wrapLongLines={false}
-										showLineNumbers
-									>
-										{step.problemCodeSnippet}
-									</SyntaxHighlighter>
-								</div>
-							</div>
-							{step.remediationCodeSnippet && (
-								<div className="bg-sidebar rounded-lg shadow-lg p-4">
+				<h2 className="text-lg font-semibold mb-4">
+					Remediation Steps
+				</h2>
+				{issuesDetails.rule?.remediationSteps?.map(
+					(step: RemediationStep) =>
+						step.problemCodeSnippet ? (
+							<div
+								key={step.context}
+								className="mt-4 max-w-screen-lg w-full overflow-x-auto"
+							>
+								<h3 className="text-md font-semibold mb-2">
+									{step.context}
+								</h3>
+								<div className="bg-sidebar rounded-lg shadow-lg p-4 mb-4">
 									<h4 className="text-sm font-semibold mb-2">
-										Remediation Code Snippet
+										Problem Code Snippet
 									</h4>
 									<div className="overflow-x-auto max-w-full">
 										<SyntaxHighlighter
@@ -150,13 +140,29 @@ const ViewIssuesDetails: React.FC = () => {
 											wrapLongLines={false}
 											showLineNumbers
 										>
-											{step.remediationCodeSnippet}
+											{step.problemCodeSnippet}
 										</SyntaxHighlighter>
 									</div>
 								</div>
-							)}
-						</div>
-					) : null,
+								{step.remediationCodeSnippet && (
+									<div className="bg-sidebar rounded-lg shadow-lg p-4">
+										<h4 className="text-sm font-semibold mb-2">
+											Remediation Code Snippet
+										</h4>
+										<div className="overflow-x-auto max-w-full">
+											<SyntaxHighlighter
+												language="python"
+												style={atomDark}
+												wrapLongLines={false}
+												showLineNumbers
+											>
+												{step.remediationCodeSnippet}
+											</SyntaxHighlighter>
+										</div>
+									</div>
+								)}
+							</div>
+						) : null,
 				)}
 			</div>
 		</div>

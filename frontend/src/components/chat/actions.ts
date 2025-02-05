@@ -9,7 +9,7 @@ import {
 
 export const actionCards = [
 	{
-		title: "Scan a Domain",
+		title: "Scan a URL",
 		icon: Search,
 		useRAG: false,
 		color: "text-purple-500",

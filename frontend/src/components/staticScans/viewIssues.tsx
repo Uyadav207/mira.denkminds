@@ -29,7 +29,10 @@ const ViewIssues: React.FC = () => {
 	const totalPages = issues ? Math.ceil(issues.length / itemsPerPage) : 0;
 
 	const currentData = issues
-		? issues.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+		? issues.slice(
+				(currentPage - 1) * itemsPerPage,
+				currentPage * itemsPerPage,
+			)
 		: [];
 
 	const handlePreviousPage = () => {
@@ -68,8 +71,8 @@ const ViewIssues: React.FC = () => {
 						<Info className="w-5 h-5 text-gray-500 cursor-pointer" />
 					</TooltipTrigger>
 					<TooltipContent>
-						Issues are potential code quality or security concerns identified by
-						SonarQube during static code analysis
+						Issues are potential code quality or security concerns
+						identified by SonarQube during static code analysis
 					</TooltipContent>
 				</Tooltip>
 			</div>
@@ -93,7 +96,9 @@ const ViewIssues: React.FC = () => {
 							{issues.severity}
 						</Badge>
 
-						<p className="text-lg font-semibold mb-2">{issues.message}</p>
+						<p className="text-lg font-semibold mb-2">
+							{issues.message}
+						</p>
 
 						<div className="flex items-center space-x-4 mt-2">
 							<div className="flex flex-wrap gap-2">
@@ -108,12 +113,14 @@ const ViewIssues: React.FC = () => {
 							</div>
 
 							<p className="text-sm font-medium text-gray-500">
-								<span className="font-bold">Component:</span> {issues.component}
+								<span className="font-bold">Component:</span>{" "}
+								{issues.component}
 							</p>
 						</div>
 
 						<p className="absolute bottom-2 right-2 text-sm text-gray-500">
-							<span className="font-bold">Line:</span> {issues.line}
+							<span className="font-bold">Line:</span>{" "}
+							{issues.line}
 						</p>
 					</div>
 				))}

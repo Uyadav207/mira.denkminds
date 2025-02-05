@@ -4,8 +4,15 @@ import type { ChatCompletionMessageParam } from "openai/resources/chat";
 import type { ScanResults, FilteredAlert } from "../types/scan";
 import type { SonarScanReport } from "../types/sastScan";
 
+import { chatStreamSystemPrompt } from "../prompts/systemPromps";
+
 interface Document {
 	pageContent: string;
+}
+
+interface ChatMessage {
+	role: "system" | "user" | "assistant";
+	content: string;
 }
 
 export class ChatService {
@@ -133,95 +140,72 @@ export class ChatService {
 		scanResults: SonarScanReport,
 		type?: string,
 	): string {
-		const totalVulnerabilities = scanResults.report.metrics.vulnerabilities;
+		const totalVulnerabilities = scanResults.metrics.vulnerabilities;
 
 		if (type === "detailed") {
 			return `
-					Generate a vulnerability and code quality report based on the SonarQube scan results in Markdown format::
+**Format the report in Markdown** for better readability.
 
-					# Security Assessment Report
+# Security Assessment Report
 
-					## Project Overview
-					- Project Key: ${scanResults.projectKey}
-					- Total Lines of Code: ${scanResults.report.metrics.ncloc}
-					- Scan URL: ${scanResults.sonarUrl}
+## Project Overview
+- **Project Key:** ${scanResults.projectKey}
+- **Total Lines of Code:** ${scanResults.metrics.ncloc}
 
-					## Code Quality Metrics
-					### Quantitative Analysis
-					- Code Coverage: ${scanResults.report.metrics.coverage}%
-					- Duplicated Lines Density: ${scanResults.report.metrics.duplicated_lines_density}%
-					- Reliability Rating: ${scanResults.report.metrics.reliability_rating}/5
-					- Security Rating: ${scanResults.report.metrics.security_rating}/5
-					- Maintainability Rating: ${scanResults.report.metrics.software_quality_maintainability_rating}/5
+## Code Quality Metrics
+### Quantitative Analysis
+- **Code Coverage:** ${scanResults.metrics.coverage}%
+- **Duplicated Lines Density:** ${scanResults.metrics.duplicated_lines_density}%
+- **Reliability Rating:** ${scanResults.metrics.reliability_rating}/5
+- **Security Rating:** ${scanResults.metrics.security_rating}/5
+- **Maintainability Rating:** ${scanResults.metrics.software_quality_maintainability_rating}/5
 
-					## Vulnerability Breakdown
-					### Identified Issues
-					1. Bugs: ${scanResults.report.metrics.bugs} total
-					2. Code Smells: ${scanResults.report.metrics.code_smells} total
-					3. Security Vulnerabilities: ${scanResults.report.metrics.vulnerabilities} total
-					4. Security Hotspots: ${scanResults.report.hotspots.length}
+## Vulnerability Breakdown
+### Identified Issues
+- **Bugs:** ${scanResults.metrics.bugs} total
+- **Code Smells:** ${scanResults.metrics.code_smells} total
+- **Security Vulnerabilities:** ${scanResults.metrics.vulnerabilities} total
+- **Security Hotspots:** ${scanResults.hotspots.length}
 
-					## Critical Findings
-					### Detailed Vulnerability Analysis
+## Critical Findings
+### Detailed Vulnerability Analysis
+${
+	scanResults.issues.length > 0
+		? scanResults.issues
+				.map(
+					(issue) => `
+#### Issue: ${issue.message}
+- **Severity:** ${issue.severity}
+- **Component:** ${issue.component} (Line ${issue.line})
+- **Rule Violation:** ${typeof issue.rule === "object" ? issue.rule?.name : issue.rule}
+- **Description:** ${typeof issue.rule === "object" ? issue.rule?.description : "No description available"}
+`,
+				)
+				.join("\n")
+		: "No security vulnerabilities found."
+}
 
-					#### 1. Critical Code Smell: Datetime Handling
-					- Location: 
-					- Issue: Using datetime.datetime.utcnow()
-					- Risk: Potential timezone and timestamp inconsistencies
-					- Recommendation: 
-					- Replace with datetime.now(timezone.utc)
-					- Ensure timezone-aware datetime objects
-
-					#### 2. HTTP Method Security Hotspot
-					- Location:
-					- Issue: Potential unsafe HTTP method configuration
-					- Vulnerability Probability: High
-					- Recommendation:
-					- Thoroughly review and restrict HTTP methods
-					- Implement strict method-level access controls
-
-					#### 3. Resource Integrity Concerns
-					- Locations: 
-					- Issue: Missing resource integrity checks
-					- Vulnerability Probability: Low
-					- Recommendation:
-
-					## Remediation Roadmap
-					### Immediate Actions (24-48 hours)
-					- Refactor datetime methods in auth.py
-					- Conduct thorough review of HTTP method configurations
-
-					### Short-term Improvements (1-2 weeks)
-					- Increase code coverage
-					- Address top priority code smells
-					- Implement resource integrity checks
-
-					### Long-term Security Enhancements
-					- Comprehensive code refactoring
-					- Continuous integration of security best practices
-					- Regular vulnerability scanning and remediation
-
-					## Additional Insights
-					- Low code coverage suggests extensive testing is required
-					- High number of code smells indicates potential technical debt
-					- Security ratings suggest a need for proactive security management
-
-					Detailed recommendations and specific code refactoring strategies are provided to address identified vulnerabilities and improve overall code quality.
-`;
+  ## Summary and Recommendations
+### Security Recommendations:
+1. **Prioritize High and Critical Severity Issues**: Immediate action is required for critical security flaws.
+2. **Reduce Code Smells**: Improve maintainability by refactoring complex code sections.
+3. **Increase Test Coverage**: Improve unit and integration test coverage to enhance reliability.
+4. **Fix Duplicated Code**: Reduce redundancy to improve maintainability and reduce technical debt.
+5. **Follow Secure Coding Best Practices**: Implement secure development guidelines to prevent future vulnerabilities.`;
 		}
 		return `Analyze the SonarQube security scan results for the ${scanResults.projectKey} project. Provide a comprehensive security assessment:
 
 				1. Overall Code Quality Metrics:
-				- Total Lines of Code:  ${scanResults.report.metrics.ncloc}
-				- Code Coverage: ${scanResults.report.metrics.coverage}%
-				- Reliability Rating: ${scanResults.report.metrics.reliability_rating}
-				- Maintainability Rating: ${scanResults.report.metrics.software_quality_maintainability_rating}
+				- Total Lines of Code:  ${scanResults.metrics.ncloc}
+				- Code Coverage: ${scanResults.metrics.coverage}%
+				- Reliability Rating: ${scanResults.metrics.reliability_rating}
+				- Maintainability Rating: ${scanResults.metrics.software_quality_maintainability_rating}
 
 				2. Key Vulnerability Insights:
-				- Total Bugs: ${scanResults.report.metrics.bugs}
-				- Total Code Smells: ${scanResults.report.metrics.code_smells}
-				- Security Vulnerabilities: ${scanResults.report.metrics.vulnerabilities}
-				- Security Hotspots: ${scanResults.report.hotspots.length}
+				- Total Bugs: ${scanResults.metrics.bugs}
+				- Total Code Smells: ${scanResults.metrics.code_smells}
+				- Security Vulnerabilities: ${scanResults.metrics.vulnerabilities}
+				- Security Hotspots: ${scanResults.hotspots.length}
 
 				3. Critical Issues Highlights:
 				- Critical Code Smell
@@ -266,20 +250,15 @@ export class ChatService {
 		return this.openai.chat(messages);
 	}
 
-	async processMessageStream(message: string, useRAG: boolean) {
+	async processMessageStream(
+		message: string,
+		useRAG: boolean,
+		previousMessages: ChatMessage[] = [],
+	) {
 		if (!useRAG) {
-			const systemMessage = `
-			You are a cybersecurity assistant specialized in analyzing website vulnerabilities. 
-				Your key responsibilities are:
-				1. Prompt users for a domain name or URL when they inquire about website security assessments.
-				2. If a domain or URL is provided, analyze and return insights on common vulnerabilities, potential risks, and recommendations.
-				3. Provide general guidance for cybersecurity-related queries and suggest tools or frameworks for assessments when needed.
-
-				Format the response in markdown with clear sections and bullet points for readability.
-			`;
-
 			const messages: ChatCompletionMessageParam[] = [
-				{ role: "system", content: systemMessage },
+				{ role: "system", content: chatStreamSystemPrompt },
+				...previousMessages,
 				{ role: "user", content: message },
 			];
 
@@ -287,10 +266,10 @@ export class ChatService {
 		}
 
 		const docs: Document[] = await this.pinecone.similaritySearch(message);
+		console.log(docs);
 
 		return this.openai.generateRagAnswer(docs);
 	}
-
 	async generateDetailedSummary(scanResult: ScanResults): Promise<string> {
 		const prompt = this.createSummaryPrompt(scanResult, "detailed");
 		const messages: ChatCompletionMessageParam[] = [

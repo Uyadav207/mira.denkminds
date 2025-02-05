@@ -37,7 +37,6 @@ export interface Hotspot {
 export interface SonarScanReport {
 	message: string;
 	projectKey: string;
-	sonarUrl: string;
 	report: {
 		metrics: {
 			coverage: string;

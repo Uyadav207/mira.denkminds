@@ -46,6 +46,20 @@ export class RAGController {
 		}
 	}
 
+	async getDocuments(c: Context) {
+		try {
+			const response = await this.pinecone.getLatestCVEs();
+			const cveid = response.map((cve) => cve.metadata.id);
+
+			return c.json({ status: "success", cve: cveid.slice(0, 5) });
+		} catch (error) {
+			return c.json(
+				{ status: "error", message: (error as Error).message },
+				500,
+			);
+		}
+	}
+
 	async query(c: Context) {
 		try {
 			const { question } = await c.req.json();
@@ -61,7 +75,8 @@ export class RAGController {
 				);
 			}
 
-			const docs: Document[] = await this.pinecone.similaritySearch(question);
+			const docs: Document[] =
+				await this.pinecone.similaritySearchBasedQuery(question);
 
 			// Handle no results case
 			if (docs.length === 0) {
@@ -72,7 +87,7 @@ export class RAGController {
 				});
 			}
 
-			const answer = await this.openai.generateAnswer(docs, question as string);
+			const answer = await this.openai.generateRagQueryAnswer(docs);
 
 			const response: QueryResponse = {
 				answer,

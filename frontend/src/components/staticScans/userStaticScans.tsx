@@ -70,7 +70,8 @@ const UserStaticScans: React.FC = () => {
 						</AlertTitle>
 					</div>
 					<AlertDescription className="text-muted-foreground text-base">
-						We couldn't find any scans in your history. Please scan your repos.
+						We couldn't find any scans in your history. Please scan
+						your repos.
 					</AlertDescription>
 				</Alert>
 			</Card>
@@ -81,7 +82,9 @@ const UserStaticScans: React.FC = () => {
 		<Card className="rounded-lg border p-6 shadow-md relative bg-secondary">
 			<div className="flex items-center justify-between mb-4">
 				<div className="flex items-center space-x-2">
-					<h1 className="text-2xl font-semibold">{scanData.projectKey}</h1>
+					<h1 className="text-2xl font-semibold">
+						{scanData.projectKey}
+					</h1>
 					<Badge className="bg-gray-200 text-gray-600">
 						{scanData.repoType.toUpperCase()}
 					</Badge>
@@ -92,7 +95,8 @@ const UserStaticScans: React.FC = () => {
 			</div>
 
 			<div className="text-gray-500 text-sm mb-4">
-				Last analysis: {new Date(scanData._creationTime).toLocaleString()}
+				Last analysis:{" "}
+				{new Date(scanData._creationTime).toLocaleString()}
 			</div>
 
 			<div className="grid grid-cols-4 gap-4 text-sm">
@@ -129,7 +133,9 @@ const UserStaticScans: React.FC = () => {
 						className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
 						key={scanData._id}
 						onClick={() => {
-							navigate(`/recent-static-scans/hotspots/${scanData._id}`);
+							navigate(
+								`/recent-static-scans/hotspots/${scanData._id}`,
+							);
 						}}
 					>
 						View Hotspots
@@ -137,7 +143,9 @@ const UserStaticScans: React.FC = () => {
 					<Button
 						className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 cursor-pointer"
 						onClick={() => {
-							navigate(`/recent-static-scans/issues/${scanData._id}`);
+							navigate(
+								`/recent-static-scans/issues/${scanData._id}`,
+							);
 						}}
 					>
 						View Issues
@@ -153,7 +161,9 @@ const UserStaticScans: React.FC = () => {
 						className="w-48 bg-white shadow-lg rounded-md py-1 border"
 					>
 						<DropdownMenuItem
-							onClick={(e: React.MouseEvent) => deleteSASTScan(scanData._id, e)}
+							onClick={(e: React.MouseEvent) =>
+								deleteSASTScan(scanData._id, e)
+							}
 							className="flex items-center space-x-2 text-red-600 hover:bg-red-100 px-4 py-2"
 						>
 							<Trash2 className="h-4 w-4" />
