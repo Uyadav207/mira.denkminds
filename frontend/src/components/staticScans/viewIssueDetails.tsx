@@ -3,17 +3,48 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import type { Issue } from "../../types/sastTypes";
+import { useParams } from "react-router-dom";
+import { api } from "../../convex/_generated/api";
+import { useQuery } from "convex/react";
 
+interface RemediationStep {
+	description: string;
+	context: string;
+	problemCodeSnippet: string;
+	remediationCodeSnippet: string;
+}
 const ViewIssuesDetails: React.FC = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const issue: Issue = location.state?.issue;
+	const issue = location.state?.issue;
+	const { issueId } = useParams<{ issueId: string }>();
 
-	if (!issue) {
+	const issuesDetailsArray = useQuery(api.sastScans.fetchIssueInfoByIssueId, {
+		issueId,
+	});
+
+	const issuesDetails = issuesDetailsArray?.[0];
+
+	if (!issuesDetails) {
 		return (
 			<div className="p-6">
-				<p>No issue details available.</p>
+				<div className="w-36 h-8 bg-secondary rounded animate-pulse mb-4" />
+				<div className="bg-sidebar shadow-md p-6 rounded-md mb-6 animate-pulse">
+					<div className="w-1/4 h-6 bg-secondary rounded animate-pulse mb-4" />
+					<div className="space-y-2">
+						<div className="w-3/4 h-4 bg-secondary rounded animate-pulse" />
+						<div className="w-1/2 h-4 bg-secondary rounded animate-pulse" />
+						<div className="w-1/3 h-4 bg-secondary rounded animate-pulse" />
+						<div className="w-full h-4 bg-secondary rounded animate-pulse" />
+					</div>
+				</div>
+
+				<div className="bg-sidebar shadow-md mt-6 p-6 rounded-md animate-pulse">
+					<div className="w-1/4 h-6 bg-secondary rounded animate-pulse mb-4" />
+					<div className="w-3/4 h-4 bg-secondary rounded animate-pulse mb-2" />
+					<div className="w-2/4 h-4 bg-secondary rounded animate-pulse" />
+				</div>
+
 				<Button
 					onClick={() => navigate(-1)}
 					className="mt-4 bg-secondary text-white p-2 rounded"
@@ -25,13 +56,17 @@ const ViewIssuesDetails: React.FC = () => {
 	}
 
 	const paragraphDescription =
-		issue.rule.remediationSteps
-			?.map((step) => step.description.match(/<p>(.*?)<\/p>/)?.[1])
-			.filter((desc) => desc)
+		issue?.rule.remediationSteps
+			?.map((step: RemediationStep) => {
+				const match = step.description.match(/<p>(.*?)<\/p>/);
+				return match?.[1];
+			})
+			.filter((desc: string | undefined) => desc)
 			.join(" ") || "No additional information available.";
 
-	const getSeverityBadgeColor = (severity: string) => {
-		switch (severity.toUpperCase()) {
+	const getSeverityBadgeColor = (severity: string | undefined) => {
+		const normalizedSeverity = severity?.toUpperCase() || "UNKNOWN";
+		switch (normalizedSeverity) {
 			case "CRITICAL":
 				return "bg-red-100 text-red-600";
 			case "MAJOR":
@@ -47,29 +82,31 @@ const ViewIssuesDetails: React.FC = () => {
 
 	return (
 		<div className="p-6">
-			<h1 className="text-xl font-bold mb-4">{issue.message}</h1>
+			<h1 className="text-xl font-bold mb-4">{issuesDetails.message}</h1>
 
 			<div className="bg-sidebar shadow-md p-6 rounded-md">
 				<h2 className="text-lg font-semibold mb-2">Information</h2>
 
 				<div className="flex items-center space-x-4 mb-4">
 					<Badge
-						className={`${getSeverityBadgeColor(issue.severity)} font-semibold`}
+						className={`${getSeverityBadgeColor(issuesDetails.severity)} font-semibold`}
 					>
-						{issue.severity}
+						{issuesDetails.severity}
 					</Badge>
 				</div>
 
 				<div className="text-sm space-y-2">
 					<p>
-						<span className="font-bold">Key:</span> {issue.rule.key}
+						<span className="font-bold">Key:</span>{" "}
+						{issuesDetails.rule?.key || "N/A"}
 					</p>
 					<p>
 						<span className="font-bold">Component:</span>{" "}
-						{issue.component}
+						{issuesDetails.component}
 					</p>
 					<p>
-						<span className="font-bold">Line:</span> {issue.line}
+						<span className="font-bold">Line:</span>{" "}
+						{issuesDetails.line}
 					</p>
 					<p>
 						<span className="font-bold">Description:</span>{" "}
@@ -82,11 +119,11 @@ const ViewIssuesDetails: React.FC = () => {
 				<h2 className="text-lg font-semibold mb-4">
 					Remediation Steps
 				</h2>
-				{issue.rule.remediationSteps?.map(
-					(step) =>
-						step.problemCodeSnippet && (
+				{issuesDetails.rule?.remediationSteps?.map(
+					(step: RemediationStep) =>
+						step.problemCodeSnippet ? (
 							<div
-								key={`${issue.rule.key}-${step.context}`}
+								key={step.context}
 								className="mt-4 max-w-screen-lg w-full overflow-x-auto"
 							>
 								<h3 className="text-md font-semibold mb-2">
@@ -125,7 +162,7 @@ const ViewIssuesDetails: React.FC = () => {
 									</div>
 								)}
 							</div>
-						),
+						) : null,
 				)}
 			</div>
 		</div>

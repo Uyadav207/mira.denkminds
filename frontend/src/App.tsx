@@ -88,15 +88,15 @@ const App = () => {
 								element={<RecentStaticScans />}
 							/>
 							<Route
-								path="/recent-static-scans/hotspots"
+								path="/recent-static-scans/hotspots/:staticScanId/"
 								element={<ScanHotspots />}
 							/>
 							<Route
-								path="/recent-static-scans/issues"
+								path="/recent-static-scans/issues/:staticScanId/"
 								element={<ScanIssues />}
 							/>
 							<Route
-								path="/recent-static-scans/issues/details"
+								path="/recent-static-scans/issues/:staticScanId/details/:issueId"
 								element={<ScanIssuesDetails />}
 							/>
 							<Route path="/api-scan" element={<ApiScans />} />

@@ -96,7 +96,6 @@ export default defineSchema({
 				security_rating: v.string(),
 				ncloc: v.string(),
 				vulnerabilities: v.string(),
-				security_hotspots_reviewed: v.string(),
 				software_quality_maintainability_rating: v.string(),
 			}),
 		),

@@ -113,7 +113,7 @@ export class SonarService {
 	}
 
 	async fetchSonarReport(projectKey: string): Promise<SonarReport> {
-		const metricsApiUrl = `${this.SONAR_URL}/api/measures/component?component=${projectKey}&metricKeys=bugs,vulnerabilities,code_smells,coverage,duplicated_lines_density,security_rating,reliability_rating,software_quality_maintainability_rating,security_hotspots_reviewed,ncloc`;
+		const metricsApiUrl = `${this.SONAR_URL}/api/measures/component?component=${projectKey}&metricKeys=bugs,vulnerabilities,code_smells,coverage,duplicated_lines_density,security_rating,reliability_rating,software_quality_maintainability_rating,ncloc`;
 		const issuesApiUrl = `${this.SONAR_URL}/api/issues/search?componentKeys=${projectKey}&additionalFields=_all`;
 		const hotspotsApiUrl = `${this.SONAR_URL}/api/hotspots/search?projectKey=${projectKey}`;
 		const authHeader = `Basic ${Buffer.from(`${this.SONAR_TOKEN}:`).toString("base64")}`;

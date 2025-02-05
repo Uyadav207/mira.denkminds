@@ -65,14 +65,14 @@ const Url: React.FC = () => {
 			</button>
 
 			{/* Information Section */}
-			<div className="w-auto border bg-sidebar justify-between flex rounded-lg mb-5 p-5">
-				<div className="w-2/4 p-3">
+			<div className="w-full border bg-sidebar flex flex-col md:flex-row justify-between rounded-lg mb-5 p-5">
+				<div className="w-full md:w-1/2 p-3">
 					<h1 className="font-semibold text-xl mb-3 text-[#7156DB]">
 						Information
 					</h1>
 
 					<div
-						className="flex items-center mr-3 text-wrap text-justify text-gray-500"
+						className="text-wrap text-justify text-gray-500"
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 						dangerouslySetInnerHTML={{
 							__html: vulnerabilityInfos[0].description,
@@ -81,7 +81,7 @@ const Url: React.FC = () => {
 				</div>
 
 				{/* Vulnerability Assessment Information */}
-				<div className="w-2/4 p-5 border bg-popover rounded-lg">
+				<div className="w-full md:w-1/2 p-5 border bg-popover rounded-lg">
 					<h1 className="font-semibold text-lg mb-4 text-[#7156DB]">
 						Asssesment Information
 					</h1>
@@ -135,7 +135,7 @@ const Url: React.FC = () => {
 					}) => (
 						<div
 							key={affectedUri.uri}
-							className="flex items-center space-x-3 p-4 border bg-sidebar rounded-sm"
+							className="flex flex-wrap items-center space-x-3 p-4 border bg-sidebar rounded-sm"
 						>
 							<Badge
 								className={`px-3 py-1 rounded text-xs font-semibold ${
@@ -150,7 +150,7 @@ const Url: React.FC = () => {
 							>
 								{affectedUri.method}
 							</Badge>
-							<span className="font-wrap w-auto">
+							<span className="break-all">
 								/
 								{decodeURI(affectedUri.uri).match(REGEX)?.[1] ||
 									""}
