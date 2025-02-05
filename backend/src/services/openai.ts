@@ -42,7 +42,7 @@ export class OpenAIService {
 
 	async chat(messages: ChatCompletionMessageParam[]): Promise<string> {
 		const response = await this.client.chat.completions.create({
-			model: "gpt-3.5-turbo",
+			model: "gpt-4o",
 			messages: messages,
 		});
 		return response.choices[0].message.content || "";
@@ -114,7 +114,7 @@ export class OpenAIService {
 		const formattedContext = this.preprocessContext(documents);
 
 		const stream = await this.client.chat.completions.create({
-			model: "gpt-3.5-turbo",
+			model: "gpt-4o",
 			messages: [
 				{
 					role: "system",
@@ -150,7 +150,7 @@ export class OpenAIService {
 
 	async generateSummary(prompt: string): Promise<string> {
 		const response = await this.client.completions.create({
-			model: "gpt-3.5-turbo",
+			model: "gpt-4o",
 			prompt: prompt,
 		});
 		return response.choices[0].text || "";

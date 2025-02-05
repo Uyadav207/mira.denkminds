@@ -110,7 +110,7 @@ const MarkdownViewer = ({ content }: MarkdownViewerProps) => {
 						code: ({ node, className, children, ...props }) => {
 							return (
 								<code
-									className="px-1 py-0.5 rounded-md bg-secondary text-sm"
+									className="w-full md:w-[90%] px-1 py-0.5 rounded-md bg-secondary text-sm "
 									{...props}
 								>
 									{children}

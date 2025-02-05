@@ -293,6 +293,7 @@ const MiraChatBot: React.FC = () => {
 	};
 
 	const processPrompt = async (userMessage: Message, useRag?: boolean) => {
+		setIsLoading(true);
 		const lowerPrompt = userMessage.message.toLowerCase().trim();
 		const extractURLs = (text: string): string[] => {
 			return text.match(URL_PATTERN) || [];
@@ -307,7 +308,6 @@ const MiraChatBot: React.FC = () => {
 		// const reportRequest = isReportRequest(lowerPrompt);
 
 		if (hasNegation) {
-			setIsLoading(true);
 			const responseStream = (await chatApis.chat({
 				message: userMessage.message,
 				useRAG: false,
@@ -354,83 +354,20 @@ const MiraChatBot: React.FC = () => {
 				id: botMessage.id,
 			});
 			requestHumanApproval("github-scan", manualMessage, "none", botMessage.id);
-		}
-		// else if (hasURL) {
-		// 	const urls = extractURLs(userMessage.message);
-		// 	setTargetUrl(urls[0]);
-		// 	const manualMessage =
-		// 		"Thank you for providing the URL. Please select type of scan you want to perform.";
-		// 	const botMessage: Message = {
-		// 		id: uuidv4(),
-		// 		message: manualMessage,
-		// 		sender: "ai",
-		// 	};
-
-		// 	if (!chatId && !createdChatId) {
-		// 		processManualMessages(userMessage, botMessage);
-		// 	} else {
-		// 		await saveChatMessage({
-		// 			chatId: chatId
-		// 				? (chatId as Id<"chats">)
-		// 				: (createdChatId as Id<"chats">),
-		// 			humanInTheLoopId: botMessage.id,
-		// 			sender: botMessage.sender,
-		// 			message: botMessage.message,
-		// 		});
-		// 	}
-		// 	setPendingAction(botMessage.id as string);
-		// 	setRequestHumanInLoop({
-		// 		action: "scan",
-		// 		prompt: manualMessage,
-		// 		type: "none",
-		// 		id: botMessage.id,
-		// 	});
-		// 	requestHumanApproval("scan", manualMessage, "none", botMessage.id);
-		// }
-		// else if (reportRequest) {
-		// 	const manualMessage = "Thank you for your request.";
-		// 	const botMessage: Message = {
-		// 		id: uuidv4(),
-		// 		message: manualMessage,
-		// 		sender: "ai",
-		// 	};
-		// 	if (!chatId && !createdChatId) {
-		// 		processManualMessages(userMessage, botMessage);
-		// 	} else {
-		// 		await saveChatMessage({
-		// 			chatId: createdChatId
-		// 				? (createdChatId as Id<"chats">)
-		// 				: (chatId as Id<"chats">),
-		// 			humanInTheLoopId: botMessage.id,
-		// 			sender: botMessage.sender,
-		// 			message: botMessage.message,
-		// 		});
-		// 	}
-		// 	setPendingAction(botMessage.id as string);
-		// 	setRequestHumanInLoop({
-		// 		action: "report",
-		// 		prompt: manualMessage,
-		// 		type: "none",
-		// 		id: botMessage.id,
-		// 	});
-		// 	requestHumanApproval("report", manualMessage, "none", botMessage.id);
-		// }
-		else {
+		} else {
 			try {
-				setIsLoading(true);
-
 				const previousMessages = messages.map((msg) => ({
 					role:
 						msg.sender === "user" ? "user" : ("system" as "user" | "system"),
 					content: msg.message,
 				}));
-
+				setIsLoading(true);
 				const responseStream = (await chatApis.chat({
 					message: userMessage.message,
 					useRAG: useRag,
 					previousMessages,
 				})) as StreamResponse;
-				setIsLoading(false);
+
 				streamChatResponse(userMessage, responseStream as StreamResponse);
 			} catch (error) {
 				return error;
@@ -1236,6 +1173,7 @@ const MiraChatBot: React.FC = () => {
 				const { done, value } = await reader.read();
 
 				if (done) {
+					setIsLoading(false);
 					if (!accumulatedMessage && humanAction !== "sendRagQuery") {
 						accumulatedMessage = question;
 					}
@@ -1248,8 +1186,7 @@ const MiraChatBot: React.FC = () => {
 						sender: "ai",
 					};
 
-					await handleMessagesUpdate([userMessage, botMessage]);
-					setIsLoading(false);
+					handleMessagesUpdate([userMessage, botMessage]);
 
 					if (humanAction === "sendRagQuery") {
 						try {
@@ -1325,14 +1262,11 @@ const MiraChatBot: React.FC = () => {
 
 					accumulatedMessage += chunkText;
 					try {
-						// Try to parse as JSON for tool calls
 						const parsed = JSON.parse(chunkText);
 
 						if (parsed.type === "tool_call") {
 							setIsLoading(true);
-							// Handle tool call type
 
-							// Handle the options here
 							humanAction = parsed.data.name;
 
 							const options = parsed.data.arguments.options;
@@ -1356,6 +1290,7 @@ const MiraChatBot: React.FC = () => {
 			addBotMessage(`Error: ${errorMessage}`);
 		} finally {
 			setStreaming(false);
+			setIsLoading(false);
 		}
 	};
 

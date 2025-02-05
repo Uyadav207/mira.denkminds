@@ -68,6 +68,7 @@ export class ChatService {
 			.join("\n");
 		if (type === "detailed") {
 			return `
+				Format the response in markdown format with clear sections and bullet points for readability.	
 					Generate a vulnerability report based on the following data in Markdown format:
 
 					The CWE should be in a link format to the official CWE website.
@@ -107,6 +108,9 @@ export class ChatService {
 
 						## Recommendations
 						{recommendations}
+			
+					
+	
 `;
 		}
 
@@ -130,9 +134,8 @@ export class ChatService {
 						- Immediate actions (24-48 hours)
 						- Short-term fixes (1-2 weeks)
 						- Long-term security improvements
-						5. Technical Details: Show relevent technical details for each vulnerability and link to the CVE-ID and CWE-ID using cwe.mitre.org and cve.mitre.org
 
-						Format the response in markdown with clear sections and bullet points for readability.			
+						Format the response in markdown format with clear sections and bullet points for readability.			
 	`;
 	}
 
