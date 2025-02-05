@@ -78,7 +78,6 @@ export interface DescriptionSection {
 export interface SonarScanReport {
 	message: string;
 	projectKey: string;
-	sonarUrl: string;
 	repoType: string;
 	metrics: {
 		coverage: string;

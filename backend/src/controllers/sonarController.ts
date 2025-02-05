@@ -75,14 +75,11 @@ export class SonarController {
 
 			const { metrics, issues, hotspots } = sonarReport;
 
-			const sonarUrl = `https://sonar.yourdomain.com/dashboard?id=${repoName}`;
-
 			const responsePayload = {
 				message: "Scan completed successfully",
 				userId,
 				projectKey: repoName,
 				repoType,
-				sonarUrl,
 				metrics: sonarReport.metrics as SonarScanReport["metrics"],
 				issues,
 				hotspots,
