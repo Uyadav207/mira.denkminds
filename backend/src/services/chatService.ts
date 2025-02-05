@@ -140,7 +140,7 @@ export class ChatService {
 		scanResults: SonarScanReport,
 		type?: string,
 	): string {
-		const totalVulnerabilities = scanResults.report.metrics.vulnerabilities;
+		const totalVulnerabilities = scanResults.metrics.vulnerabilities;
 
 		if (type === "detailed") {
 			return `
@@ -150,23 +150,23 @@ export class ChatService {
 
 					## Project Overview
 					- Project Key: ${scanResults.projectKey}
-					- Total Lines of Code: ${scanResults.report.metrics.ncloc}
+					- Total Lines of Code: ${scanResults.metrics.ncloc}
 					- Scan URL: ${scanResults.sonarUrl}
 
 					## Code Quality Metrics
 					### Quantitative Analysis
-					- Code Coverage: ${scanResults.report.metrics.coverage}%
-					- Duplicated Lines Density: ${scanResults.report.metrics.duplicated_lines_density}%
-					- Reliability Rating: ${scanResults.report.metrics.reliability_rating}/5
-					- Security Rating: ${scanResults.report.metrics.security_rating}/5
-					- Maintainability Rating: ${scanResults.report.metrics.software_quality_maintainability_rating}/5
+					- Code Coverage: ${scanResults.metrics.coverage}%
+					- Duplicated Lines Density: ${scanResults.metrics.duplicated_lines_density}%
+					- Reliability Rating: ${scanResults.metrics.reliability_rating}/5
+					- Security Rating: ${scanResults.metrics.security_rating}/5
+					- Maintainability Rating: ${scanResults.metrics.software_quality_maintainability_rating}/5
 
 					## Vulnerability Breakdown
 					### Identified Issues
-					1. Bugs: ${scanResults.report.metrics.bugs} total
-					2. Code Smells: ${scanResults.report.metrics.code_smells} total
-					3. Security Vulnerabilities: ${scanResults.report.metrics.vulnerabilities} total
-					4. Security Hotspots: ${scanResults.report.hotspots.length}
+					1. Bugs: ${scanResults.metrics.bugs} total
+					2. Code Smells: ${scanResults.metrics.code_smells} total
+					3. Security Vulnerabilities: ${scanResults.metrics.vulnerabilities} total
+					4. Security Hotspots: ${scanResults.hotspots.length}
 
 					## Critical Findings
 					### Detailed Vulnerability Analysis
@@ -219,16 +219,16 @@ export class ChatService {
 		return `Analyze the SonarQube security scan results for the ${scanResults.projectKey} project. Provide a comprehensive security assessment:
 
 				1. Overall Code Quality Metrics:
-				- Total Lines of Code:  ${scanResults.report.metrics.ncloc}
-				- Code Coverage: ${scanResults.report.metrics.coverage}%
-				- Reliability Rating: ${scanResults.report.metrics.reliability_rating}
-				- Maintainability Rating: ${scanResults.report.metrics.software_quality_maintainability_rating}
+				- Total Lines of Code:  ${scanResults.metrics.ncloc}
+				- Code Coverage: ${scanResults.metrics.coverage}%
+				- Reliability Rating: ${scanResults.metrics.reliability_rating}
+				- Maintainability Rating: ${scanResults.metrics.software_quality_maintainability_rating}
 
 				2. Key Vulnerability Insights:
-				- Total Bugs: ${scanResults.report.metrics.bugs}
-				- Total Code Smells: ${scanResults.report.metrics.code_smells}
-				- Security Vulnerabilities: ${scanResults.report.metrics.vulnerabilities}
-				- Security Hotspots: ${scanResults.report.hotspots.length}
+				- Total Bugs: ${scanResults.metrics.bugs}
+				- Total Code Smells: ${scanResults.metrics.code_smells}
+				- Security Vulnerabilities: ${scanResults.metrics.vulnerabilities}
+				- Security Hotspots: ${scanResults.hotspots.length}
 
 				3. Critical Issues Highlights:
 				- Critical Code Smell
@@ -289,6 +289,8 @@ export class ChatService {
 		}
 
 		const docs: Document[] = await this.pinecone.similaritySearch(message);
+		console.log(docs);
+
 		return this.openai.generateRagAnswer(docs);
 	}
 	async generateDetailedSummary(scanResult: ScanResults): Promise<string> {

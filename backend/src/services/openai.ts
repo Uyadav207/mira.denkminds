@@ -118,14 +118,27 @@ export class OpenAIService {
 			messages: [
 				{
 					role: "system",
-					content: `Summarize the context given with the CVE IDs as heading.
+					content: `You are a cyber security assistant specializing in CVE analysis. Your task is to:
+						1. Analyze the provided CVE data carefully.
+						2. For questions about specific CVEs, only use information explicitly stated in the context
+						3. If a CVE is not found in the context, clearly state that no information is not yet available or use your knowledge to suggest an answer.
+						4. When providing severity or CVSS scores, always cite the specific CVE ID
+						5. Include relevant references when available
+						6. Format numbers and technical details precisely as they appear in the data
+						
+						If the user asks for latest CVEs in brief provide the details from the Context:
+						If no data can be retrieved, provide a general response about the lack of information or skip accordingly
+						
+						Please provide:
+						1. CVEID: The CVE ID of the vulnerability
 
 						Format the response in markdown with clear sections and bullet points for readability.
+
 						`,
 				},
 				{
 					role: "user",
-					content: `Context:\n${formattedContext}`,
+					content: `Context:\\n${formattedContext}`,
 				},
 			],
 			stream: true,

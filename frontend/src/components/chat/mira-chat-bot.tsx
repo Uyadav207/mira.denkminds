@@ -1352,13 +1352,13 @@ const MiraChatBot: React.FC = () => {
 
 				if (value) {
 					const chunkText = decoder.decode(value, { stream: true });
-
+					accumulatedMessage += chunkText;
 					try {
-						setStreaming(true);
 						// Try to parse as JSON for tool calls
 						const parsed = JSON.parse(chunkText);
 
 						if (parsed.type === "tool_call") {
+							setIsLoading(true);
 							// Handle tool call type
 
 							// Handle the options here
@@ -1370,10 +1370,11 @@ const MiraChatBot: React.FC = () => {
 
 							question = parsed.data.arguments.question;
 							accumulatedMessage = question;
+							setIsLoading(false);
 						}
 					} catch {
 						// Not JSON, use as regular text
-						accumulatedMessage += chunkText;
+						accumulatedMessage += "";
 					}
 
 					updateUI(accumulatedMessage);
@@ -1387,6 +1388,61 @@ const MiraChatBot: React.FC = () => {
 			setStreaming(false);
 		}
 	};
+
+	// const streamChatResponse = async (
+	// 	userMessage: Message,
+	// 	responseStream: StreamResponse,
+	// 	action?: string,
+	// ) => {
+	// 	try {
+	// 		setStreaming(true);
+	// 		if (!responseStream.ok || !responseStream.body) {
+	// 			throw new Error("Failed to get response stream");
+	// 		}
+
+	// 		const reader = responseStream.body.getReader();
+	// 		const decoder = new TextDecoder();
+	// 		let accumulatedMessage = "";
+
+	// 		while (true) {
+	// 			const { done, value } = await reader.read();
+
+	// 			if (done) {
+	// 				await completeMessage();
+	// 				const botMessage: Message = {
+	// 					id: uuidv4(),
+	// 					message: accumulatedMessage,
+	// 					sender: "ai",
+	// 				};
+
+	// 				handleMessagesUpdate([userMessage, botMessage]);
+	// 				if (action === "Chat Summary Report") {
+	// 					setChatSummaryContent(accumulatedMessage);
+	// 					await saveSummary({
+	// 						userId: String(user?.id),
+	// 						title: `Chat Summary - ${new Date().toLocaleDateString()}`,
+	// 						content: accumulatedMessage,
+	// 					});
+	// 				}
+
+	// 				break;
+	// 			}
+
+	// 			// Decode and append new chunk
+	// 			const chunk = decoder.decode(value, { stream: true });
+	// 			accumulatedMessage += chunk;
+
+	// 			// Update UI with accumulated message
+	// 			updateUI(accumulatedMessage);
+	// 		}
+	// 	} catch (error) {
+	// 		const errorMessage =
+	// 			error instanceof Error ? error.message : "Unknown error occurred";
+	// 		addBotMessage(`Error: ${errorMessage}`);
+	// 	} finally {
+	// 		setStreaming(false);
+	// 	}
+	// };
 
 	const yesClicked = async (confirmType: string) => {
 		setPendingAction(null);

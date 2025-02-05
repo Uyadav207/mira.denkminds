@@ -76,7 +76,6 @@ export class PineconeService {
 			const results = await this.store.similaritySearch("", 100, {
 				metadata: {},
 			});
-			console.log("results", results);
 
 			const latestCves = results
 				.filter((doc) => doc.metadata?.publishedDate)
@@ -89,7 +88,6 @@ export class PineconeService {
 
 			return latestCves;
 		}
-		console.log("results", query);
 
 		return this.store.similaritySearch(query, k);
 	}
