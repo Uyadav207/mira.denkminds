@@ -1524,10 +1524,10 @@ const MiraChatBot: React.FC = () => {
 					showSuccessToast(
 						"Please check your email for the Vulnerability Insights.",
 					);
-					addBotMessage("Email sent successfully. Please check your inbox");
+					
 				} catch (error) {
 					showErrorToast("Agent trigger failed. Please try again.");
-					addBotMessage("Sorry I could not send an email. Please try again.");
+				
 					return error;
 				}
 			})();
