@@ -1,4 +1,5 @@
 FROM oven/bun:latest
+RUN apk add --no-cache docker-cli
 WORKDIR /app/backend
 COPY ./backend/package.json ./backend/bun.lockb ./
 RUN bun install --force

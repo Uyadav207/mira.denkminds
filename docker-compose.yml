@@ -14,6 +14,7 @@ services:
     volumes:
       - ./backend:/app/backend
       - /app/backend/node_modules
+      - /var/run/docker.sock:/var/run/docker.sock 
 
   frontend:
     build:
@@ -31,6 +32,32 @@ services:
       - ./frontend:/app/frontend
       - /app/frontend/node_modules
 
+  zap:
+    image: zaproxy/zap-stable
+    networks:
+      - app-network
+  
+  sonarqube:
+    image: sonarqube
+    networks:
+      - sonarqube-network
+    ports:
+      - "9000:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli
+    networks:
+      - sonarqube-network
+   
 networks:
   app-network:
     driver: bridge
+  sonarqube-network:
+    driver: bridge
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
