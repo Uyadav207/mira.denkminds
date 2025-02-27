@@ -61,3 +61,125 @@ docker-compose up --build
 
 - If you encounter connection issues between frontend and backend, ensure that in the frontend's `.env` file, the API URL is pointing to the backend service (e.g., `VITE_API_URL=http://backend:8000`)
 - If port conflicts occur, you can modify the port mappings in `docker-compose.yml`
+
+
+# Development Environment Setup and Commands
+
+## Prerequisites Installation
+
+### Installing Node.js and npm via nvm (Node Version Manager)
+
+NVM allows you to manage multiple Node.js versions on a single environment.
+
+#### For macOS and Linux:
+```bash
+# Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash
+
+# Reload shell configuration
+source ~/.bashrc  # for bash
+# OR
+source ~/.zshrc   # for zsh
+
+# Verify nvm installation
+nvm --version
+
+# Install the latest LTS version of Node.js
+nvm install --lts
+
+# Set the LTS version as default
+nvm use --lts
+
+# Verify Node.js and npm installation
+node --version
+npm --version
+```
+
+#### For Windows:
+```bash
+# Download and install NVM for Windows from:
+# https://github.com/coreybutler/nvm-windows/releases
+
+# Open a new command prompt and verify installation
+nvm --version
+
+# Install the latest LTS version of Node.js
+nvm install lts
+
+# Use the installed version
+nvm use lts
+
+# Verify Node.js and npm installation
+node --version
+npm --version
+```
+
+### Installing Bun CLI
+
+Bun is required to run the backend of this project.
+
+#### For macOS and Linux:
+```bash
+# Install Bun using curl
+curl -fsSL https://bun.sh/install | bash
+
+# Verify Bun installation
+bun --version
+```
+
+#### For Windows (via WSL):
+```bash
+# Bun officially supports macOS and Linux only, but can be installed on Windows via WSL
+# Install WSL if not already installed
+wsl --install
+
+# Launch Ubuntu on WSL and run
+curl -fsSL https://bun.sh/install | bash
+
+# Verify Bun installation
+bun --version
+```
+
+## Running the Project
+
+### Backend Commands
+```bash
+# Navigate to backend directory
+cd backend
+
+# Install dependencies with Bun
+bun install
+
+# Start the backend server in production mode
+bun run start:prod
+```
+
+### Frontend Commands
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies with npm
+npm install
+
+# Start the Vite React development server
+npm run dev
+```
+
+## Docker Setup
+```bash
+# Install Docker Desktop from https://www.docker.com/products/docker-desktop/
+
+# Verify Docker installation
+docker --version
+docker compose --version
+
+# Build the Docker containers from project root
+docker compose build
+
+# Start all containers
+docker compose up
+
+# Alternatively, run in detached mode
+docker compose up -d
+```
